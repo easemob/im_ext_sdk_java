@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.flutter.plugin.common.MethodChannel;
+
 public class EMClientWrapper extends EMWrapper {
 
     public static class SingleHolder {
@@ -32,6 +34,11 @@ public class EMClientWrapper extends EMWrapper {
 
     public static EMClientWrapper getInstance() {
         return EMClientWrapper.SingleHolder.instance;
+    }
+
+    public void getToken(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException
+    {
+        onSuccess(result, channelName, EMClient.getInstance().getAccessToken());
     }
 
     public void createAccount(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {

@@ -15,6 +15,7 @@ public class ExtSdkMethodType {
     public static final String kickAllDevices = "kickAllDevices";
     public static final String getLoggedInDevicesFromServer = "getLoggedInDevicesFromServer";
     public static final String getCurrentUser = "getCurrentUser";
+    public static final String getToken = "getToken";
 
     public static final String onConnected = "onConnected";
     public static final String onDisconnected = "onDisconnected";
