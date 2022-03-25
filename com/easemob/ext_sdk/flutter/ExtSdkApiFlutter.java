@@ -49,6 +49,7 @@ public class ExtSdkApiFlutter implements ExtSdkApi, MethodChannel.MethodCallHand
 
     @Override
     public void init(@NonNull Object config) {
+        Log.d(TAG, "initialize: ");
         ExtSdkApiJni.nativeInit(config);
         this.addListener(new ExtSdkListener() {
             @Override
@@ -72,16 +73,19 @@ public class ExtSdkApiFlutter implements ExtSdkApi, MethodChannel.MethodCallHand
 
     @Override
     public void unInit(@Nullable Object params) {
+        Log.d(TAG, "unInit: " + params);
         ExtSdkApiJni.nativeUnInit();
     }
 
     @Override
     public void addListener(@NonNull ExtSdkListener listener) {
+        Log.d(TAG, "addListener: " + listener);
         ExtSdkApiJni.nativeAddListener(listener);
     }
 
     @Override
     public void delListener(@NonNull ExtSdkListener listener) {
+        Log.d(TAG, "delListener: " + listener);
         ExtSdkApiJni.nativeDelListener(listener);
     }
 
