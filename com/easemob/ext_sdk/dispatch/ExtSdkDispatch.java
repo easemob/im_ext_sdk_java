@@ -1,5 +1,7 @@
 package com.easemob.ext_sdk.dispatch;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -43,6 +45,7 @@ public class ExtSdkDispatch implements ExtSdkApi {
 
     @Override
     public void callSdkApi(@NonNull String methodType, @Nullable Object params, @NonNull ExtSdkCallback callback) {
+        Log.d(TAG,  "callSdkApi" + ": " + methodType + ": " + (params != null ? params : ""));
         JSONObject jsonParams = (JSONObject)params;
         try {
             switch (methodType) {
@@ -252,10 +255,10 @@ public class ExtSdkDispatch implements ExtSdkApi {
 
 
 /// EMUserInfoManager
-                case ExtSdkMethodType.updateOwnUserInfo: callback.fail(1, "no implement: " + methodType); break;
-                case ExtSdkMethodType.updateOwnUserInfoWithType: callback.fail(1, "no implement: " + methodType); break;
-                case ExtSdkMethodType.fetchUserInfoById: callback.fail(1, "no implement: " + methodType); break;
-                case ExtSdkMethodType.fetchUserInfoByIdWithType: callback.fail(1, "no implement: " + methodType); break;
+                case ExtSdkMethodType.updateOwnUserInfo: EMUserInfoManagerWrapper.getInstance().updateOwnUserInfo(jsonParams, methodType, callback); break;
+                case ExtSdkMethodType.updateOwnUserInfoWithType: EMUserInfoManagerWrapper.getInstance().updateOwnUserInfoWithType(jsonParams, methodType, callback); break;
+                case ExtSdkMethodType.fetchUserInfoById: EMUserInfoManagerWrapper.getInstance().fetchUserInfoByUserId(jsonParams, methodType, callback); break;
+                case ExtSdkMethodType.fetchUserInfoByIdWithType: EMUserInfoManagerWrapper.getInstance().fetchUserInfoByIdWithType(jsonParams, methodType, callback); break;
 
                 default: callback.fail(1, "no implement: " + methodType); break;
             }
@@ -269,4 +272,5 @@ public class ExtSdkDispatch implements ExtSdkApi {
     }
 
     private ExtSdkListener listener;
+    private static final String TAG = "ExtSdkDispatch";
 }

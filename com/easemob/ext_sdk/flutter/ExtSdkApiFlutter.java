@@ -18,7 +18,7 @@ public class ExtSdkApiFlutter implements ExtSdkApi, MethodChannel.MethodCallHand
 
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-        Log.d(TAG, call.method + ": " + (call.arguments != null ? call.arguments.toString() : ""));
+        Log.d(TAG, "onMethodCall" + ": " + call.method + ": " + (call.arguments != null ? call.arguments.toString() : ""));
         ExtSdkThreadUtil.asyncExecute(()->{
             this.callSdkApi(call.method, call.arguments, new ExtSdkCallback() {
                 @Override
@@ -54,6 +54,7 @@ public class ExtSdkApiFlutter implements ExtSdkApi, MethodChannel.MethodCallHand
         this.addListener(new ExtSdkListener() {
             @Override
             public void onReceive(@NonNull String methodType, @Nullable Object data) {
+                Log.d(TAG, "onReceive: " + methodType + (data != null ? data : ""));
                 ExtSdkThreadUtil.mainThreadExecute(()->{
                     ExtSdkChannelManager.getInstance().get(ExtSdkChannelManager.ExtSdkChannelName.RECV_CHANNEL).invokeMethod(methodType, data);
                 });
