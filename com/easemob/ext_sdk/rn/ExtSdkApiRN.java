@@ -59,6 +59,7 @@ public class ExtSdkApiRN extends ReactContextBaseJavaModule implements ExtSdkApi
         this.addListener(new ExtSdkListener() {
             @Override
             public void onReceive(@NonNull String methodType, @Nullable Object data) {
+                Log.d(TAG, "onReceive: " + methodType + ": " + (data != null ? data : ""));
                 ExtSdkThreadUtil.mainThreadExecute(() -> {
                     eventEmitter.emit(methodType, data);
                 });

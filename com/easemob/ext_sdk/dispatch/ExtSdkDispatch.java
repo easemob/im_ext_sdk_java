@@ -268,6 +268,7 @@ public class ExtSdkDispatch implements ExtSdkApi {
     }
 
     public void onReceive(@NonNull String methodType, @Nullable Object data) {
+        Log.d(TAG,  "onReceive" + ": " + methodType + ": " + (data != null ? data : ""));
         listener.onReceive(methodType, data);
     }
 
