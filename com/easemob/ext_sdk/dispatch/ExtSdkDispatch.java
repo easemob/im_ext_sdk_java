@@ -9,9 +9,12 @@ import com.easemob.ext_sdk.common.ExtSdkApi;
 import com.easemob.ext_sdk.common.ExtSdkCallback;
 import com.easemob.ext_sdk.common.ExtSdkListener;
 import com.easemob.ext_sdk.common.ExtSdkMethodType;
+import com.easemob.ext_sdk.common.ExtSdkTypeUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Map;
 
 public class ExtSdkDispatch implements ExtSdkApi {
 
@@ -46,7 +49,26 @@ public class ExtSdkDispatch implements ExtSdkApi {
     @Override
     public void callSdkApi(@NonNull String methodType, @Nullable Object params, @NonNull ExtSdkCallback callback) {
         Log.d(TAG,  "callSdkApi" + ": " + methodType + ": " + (params != null ? params : ""));
-        JSONObject jsonParams = (JSONObject)params;
+
+        JSONObject jsonParams = null;
+
+        try {
+            if (ExtSdkTypeUtil.currentArchitectureType() == ExtSdkTypeUtil.ExtSdkArchitectureTypeValue.ARCHITECTURE_FLUTTER) {
+                jsonParams = (JSONObject)params;
+            } else if (ExtSdkTypeUtil.currentArchitectureType() == ExtSdkTypeUtil.ExtSdkArchitectureTypeValue.ARCHITECTURE_UNITY) {
+
+            } else if (ExtSdkTypeUtil.currentArchitectureType() == ExtSdkTypeUtil.ExtSdkArchitectureTypeValue.ARCHITECTURE_RN) {
+                if (params instanceof Map) {
+                    jsonParams = new JSONObject((Map)params);
+                }
+            } else {
+                throw new Exception("not this type: " + ExtSdkTypeUtil.currentArchitectureType());
+            }
+        } catch (Exception e) {
+            EMWrapper.onError(callback, new JSONException(e.getMessage()), null);
+            return;
+        }
+
         try {
             switch (methodType) {
                 /// EMClient methods

@@ -1,21 +1,30 @@
 package com.easemob.ext_sdk.rn;
 
+import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import com.easemob.ext_sdk.common.ExtSdkApi;
 import com.easemob.ext_sdk.common.ExtSdkCallback;
+import com.easemob.ext_sdk.common.ExtSdkContext;
 import com.easemob.ext_sdk.common.ExtSdkListener;
 import com.easemob.ext_sdk.common.ExtSdkThreadUtil;
 import com.easemob.ext_sdk.jni.ExtSdkApiJni;
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+
+import java.util.Iterator;
+import java.util.Map;
 
 
 @ReactModule(name = ExtSdkApiRN.NAME)
@@ -29,6 +38,7 @@ public class ExtSdkApiRN extends ReactContextBaseJavaModule implements ExtSdkApi
         super(reactContext);
         Log.d(TAG, "ExtSdkApiRN: ");
         this.reactContext = reactContext;
+        ExtSdkContext.context = this.reactContext;
     }
 
     @Override
@@ -101,14 +111,22 @@ public class ExtSdkApiRN extends ReactContextBaseJavaModule implements ExtSdkApi
     }
 
     @ReactMethod
-    public void callSdkApiRN(String methodType, Object params, Promise promise) {
-        Log.d(TAG, "callSdkApiRN: " + methodType + ": " + (params != null ? params.toString() : ""));
+    public void callMethod(String methodType, ReadableMap params, Promise promise) {
+        Log.d(TAG, "callSdkApiRN: " + methodType + ": " + (params != null ? params : ""));
         ExtSdkThreadUtil.asyncExecute(() -> {
-            this.callSdkApi(methodType, params, new ExtSdkCallback() {
+            Iterator<Map.Entry<String, Object>> iterator = params.toHashMap().entrySet().iterator();
+            Object subParams = null;
+            while (iterator.hasNext()) {
+                subParams = iterator.next().getValue();
+                break;
+            }
+            this.callSdkApi(methodType, subParams, new ExtSdkCallback() {
                 @Override
                 public void success(@Nullable Object data) {
                     ExtSdkThreadUtil.mainThreadExecute(() -> {
-                        promise.resolve(data);
+                        WritableMap result = Arguments.createMap();
+                        new ExtSdkMapHelperRN().toWritableMap((Map<String, Object>) data, result);
+                        promise.resolve(result);
                     });
                 }
 

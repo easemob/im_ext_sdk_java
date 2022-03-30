@@ -240,7 +240,10 @@ public class EMClientWrapper extends EMWrapper {
             Map<String, Object> data = new HashMap<>();
             data.put("isLoginBefore", EMClient.getInstance().isLoggedInBefore());
             data.put("currentUsername", EMClient.getInstance().getCurrentUser());
-            onSuccess(result, channelName, data);
+
+            ExtSdkThreadUtil.asyncExecute(()->{
+                onSuccess(result, channelName, data);
+            });
 
         });
     }
