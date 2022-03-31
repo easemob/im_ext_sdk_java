@@ -10,10 +10,12 @@ public class ExtSdkThreadUtil {
     public static void asyncExecute(Runnable runnable) {
 //        asyncThreadPool.submit(runnable);
         asyncThreadPool.execute(runnable);
+//        runnable.run();
     }
 
     public static void mainThreadExecute(Runnable runnable) {
         mainThreadHandler.post(runnable);
+//        runnable.run();
     }
 
     private static String TAG = "ExtSdkThreadUtil";
