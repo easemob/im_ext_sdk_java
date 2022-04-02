@@ -32,13 +32,21 @@ public class ExtSdkMapHelperRN {
             Class valueClass = value.getClass();
             if (valueClass == Boolean.class) {
                 result.putBoolean(key, ((Boolean) value).booleanValue());
-            } else if (valueClass == Integer.class) {
-                result.putDouble(key, ((Integer) value).doubleValue());
-            } else if (valueClass == Double.class) {
-                result.putDouble(key, ((Double) value).doubleValue());
-            } else if (valueClass == Float.class) {
-                result.putDouble(key, ((Float) value).doubleValue());
-            } else if (valueClass == String.class) {
+            } else if (value instanceof Number) {
+                if (valueClass == Integer.class) {
+                    result.putInt(key, ((Integer) value).intValue());
+                } else if (valueClass == Double.class) {
+                    result.putDouble(key, ((Double) value).doubleValue());
+                } else if (valueClass == Float.class) {
+                    result.putDouble(key, ((Float) value).doubleValue());
+                } else if (valueClass == Long.class) {
+                    result.putDouble(key, ((Long) value).longValue());
+                } else if (valueClass == Short.class) {
+                    result.putInt(key, ((Short) value).shortValue());
+                } else {
+                    result.putInt(key, ((Integer) value).intValue());
+                }
+            } else if (value instanceof String) {
                 result.putString(key, value.toString());
             } else if (value instanceof Map) {
                 WritableMap m = Arguments.createMap();
@@ -68,13 +76,21 @@ public class ExtSdkMapHelperRN {
             Class valueClass = value.getClass();
             if (valueClass == Boolean.class) {
                 result.pushBoolean(((Boolean) value).booleanValue());
-            } else if (valueClass == Integer.class) {
-                result.pushDouble(((Integer) value).doubleValue());
-            } else if (valueClass == Double.class) {
-                result.pushDouble(((Double) value).doubleValue());
-            } else if (valueClass == Float.class) {
-                result.pushDouble(((Float) value).doubleValue());
-            } else if (valueClass == String.class) {
+            } else if (value instanceof Number) {
+                if (valueClass == Integer.class) {
+                    result.pushInt(((Integer) value).intValue());
+                } else if (valueClass == Double.class) {
+                    result.pushDouble(((Double) value).doubleValue());
+                } else if (valueClass == Float.class) {
+                    result.pushDouble(((Float) value).doubleValue());
+                } else if (valueClass == Long.class) {
+                    result.pushDouble(((Long) value).longValue());
+                } else if (valueClass == Short.class) {
+                    result.pushInt(((Short) value).shortValue());
+                } else {
+                    result.pushInt(((Integer) value).intValue());
+                }
+            } else if (value instanceof String) {
                 result.pushString(value.toString());
             } else if (value instanceof Map) {
                 WritableMap m = Arguments.createMap();

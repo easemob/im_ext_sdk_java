@@ -28,7 +28,8 @@ public class ExtSdkDispatch implements ExtSdkApi {
 
     @Override
     public void init(@NonNull Object config) {
-
+        // EMClientWrapper.getInstance();
+        // EMChatManagerWrapper.getInstance();
     }
 
     @Override

@@ -235,6 +235,8 @@ public class EMClientWrapper extends EMWrapper {
             EMClient.getInstance().init(ExtSdkContext.context, finalOptions);
             EMClient.getInstance().setDebugMode(finalDebugModel);
 
+            EMChatManagerWrapper.getInstance();
+
             addEMListener();
 
             Map<String, Object> data = new HashMap<>();
