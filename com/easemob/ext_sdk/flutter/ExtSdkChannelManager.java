@@ -14,8 +14,8 @@ import io.flutter.plugin.common.MethodChannel;
 public class ExtSdkChannelManager {
 
     public class ExtSdkChannelName {
-        public static final String SEND_CHANNEL = "com.easemob.im.ext.dart_to_native";
-        public static final String RECV_CHANNEL = "com.easemob.im.ext.native_to_dart";
+        public static final String SEND_CHANNEL = "com.chat.im.ext.dart_to_native";
+        public static final String RECV_CHANNEL = "com.chat.im.ext.native_to_dart";
     }
 
     private static class SingleHolder {

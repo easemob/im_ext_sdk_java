@@ -135,7 +135,7 @@ public class ExtSdkMethodType {
     public static final String isMemberInChatRoomWhiteListFromServer = "isMemberInChatRoomWhiteListFromServer";
 
     public static final String muteAllChatRoomMembers = "muteAllChatRoomMembers";
-    public static final String unMuteAllChatRoomMembers = "umMuteAllChatRoomMembers";
+    public static final String unMuteAllChatRoomMembers = "unMuteAllChatRoomMembers";
 
 
     // EMChatRoomManagerListener
