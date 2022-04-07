@@ -16,11 +16,15 @@ public class ExtSdkMethodType {
     public static final String getLoggedInDevicesFromServer = "getLoggedInDevicesFromServer";
     public static final String getCurrentUser = "getCurrentUser";
     public static final String getToken = "getToken";
+    public static final String loginWithAgoraToken = "loginWithAgoraToken";
+    public static final String isConnected = "isConnected";
 
     public static final String onConnected = "onConnected";
     public static final String onDisconnected = "onDisconnected";
     public static final String onMultiDeviceEvent = "onMultiDeviceEvent";
     public static final String onSendDataToFlutter = "onSendDataToFlutter";
+    public static final String onTokenWillExpire = "onTokenWillExpire";
+    public static final String onTokenDidExpire = "onTokenDidExpire";
 
     /// EMContactManager methods
     public static final String addContact = "addContact";
@@ -59,6 +63,7 @@ public class ExtSdkMethodType {
     public static final String searchChatMsgFromDB = "searchChatMsgFromDB";
     public static final String getMessage = "getMessage";
     public static final String asyncFetchGroupAcks = "asyncFetchGroupAcks";
+    public static final String deleteRemoteConversation = "deleteRemoteConversation";
 
     /// EMChatManager listener
     public static final String onMessagesReceived = "onMessagesReceived";
@@ -198,6 +203,11 @@ public class ExtSdkMethodType {
     public static final String updatePushNickname = "updatePushNickname";
     public static final String updateHMSPushToken = "updateHMSPushToken";
     public static final String updateFCMPushToken = "updateFCMPushToken";
+    public static final String enableOfflinePush = "enableOfflinePush";
+    public static final String disableOfflinePush = "disableOfflinePush";
+    public static final String getNoPushGroups = "getNoPushGroups";
+    public static final String setNoDisturbUsers = "setNoDisturbUsers";
+    public static final String getNoDisturbUsersFromServer = "getNoDisturbUsersFromServer";
 
     /// ImPushConfig
     public static final String imPushNoDisturb = "imPushNoDisturb";

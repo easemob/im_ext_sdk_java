@@ -239,15 +239,40 @@ public class EMClientWrapper extends EMWrapper {
 
             addEMListener();
 
-            Map<String, Object> data = new HashMap<>();
-            data.put("isLoginBefore", EMClient.getInstance().isLoggedInBefore());
-            data.put("currentUsername", EMClient.getInstance().getCurrentUser());
-
             ExtSdkThreadUtil.asyncExecute(()->{
-                onSuccess(result, channelName, data);
+                onSuccess(result, channelName, null);
             });
 
         });
+    }
+
+    public void loginWithAgoraToken(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        String username = param.getString("username");
+        String agoratoken = param.getString("agoratoken");
+
+        EMClient.getInstance().loginWithAgoraToken(username, agoratoken, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                Map<String, String> param = new HashMap<>();
+                param.put("username", EMClient.getInstance().getCurrentUser());
+                param.put("token", EMClient.getInstance().getAccessToken());
+                EMClientWrapper.this.onSuccess(result, channelName, param);
+            }
+
+            @Override
+            public void onError(int code, String error) {
+                EMClientWrapper.this.onError(result, code, error);
+            }
+
+            @Override
+            public void onProgress(int progress, String status) {
+
+            }
+        });
+    }
+
+    public void isConnected(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException{
+        onSuccess(result, channelName, EMClient.getInstance().isConnected());
     }
 
     public void addEMListener() {
@@ -285,6 +310,16 @@ public class EMClientWrapper extends EMWrapper {
                 Map<String, Object> data = new HashMap<>();
                 data.put("errorCode", errorCode);
                 onReceive(ExtSdkMethodType.onDisconnected, data);
+            }
+
+            @Override
+            public void onTokenExpired(){
+                onReceive(ExtSdkMethodType.onDisconnected, null);
+            }
+
+            @Override
+            public void onTokenWillExpire(){
+                onReceive(ExtSdkMethodType.onDisconnected, null);
             }
         });
     }

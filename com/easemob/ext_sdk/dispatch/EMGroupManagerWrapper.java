@@ -1,6 +1,5 @@
 package com.easemob.ext_sdk.dispatch;
 
-
 import com.easemob.ext_sdk.common.ExtSdkCallback;
 import com.easemob.ext_sdk.common.ExtSdkMethodType;
 import com.easemob.ext_sdk.common.ExtSdkThreadUtil;
@@ -15,29 +14,21 @@ import com.hyphenate.chat.EMGroupOptions;
 import com.hyphenate.chat.EMMucSharedFile;
 import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.util.EMLog;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class EMGroupManagerWrapper extends EMWrapper {
 
-    public static class SingleHolder {
-        static EMGroupManagerWrapper instance = new EMGroupManagerWrapper();
-    }
+    public static class SingleHolder { static EMGroupManagerWrapper instance = new EMGroupManagerWrapper(); }
 
-    public static EMGroupManagerWrapper getInstance() {
-        return EMGroupManagerWrapper.SingleHolder.instance;
-    }
+    public static EMGroupManagerWrapper getInstance() { return EMGroupManagerWrapper.SingleHolder.instance; }
 
-    EMGroupManagerWrapper() {
-        registerEaseListener();
-    }
+    EMGroupManagerWrapper() { registerEaseListener(); }
 
     public void getGroupWithId(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String groupId = param.getString("groupId");
@@ -50,79 +41,112 @@ public class EMGroupManagerWrapper extends EMWrapper {
     }
 
     public void getJoinedGroups(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        EMClient.getInstance().groupManager().loadAllGroups();
         List<EMGroup> groups = EMClient.getInstance().groupManager().getAllGroups();
-        onSuccess(result, channelName, groups);
+        List<Map> groupList = new ArrayList<>();
+        for (EMGroup group : groups) {
+            groupList.add(EMGroupHelper.toJson(group));
+        }
+        onSuccess(result, channelName, groupList);
     }
 
     public void getGroupsWithoutPushNotification(JSONObject param, String channelName, ExtSdkCallback result)
-            throws JSONException {
+        throws JSONException {
         List<String> groups = EMClient.getInstance().pushManager().getNoPushGroups();
         onSuccess(result, channelName, groups);
     }
 
-    public void getJoinedGroupsFromServer(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+    public void getJoinedGroupsFromServer(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
 
         int pageSize = param.getInt("pageSize");
         int pageNum = param.getInt("pageNum");
 
-        EMClient.getInstance().groupManager().asyncGetJoinedGroupsFromServer(pageNum, pageSize, new EMValueCallBack<List<EMGroup>>() {
-            @Override
-            public void onSuccess(List<EMGroup> value) {
-                List<Map> groupList = new ArrayList<>();
-                for (EMGroup group : value) {
-                    groupList.add(EMGroupHelper.toJson(group));
+        EMClient.getInstance().groupManager().asyncGetJoinedGroupsFromServer(
+            pageNum, pageSize, new EMValueCallBack<List<EMGroup>>() {
+                @Override
+                public void onSuccess(List<EMGroup> value) {
+                    List<Map> groupList = new ArrayList<>();
+                    for (EMGroup group : value) {
+                        groupList.add(EMGroupHelper.toJson(group));
+                    }
+                    EMWrapper.onSuccess(result, channelName, groupList);
                 }
-                EMWrapper.onSuccess(result, channelName, groupList);
-            }
 
-            @Override
-            public void onError(int error, String errorMsg) {
-                EMWrapper.onError(result, error, errorMsg);
-            }
-        });
+                @Override
+                public void onError(int error, String errorMsg) {
+                    EMWrapper.onError(result, error, errorMsg);
+                }
+            });
     }
 
-    public void getPublicGroupsFromServer(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+    public void getPublicGroupsFromServer(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
         int pageSize = param.getInt("pageSize");
-        String cursor = param.getString("cursor");
-        EMClient.getInstance().groupManager().asyncGetPublicGroupsFromServer(pageSize, cursor, new EMValueCallBack<EMCursorResult<EMGroupInfo>>() {
-            @Override
-            public void onSuccess(EMCursorResult<EMGroupInfo> value) {
-                EMWrapper.onSuccess(result, channelName, EMCursorResultHelper.toJson(value));
-            }
+        String cursor = null;
+        if (param.has("cursor")) {
+            cursor = param.getString("cursor");
+        }
+        EMClient.getInstance().groupManager().asyncGetPublicGroupsFromServer(
+            pageSize, cursor, new EMValueCallBack<EMCursorResult<EMGroupInfo>>() {
+                @Override
+                public void onSuccess(EMCursorResult<EMGroupInfo> value) {
+                    EMWrapper.onSuccess(result, channelName, EMCursorResultHelper.toJson(value));
+                }
 
-            @Override
-            public void onError(int error, String errorMsg) {
-                EMWrapper.onError(result, error, errorMsg);
-            }
-        });
+                @Override
+                public void onError(int error, String errorMsg) {
+                    EMWrapper.onError(result, error, errorMsg);
+                }
+            });
     }
 
     public void createGroup(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        String groupName = param.getString("groupName");
-        String desc = param.getString("desc");
-        JSONArray inviteMembers = param.getJSONArray("inviteMembers");
-        String[] members = new String[inviteMembers.length()];
-        for (int i = 0; i < inviteMembers.length(); i++) {
-            members[i] = inviteMembers.getString(i);
-        }
-        String inviteReason = param.getString("inviteReason");
-        EMGroupOptions options = EMGroupOptionsHelper.fromJson(param.getJSONObject("options"));
-        EMClient.getInstance().groupManager().asyncCreateGroup(groupName, desc, members, inviteReason, options, new EMValueCallBack<EMGroup>() {
-            @Override
-            public void onSuccess(EMGroup value) {
-                EMWrapper.onSuccess(result, channelName, EMGroupHelper.toJson(value));
-            }
+        String groupName = null;
 
-            @Override
-            public void onError(int error, String errorMsg) {
-                EMWrapper.onError(result, error, errorMsg);
+        if (param.has("groupName")) {
+            groupName = param.getString("groupName");
+        }
+
+        String desc = null;
+        if (param.has("desc")) {
+            desc = param.getString("desc");
+        }
+
+        String[] members = null;
+        if (param.has("inviteMembers")) {
+            JSONArray inviteMembers = param.getJSONArray("inviteMembers");
+            members = new String[inviteMembers.length()];
+            for (int i = 0; i < inviteMembers.length(); i++) {
+                members[i] = inviteMembers.getString(i);
             }
-        });
+        }
+        if (members == null) {
+            members = new String[0];
+        }
+        String inviteReason = null;
+
+        if (param.has("inviteReason")) {
+            inviteReason = param.getString("inviteReason");
+        }
+
+        EMGroupOptions options = EMGroupOptionsHelper.fromJson(param.getJSONObject("options"));
+        EMClient.getInstance().groupManager().asyncCreateGroup(
+            groupName, desc, members, inviteReason, options, new EMValueCallBack<EMGroup>() {
+                @Override
+                public void onSuccess(EMGroup value) {
+                    EMWrapper.onSuccess(result, channelName, EMGroupHelper.toJson(value));
+                }
+
+                @Override
+                public void onError(int error, String errorMsg) {
+                    EMWrapper.onError(result, error, errorMsg);
+                }
+            });
     }
 
     public void getGroupSpecificationFromServer(JSONObject param, String channelName, ExtSdkCallback result)
-            throws JSONException {
+        throws JSONException {
         String groupId = param.getString("groupId");
         EMClient.getInstance().groupManager().asyncGetGroupFromServer(groupId, new EMValueCallBack<EMGroup>() {
             @Override
@@ -138,14 +162,72 @@ public class EMGroupManagerWrapper extends EMWrapper {
     }
 
     public void getGroupMemberListFromServer(JSONObject param, String channelName, ExtSdkCallback result)
-            throws JSONException {
+        throws JSONException {
         String groupId = param.getString("groupId");
-        String cursor = param.getString("cursor");
+        String cursor = null;
+        if (param.has("cursor")) {
+            cursor = param.getString("cursor");
+        }
         int pageSize = param.getInt("pageSize");
-        EMClient.getInstance().groupManager().asyncFetchGroupMembers(groupId, cursor, pageSize, new EMValueCallBack<EMCursorResult<String>>() {
+        EMClient.getInstance().groupManager().asyncFetchGroupMembers(
+            groupId, cursor, pageSize, new EMValueCallBack<EMCursorResult<String>>() {
+                @Override
+                public void onSuccess(EMCursorResult<String> value) {
+                    EMWrapper.onSuccess(result, channelName, EMCursorResultHelper.toJson(value));
+                }
+
+                @Override
+                public void onError(int error, String errorMsg) {
+                    EMWrapper.onError(result, error, errorMsg);
+                }
+            });
+    }
+
+    public void getGroupBlockListFromServer(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        String groupId = param.getString("groupId");
+        int pageNum = param.getInt("pageNum");
+        int pageSize = param.getInt("pageSize");
+        EMClient.getInstance().groupManager().asyncGetBlockedUsers(
+            groupId, pageNum, pageSize, new EMValueCallBack<List<String>>() {
+                @Override
+                public void onSuccess(List<String> value) {
+                    EMWrapper.onSuccess(result, channelName, value);
+                }
+
+                @Override
+                public void onError(int error, String errorMsg) {
+                    EMWrapper.onError(result, error, errorMsg);
+                }
+            });
+    }
+
+    public void getGroupMuteListFromServer(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        String groupId = param.getString("groupId");
+        int pageNum = param.getInt("pageNum");
+        int pageSize = param.getInt("pageSize");
+        EMClient.getInstance().groupManager().asyncFetchGroupMuteList(
+            groupId, pageNum, pageSize, new EMValueCallBack<Map<String, Long>>() {
+                @Override
+                public void onSuccess(Map<String, Long> value) {
+                    EMWrapper.onSuccess(result, channelName, value.keySet().toArray());
+                }
+
+                @Override
+                public void onError(int error, String errorMsg) {
+                    EMWrapper.onError(result, error, errorMsg);
+                }
+            });
+    }
+
+    public void getGroupWhiteListFromServer(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        String groupId = param.getString("groupId");
+        EMClient.getInstance().groupManager().fetchGroupWhiteList(groupId, new EMValueCallBack<List<String>>() {
             @Override
-            public void onSuccess(EMCursorResult<String> value) {
-                EMWrapper.onSuccess(result, channelName, EMCursorResultHelper.toJson(value));
+            public void onSuccess(List<String> value) {
+                EMWrapper.onSuccess(result, channelName, value);
             }
 
             @Override
@@ -153,111 +235,61 @@ public class EMGroupManagerWrapper extends EMWrapper {
                 EMWrapper.onError(result, error, errorMsg);
             }
         });
-
-    }
-
-    public void getGroupBlockListFromServer(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        String groupId = param.getString("groupId");
-        int pageNum = param.getInt("pageNum");
-        int pageSize = param.getInt("pageSize");
-        EMClient.getInstance().groupManager().asyncGetBlockedUsers(groupId, pageNum, pageSize, new EMValueCallBack<List<String>>() {
-                    @Override
-                    public void onSuccess(List<String> value) {
-                        EMWrapper.onSuccess(result, channelName, value);
-                    }
-
-                    @Override
-                    public void onError(int error, String errorMsg) {
-                        EMWrapper.onError(result, error, errorMsg);
-                    }
-                });
-    }
-
-    public void getGroupMuteListFromServer(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        String groupId = param.getString("groupId");
-        int pageNum = param.getInt("pageNum");
-        int pageSize = param.getInt("pageSize");
-        EMClient.getInstance().groupManager().asyncFetchGroupMuteList(groupId, pageNum, pageSize, new EMValueCallBack<Map<String, Long>>() {
-                    @Override
-                    public void onSuccess(Map<String, Long> value) {
-                        EMWrapper.onSuccess(result, channelName, value.keySet().toArray());
-                    }
-
-                    @Override
-                    public void onError(int error, String errorMsg) {
-                        EMWrapper.onError(result, error, errorMsg);
-                    }
-                });
-    }
-
-    public void getGroupWhiteListFromServer(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        String groupId = param.getString("groupId");
-        EMClient.getInstance().groupManager().fetchGroupWhiteList(groupId,
-                new EMValueCallBack<List<String>>() {
-                    @Override
-                    public void onSuccess(List<String> value) {
-                        EMWrapper.onSuccess(result, channelName, value);
-                    }
-
-                    @Override
-                    public void onError(int error, String errorMsg) {
-                        EMWrapper.onError(result, error, errorMsg);
-                    }
-                });
     }
 
     public void isMemberInWhiteListFromServer(JSONObject param, String channelName, ExtSdkCallback result)
-            throws JSONException {
+        throws JSONException {
         String groupId = param.getString("groupId");
-        EMClient.getInstance().groupManager().checkIfInGroupWhiteList(groupId,
-                new EMValueCallBack<Boolean>() {
-                    @Override
-                    public void onSuccess(Boolean value) {
-                        EMWrapper.onSuccess(result, channelName, value);
-                    }
+        EMClient.getInstance().groupManager().checkIfInGroupWhiteList(groupId, new EMValueCallBack<Boolean>() {
+            @Override
+            public void onSuccess(Boolean value) {
+                EMWrapper.onSuccess(result, channelName, value);
+            }
 
-                    @Override
-                    public void onError(int error, String errorMsg) {
-                        EMWrapper.onError(result, error, errorMsg);
-                    }
-                });
+            @Override
+            public void onError(int error, String errorMsg) {
+                EMWrapper.onError(result, error, errorMsg);
+            }
+        });
     }
 
-    public void getGroupFileListFromServer(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+    public void getGroupFileListFromServer(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
         String groupId = param.getString("groupId");
         int pageNum = param.getInt("pageNum");
         int pageSize = param.getInt("pageSize");
-        EMClient.getInstance().groupManager().asyncFetchGroupSharedFileList(groupId, pageNum, pageSize, new EMValueCallBack<List<EMMucSharedFile>>() {
-                    @Override
-                    public void onSuccess(List<EMMucSharedFile> value) {
-                        List<Map> fileList = new ArrayList<>();
-                        for (EMMucSharedFile file : value) {
-                            fileList.add(EMMucSharedFileHelper.toJson(file));
-                        }
-                        EMWrapper.onSuccess(result, channelName, fileList);
+        EMClient.getInstance().groupManager().asyncFetchGroupSharedFileList(
+            groupId, pageNum, pageSize, new EMValueCallBack<List<EMMucSharedFile>>() {
+                @Override
+                public void onSuccess(List<EMMucSharedFile> value) {
+                    List<Map> fileList = new ArrayList<>();
+                    for (EMMucSharedFile file : value) {
+                        fileList.add(EMMucSharedFileHelper.toJson(file));
                     }
+                    EMWrapper.onSuccess(result, channelName, fileList);
+                }
 
-                    @Override
-                    public void onError(int error, String errorMsg) {
-                        EMWrapper.onError(result, error, errorMsg);
-                    }
-                });
+                @Override
+                public void onError(int error, String errorMsg) {
+                    EMWrapper.onError(result, error, errorMsg);
+                }
+            });
     }
 
     public void getGroupAnnouncementFromServer(JSONObject param, String channelName, ExtSdkCallback result)
-            throws JSONException {
+        throws JSONException {
         String groupId = param.getString("groupId");
         EMClient.getInstance().groupManager().asyncFetchGroupAnnouncement(groupId, new EMValueCallBack<String>() {
-                    @Override
-                    public void onSuccess(String value) {
-                        EMWrapper.onSuccess(result, channelName, value);
-                    }
+            @Override
+            public void onSuccess(String value) {
+                EMWrapper.onSuccess(result, channelName, value);
+            }
 
-                    @Override
-                    public void onError(int error, String errorMsg) {
-                        EMWrapper.onError(result, error, errorMsg);
-                    }
-                });
+            @Override
+            public void onError(int error, String errorMsg) {
+                EMWrapper.onError(result, error, errorMsg);
+            }
+        });
     }
 
     public void inviterUser(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
@@ -272,21 +304,19 @@ public class EMGroupManagerWrapper extends EMWrapper {
             members[i] = array.getString(i);
         }
         EMClient.getInstance().groupManager().asyncInviteUser(groupId, members, reason, new EMCallBack() {
-                    @Override
-                    public void onSuccess() {
-                        EMWrapper.onSuccess(result, channelName, true);
-                    }
+            @Override
+            public void onSuccess() {
+                EMWrapper.onSuccess(result, channelName, true);
+            }
 
-                    @Override
-                    public void onError(int code, String error) {
-                        EMWrapper.onError(result, code, error);
-                    }
+            @Override
+            public void onError(int code, String error) {
+                EMWrapper.onError(result, code, error);
+            }
 
-                    @Override
-                    public void onProgress(int progress, String status) {
-
-                    }
-                });
+            @Override
+            public void onProgress(int progress, String status) {}
+        });
     }
 
     public void addMembers(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
@@ -297,22 +327,18 @@ public class EMGroupManagerWrapper extends EMWrapper {
         for (int i = 0; i < array.length(); i++) {
             members[i] = array.getString(i);
         }
-        EMClient.getInstance().groupManager().asyncAddUsersToGroup(groupId, members, new EMCallBack() {
-                    @Override
-                    public void onSuccess() {
-                        EMWrapper.onSuccess(result, channelName, true);
-                    }
 
-                    @Override
-                    public void onError(int code, String error) {
-                        EMWrapper.onError(result, code, error);
-                    }
+        String welcome = null;
+        if (param.has("welcome")) {
+            welcome = param.getString("welcome");
+        }
 
-                    @Override
-                    public void onProgress(int progress, String status) {
-
-                    }
-                });
+        try {
+            EMClient.getInstance().groupManager().addUsersToGroup(groupId, members, welcome);
+            EMWrapper.onSuccess(result, channelName, true);
+        } catch (HyphenateException e) {
+            EMWrapper.onError(result, e, null);
+        }
     }
 
     public void removeMembers(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
@@ -324,23 +350,20 @@ public class EMGroupManagerWrapper extends EMWrapper {
             members.add(array.getString(i));
         }
 
-        EMClient.getInstance().groupManager().asyncRemoveUsersFromGroup(groupId, members,
-                new EMCallBack() {
-                    @Override
-                    public void onSuccess() {
-                        EMWrapper.onSuccess(result, channelName, true);
-                    }
+        EMClient.getInstance().groupManager().asyncRemoveUsersFromGroup(groupId, members, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                EMWrapper.onSuccess(result, channelName, true);
+            }
 
-                    @Override
-                    public void onError(int code, String error) {
-                        EMWrapper.onError(result, code, error);
-                    }
+            @Override
+            public void onError(int code, String error) {
+                EMWrapper.onError(result, code, error);
+            }
 
-                    @Override
-                    public void onProgress(int progress, String status) {
-
-                    }
-                });
+            @Override
+            public void onProgress(int progress, String status) {}
+        });
     }
 
     public void blockMembers(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
@@ -351,23 +374,20 @@ public class EMGroupManagerWrapper extends EMWrapper {
             members.add(array.getString(i));
         }
 
-        EMClient.getInstance().groupManager().asyncBlockUsers(groupId, members,
-                new EMCallBack() {
-                    @Override
-                    public void onSuccess() {
-                        EMWrapper.onSuccess(result, channelName, true);
-                    }
+        EMClient.getInstance().groupManager().asyncBlockUsers(groupId, members, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                EMWrapper.onSuccess(result, channelName, true);
+            }
 
-                    @Override
-                    public void onError(int code, String error) {
-                        EMWrapper.onError(result, code, error);
-                    }
+            @Override
+            public void onError(int code, String error) {
+                EMWrapper.onError(result, code, error);
+            }
 
-                    @Override
-                    public void onProgress(int progress, String status) {
-
-                    }
-                });
+            @Override
+            public void onProgress(int progress, String status) {}
+        });
     }
 
     public void unblockMembers(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
@@ -378,23 +398,20 @@ public class EMGroupManagerWrapper extends EMWrapper {
             members.add(array.getString(i));
         }
 
-        EMClient.getInstance().groupManager().asyncUnblockUsers(groupId, members,
-                new EMCallBack() {
-                    @Override
-                    public void onSuccess() {
-                        EMWrapper.onSuccess(result, channelName, true);
-                    }
+        EMClient.getInstance().groupManager().asyncUnblockUsers(groupId, members, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                EMWrapper.onSuccess(result, channelName, true);
+            }
 
-                    @Override
-                    public void onError(int code, String error) {
-                        EMWrapper.onError(result, code, error);
-                    }
+            @Override
+            public void onError(int code, String error) {
+                EMWrapper.onError(result, code, error);
+            }
 
-                    @Override
-                    public void onProgress(int progress, String status) {
-
-                    }
-                });
+            @Override
+            public void onProgress(int progress, String status) {}
+        });
     }
 
     public void updateGroupSubject(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
@@ -413,11 +430,8 @@ public class EMGroupManagerWrapper extends EMWrapper {
             }
 
             @Override
-            public void onProgress(int progress, String status) {
-
-            }
+            public void onProgress(int progress, String status) {}
         });
-
     }
 
     public void updateDescription(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
@@ -436,52 +450,44 @@ public class EMGroupManagerWrapper extends EMWrapper {
             }
 
             @Override
-            public void onProgress(int progress, String status) {
-
-            }
+            public void onProgress(int progress, String status) {}
         });
     }
 
     public void leaveGroup(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String groupId = param.getString("groupId");
-        EMClient.getInstance().groupManager().asyncLeaveGroup(groupId,
-                new EMCallBack() {
-                    @Override
-                    public void onSuccess() {
-                        EMWrapper.onSuccess(result, channelName, true);
-                    }
+        EMClient.getInstance().groupManager().asyncLeaveGroup(groupId, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                EMWrapper.onSuccess(result, channelName, true);
+            }
 
-                    @Override
-                    public void onError(int code, String error) {
-                        EMWrapper.onError(result, code, error);
-                    }
+            @Override
+            public void onError(int code, String error) {
+                EMWrapper.onError(result, code, error);
+            }
 
-                    @Override
-                    public void onProgress(int progress, String status) {
-
-                    }
-                });
+            @Override
+            public void onProgress(int progress, String status) {}
+        });
     }
 
     public void destroyGroup(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String groupId = param.getString("groupId");
-        EMClient.getInstance().groupManager().asyncDestroyGroup(groupId,
-                new EMCallBack() {
-                    @Override
-                    public void onSuccess() {
-                        EMWrapper.onSuccess(result, channelName, true);
-                    }
+        EMClient.getInstance().groupManager().asyncDestroyGroup(groupId, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                EMWrapper.onSuccess(result, channelName, true);
+            }
 
-                    @Override
-                    public void onError(int code, String error) {
-                        EMWrapper.onError(result, code, error);
-                    }
+            @Override
+            public void onError(int code, String error) {
+                EMWrapper.onError(result, code, error);
+            }
 
-                    @Override
-                    public void onProgress(int progress, String status) {
-
-                    }
-                });
+            @Override
+            public void onProgress(int progress, String status) {}
+        });
     }
 
     public void blockGroup(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
@@ -499,9 +505,7 @@ public class EMGroupManagerWrapper extends EMWrapper {
             }
 
             @Override
-            public void onProgress(int progress, String status) {
-
-            }
+            public void onProgress(int progress, String status) {}
         });
     }
 
@@ -520,9 +524,7 @@ public class EMGroupManagerWrapper extends EMWrapper {
             }
 
             @Override
-            public void onProgress(int progress, String status) {
-
-            }
+            public void onProgress(int progress, String status) {}
         });
     }
 
@@ -586,17 +588,18 @@ public class EMGroupManagerWrapper extends EMWrapper {
             members.add(array.getString(i));
         }
 
-        EMClient.getInstance().groupManager().aysncMuteGroupMembers(groupId, members, duration, new EMValueCallBack<EMGroup>() {
-            @Override
-            public void onSuccess(EMGroup value) {
-                EMWrapper.onSuccess(result, channelName, EMGroupHelper.toJson(value));
-            }
+        EMClient.getInstance().groupManager().aysncMuteGroupMembers(
+            groupId, members, duration, new EMValueCallBack<EMGroup>() {
+                @Override
+                public void onSuccess(EMGroup value) {
+                    EMWrapper.onSuccess(result, channelName, EMGroupHelper.toJson(value));
+                }
 
-            @Override
-            public void onError(int error, String errorMsg) {
-                EMWrapper.onError(result, error, errorMsg);
-            }
-        });
+                @Override
+                public void onError(int error, String errorMsg) {
+                    EMWrapper.onError(result, error, errorMsg);
+                }
+            });
     }
 
     public void unMuteMembers(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
@@ -660,23 +663,20 @@ public class EMGroupManagerWrapper extends EMWrapper {
             members.add(array.getString(i));
         }
 
-        EMClient.getInstance().groupManager().addToGroupWhiteList(groupId, members,
-                new EMCallBack() {
-                    @Override
-                    public void onSuccess() {
-                        EMWrapper.onSuccess(result, channelName, true);
-                    }
+        EMClient.getInstance().groupManager().addToGroupWhiteList(groupId, members, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                EMWrapper.onSuccess(result, channelName, true);
+            }
 
-                    @Override
-                    public void onError(int code, String error) {
-                        EMWrapper.onError(result, code, error);
-                    }
+            @Override
+            public void onError(int code, String error) {
+                EMWrapper.onError(result, code, error);
+            }
 
-                    @Override
-                    public void onProgress(int progress, String status) {
-
-                    }
-                });
+            @Override
+            public void onProgress(int progress, String status) {}
+        });
     }
 
     public void removeWhiteList(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
@@ -687,102 +687,94 @@ public class EMGroupManagerWrapper extends EMWrapper {
             members.add(array.getString(i));
         }
 
-        EMClient.getInstance().groupManager().removeFromGroupWhiteList(groupId, members,
-                new EMCallBack() {
-                    @Override
-                    public void onSuccess() {
-                        EMWrapper.onSuccess(result, channelName, true);
-                    }
+        EMClient.getInstance().groupManager().removeFromGroupWhiteList(groupId, members, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                EMWrapper.onSuccess(result, channelName, true);
+            }
 
-                    @Override
-                    public void onError(int code, String error) {
-                        EMWrapper.onError(result, code, error);
-                    }
+            @Override
+            public void onError(int code, String error) {
+                EMWrapper.onError(result, code, error);
+            }
 
-                    @Override
-                    public void onProgress(int progress, String status) {
-
-                    }
-                });
+            @Override
+            public void onProgress(int progress, String status) {}
+        });
     }
 
-    public void uploadGroupSharedFile(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+    public void uploadGroupSharedFile(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
         String groupId = param.getString("groupId");
         String filePath = param.getString("filePath");
 
-        EMClient.getInstance().groupManager().asyncUploadGroupSharedFile(groupId, filePath,
-                new EMCallBack() {
-                    @Override
-                    public void onSuccess() {
-                        EMWrapper.onSuccess(result, channelName, true);
-                    }
+        EMClient.getInstance().groupManager().asyncUploadGroupSharedFile(groupId, filePath, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                EMWrapper.onSuccess(result, channelName, true);
+            }
 
-                    @Override
-                    public void onError(int code, String error) {
-                        EMWrapper.onError(result, code, error);
-                    }
+            @Override
+            public void onError(int code, String error) {
+                EMWrapper.onError(result, code, error);
+            }
 
-                    @Override
-                    public void onProgress(int progress, String status) {
-
-                    }
-                });
+            @Override
+            public void onProgress(int progress, String status) {}
+        });
     }
 
-    public void downloadGroupSharedFile(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+    public void downloadGroupSharedFile(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
         String groupId = param.getString("groupId");
         String fileId = param.getString("fileId");
         String savePath = param.getString("savePath");
 
-        EMClient.getInstance().groupManager().asyncDownloadGroupSharedFile(groupId, fileId, savePath,
-                new EMCallBack() {
-                    @Override
-                    public void onSuccess() {
-                        EMWrapper.onSuccess(result, channelName, true);
-                    }
+        EMClient.getInstance().groupManager().asyncDownloadGroupSharedFile(groupId, fileId, savePath, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                EMWrapper.onSuccess(result, channelName, true);
+            }
 
-                    @Override
-                    public void onError(int code, String error) {
-                        EMWrapper.onError(result, code, error);
-                    }
+            @Override
+            public void onError(int code, String error) {
+                EMWrapper.onError(result, code, error);
+            }
 
-                    @Override
-                    public void onProgress(int progress, String status) {
-
-                    }
-                });
+            @Override
+            public void onProgress(int progress, String status) {}
+        });
     }
 
-    public void removeGroupSharedFile(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+    public void removeGroupSharedFile(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
         String groupId = param.getString("groupId");
         String fileId = param.getString("fileId");
-        EMClient.getInstance().groupManager().asyncDeleteGroupSharedFile(groupId, fileId,
-                new EMCallBack() {
-                    @Override
-                    public void onSuccess() {
-                        EMWrapper.onSuccess(result, channelName, true);
-                    }
+        EMClient.getInstance().groupManager().asyncDeleteGroupSharedFile(groupId, fileId, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                EMWrapper.onSuccess(result, channelName, true);
+            }
 
-                    @Override
-                    public void onError(int code, String error) {
-                        EMWrapper.onError(result, code, error);
-                    }
+            @Override
+            public void onError(int code, String error) {
+                EMWrapper.onError(result, code, error);
+            }
 
-                    @Override
-                    public void onProgress(int progress, String status) {
-
-                    }
-                });
+            @Override
+            public void onProgress(int progress, String status) {}
+        });
     }
 
-    public void updateGroupAnnouncement(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+    public void updateGroupAnnouncement(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
         String groupId = param.getString("groupId");
         String announcement = param.getString("announcement");
 
         EMClient.getInstance().groupManager().asyncUpdateGroupAnnouncement(groupId, announcement, new EMCallBack() {
             @Override
             public void onSuccess() {
-                ExtSdkThreadUtil.asyncExecute(()->{
+                ExtSdkThreadUtil.asyncExecute(() -> {
                     EMGroup group = EMClient.getInstance().groupManager().getGroup(groupId);
                     EMWrapper.onSuccess(result, channelName, EMGroupHelper.toJson(group));
                 });
@@ -794,9 +786,7 @@ public class EMGroupManagerWrapper extends EMWrapper {
             }
 
             @Override
-            public void onProgress(int progress, String status) {
-
-            }
+            public void onProgress(int progress, String status) {}
         });
     }
 
@@ -817,7 +807,7 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().asyncJoinGroup(groupId, new EMCallBack() {
             @Override
             public void onSuccess() {
-                ExtSdkThreadUtil.asyncExecute(()->{
+                ExtSdkThreadUtil.asyncExecute(() -> {
                     EMGroup group = EMClient.getInstance().groupManager().getGroup(groupId);
                     EMWrapper.onSuccess(result, channelName, EMGroupHelper.toJson(group));
                 });
@@ -829,19 +819,22 @@ public class EMGroupManagerWrapper extends EMWrapper {
             }
 
             @Override
-            public void onProgress(int progress, String status) {
-
-            }
+            public void onProgress(int progress, String status) {}
         });
     }
 
-    public void requestToJoinPublicGroup(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+    public void requestToJoinPublicGroup(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
         String groupId = param.getString("groupId");
+        String reason = null;
+        if (param.has("reason")) {
+            reason = param.getString("reason");
+        }
 
-        EMClient.getInstance().groupManager().asyncJoinGroup(groupId, new EMCallBack() {
+        EMClient.getInstance().groupManager().asyncApplyJoinToGroup(groupId, reason, new EMCallBack() {
             @Override
             public void onSuccess() {
-                ExtSdkThreadUtil.asyncExecute(()->{
+                ExtSdkThreadUtil.asyncExecute(() -> {
                     EMGroup group = EMClient.getInstance().groupManager().getGroup(groupId);
                     EMWrapper.onSuccess(result, channelName, EMGroupHelper.toJson(group));
                 });
@@ -853,20 +846,19 @@ public class EMGroupManagerWrapper extends EMWrapper {
             }
 
             @Override
-            public void onProgress(int progress, String status) {
-
-            }
+            public void onProgress(int progress, String status) {}
         });
     }
 
-    public void acceptJoinApplication(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+    public void acceptJoinApplication(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
         String groupId = param.getString("groupId");
         String username = param.getString("username");
 
         EMClient.getInstance().groupManager().asyncAcceptApplication(username, groupId, new EMCallBack() {
             @Override
             public void onSuccess() {
-                ExtSdkThreadUtil.asyncExecute(()->{
+                ExtSdkThreadUtil.asyncExecute(() -> {
                     EMGroup group = EMClient.getInstance().groupManager().getGroup(groupId);
                     EMWrapper.onSuccess(result, channelName, EMGroupHelper.toJson(group));
                 });
@@ -878,21 +870,23 @@ public class EMGroupManagerWrapper extends EMWrapper {
             }
 
             @Override
-            public void onProgress(int progress, String status) {
-
-            }
+            public void onProgress(int progress, String status) {}
         });
     }
 
-    public void declineJoinApplication(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+    public void declineJoinApplication(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
         String groupId = param.getString("groupId");
         String username = param.getString("username");
-        String reason = param.getString("reason");
+        String reason = null;
+        if (param.has("reason")) {
+            reason = param.getString("reason");
+        }
 
         EMClient.getInstance().groupManager().asyncDeclineApplication(username, groupId, reason, new EMCallBack() {
             @Override
             public void onSuccess() {
-                ExtSdkThreadUtil.asyncExecute(()->{
+                ExtSdkThreadUtil.asyncExecute(() -> {
                     EMGroup group = EMClient.getInstance().groupManager().getGroup(groupId);
                     EMWrapper.onSuccess(result, channelName, EMGroupHelper.toJson(group));
                 });
@@ -904,13 +898,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
             }
 
             @Override
-            public void onProgress(int progress, String status) {
-
-            }
+            public void onProgress(int progress, String status) {}
         });
     }
 
-    public void acceptInvitationFromGroup(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+    public void acceptInvitationFromGroup(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
         String groupId = param.getString("groupId");
         String inviter = param.getString("inviter");
 
@@ -927,15 +920,19 @@ public class EMGroupManagerWrapper extends EMWrapper {
         });
     }
 
-    public void declineInvitationFromGroup(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+    public void declineInvitationFromGroup(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
         String groupId = param.getString("groupId");
         String username = param.getString("username");
-        String reason = param.getString("reason");
-        
+        String reason = null;
+        if (param.has("reason")) {
+            reason = param.getString("reason");
+        }
+
         EMClient.getInstance().groupManager().asyncDeclineInvitation(groupId, username, reason, new EMCallBack() {
             @Override
             public void onSuccess() {
-                ExtSdkThreadUtil.asyncExecute(()->{
+                ExtSdkThreadUtil.asyncExecute(() -> {
                     EMGroup group = EMClient.getInstance().groupManager().getGroup(groupId);
                     EMWrapper.onSuccess(result, channelName, EMGroupHelper.toJson(group));
                 });
@@ -947,9 +944,7 @@ public class EMGroupManagerWrapper extends EMWrapper {
             }
 
             @Override
-            public void onProgress(int progress, String status) {
-
-            }
+            public void onProgress(int progress, String status) {}
         });
     }
 
@@ -969,7 +964,6 @@ public class EMGroupManagerWrapper extends EMWrapper {
 
     private void registerEaseListener() {
         EMClient.getInstance().groupManager().addGroupChangeListener(new EMGroupChangeListener() {
-
             @Override
             public void onWhiteListAdded(String groupId, List<String> whitelist) {
                 Map<String, Object> data = new HashMap<>();

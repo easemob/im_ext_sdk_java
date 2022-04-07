@@ -87,11 +87,15 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 case ExtSdkMethodType.getLoggedInDevicesFromServer: EMClientWrapper.getInstance().getLoggedInDevicesFromServer(jsonParams, methodType, callback); break;
                 case ExtSdkMethodType.getCurrentUser: EMClientWrapper.getInstance().getCurrentUser(jsonParams, methodType, callback); break;
                 case ExtSdkMethodType.getToken: EMClientWrapper.getInstance().getToken(jsonParams, methodType, callback); break;
+                case ExtSdkMethodType.loginWithAgoraToken: EMClientWrapper.getInstance().loginWithAgoraToken(jsonParams, methodType, callback); break;
+                case ExtSdkMethodType.isConnected: EMClientWrapper.getInstance().isConnected(jsonParams, methodType, callback); break;
 
                 case ExtSdkMethodType.onConnected: callback.fail(1, "no implement: " + methodType); break;
                 case ExtSdkMethodType.onDisconnected: callback.fail(1, "no implement: " + methodType); break;
                 case ExtSdkMethodType.onMultiDeviceEvent: callback.fail(1, "no implement: " + methodType); break;
                 case ExtSdkMethodType.onSendDataToFlutter: callback.fail(1, "no implement: " + methodType); break;
+                case ExtSdkMethodType.onTokenDidExpire: callback.fail(1, "no implement: " + methodType); break;
+                case ExtSdkMethodType.onTokenWillExpire: callback.fail(1, "no implement: " + methodType); break;
 
 /// EMContactManager methods
                 case ExtSdkMethodType.addContact: EMContactManagerWrapper.getInstance().addContact(jsonParams, methodType, callback); break;
@@ -130,6 +134,7 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 case ExtSdkMethodType.searchChatMsgFromDB: EMChatManagerWrapper.getInstance().searchChatMsgFromDB(jsonParams, methodType, callback); break;
                 case ExtSdkMethodType.getMessage: EMChatManagerWrapper.getInstance().getMessage(jsonParams, methodType, callback); break;
                 case ExtSdkMethodType.asyncFetchGroupAcks: EMChatManagerWrapper.getInstance().asyncFetchGroupAcks(jsonParams, methodType, callback); break;
+                case ExtSdkMethodType.deleteRemoteConversation: EMChatManagerWrapper.getInstance().deleteRemoteConversation(jsonParams, methodType, callback); break;
 
 /// EMChatManager listener
                 case ExtSdkMethodType.onMessagesReceived: callback.fail(1, "no implement: " + methodType); break;
@@ -269,6 +274,11 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 case ExtSdkMethodType.updatePushNickname: callback.fail(1, "no implement: " + methodType); break;
                 case ExtSdkMethodType.updateHMSPushToken: callback.fail(1, "no implement: " + methodType); break;
                 case ExtSdkMethodType.updateFCMPushToken: callback.fail(1, "no implement: " + methodType); break;
+                case ExtSdkMethodType.enableOfflinePush: callback.fail(1, "no implement: " + methodType); break;
+                case ExtSdkMethodType.disableOfflinePush: callback.fail(1, "no implement: " + methodType); break;
+                case ExtSdkMethodType.getNoPushGroups: callback.fail(1, "no implement: " + methodType); break;
+                case ExtSdkMethodType.setNoDisturbUsers: callback.fail(1, "no implement: " + methodType); break;
+                case ExtSdkMethodType.getNoDisturbUsersFromServer: callback.fail(1, "no implement: " + methodType); break;
 
 /// ImPushConfig
                 case ExtSdkMethodType.imPushNoDisturb: callback.fail(1, "no implement: " + methodType); break;
