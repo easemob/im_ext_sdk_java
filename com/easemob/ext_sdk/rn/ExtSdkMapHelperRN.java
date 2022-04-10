@@ -53,7 +53,7 @@ public class ExtSdkMapHelperRN {
                 toWritableMap((Map<String, Object>) value, m);
                 result.putMap(key, (WritableNativeMap) m);
             } else if (value instanceof Object[]) {
-                WritableNativeArray a = Arguments.fromJavaArgs(null);
+                WritableNativeArray a = Arguments.fromJavaArgs(new Object[0]);
                 toWritableArray((Object[]) value, a);
                 result.putArray(key, (WritableNativeArray) a);
             } else {
@@ -97,7 +97,7 @@ public class ExtSdkMapHelperRN {
                 toWritableMap((Map<String, Object>) value, m);
                 result.pushMap((WritableNativeMap) m);
             } else if (value instanceof Object[]) {
-                WritableNativeArray a = Arguments.fromJavaArgs(null);
+                WritableNativeArray a = Arguments.fromJavaArgs(new Object[0]);
                 toWritableArray((Object[]) value, a);
                 result.pushArray((WritableNativeArray) a);
             } else {

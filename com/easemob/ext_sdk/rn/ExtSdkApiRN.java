@@ -16,6 +16,7 @@ import com.easemob.ext_sdk.jni.ExtSdkApiJni;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -24,6 +25,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 
@@ -71,9 +73,26 @@ public class ExtSdkApiRN extends ReactContextBaseJavaModule implements ExtSdkApi
             public void onReceive(@NonNull String methodType, @Nullable Object data) {
                 Log.d(TAG, "onReceive: " + methodType + ": " + (data != null ? data : ""));
                 ExtSdkThreadUtil.mainThreadExecute(() -> {
-                    WritableMap result = Arguments.createMap();
-                    new ExtSdkMapHelperRN().toWritableMap((Map<String, Object>) data, result);
-                    eventEmitter.emit(methodType, result);
+                    if (data instanceof Map) {
+                        WritableMap result = Arguments.createMap();
+                        new ExtSdkMapHelperRN().toWritableMap((Map<String, Object>) data, result);
+                        eventEmitter.emit(methodType, result);
+                    } else if (data instanceof Object[]) {
+                        WritableNativeArray result = Arguments.fromJavaArgs(new Object[0]);
+                        new ExtSdkMapHelperRN().toWritableArray((Object[]) data, result);
+                        eventEmitter.emit(methodType, result);
+                    } else if (data instanceof List) {
+                        int size = ((List<Object>) data).size();
+                        Object[] a = new Object[size];
+                        for (int i = 0; i < size; ++i) {
+                            a[i] = ((List<Object>) data).get(i);
+                        }
+                        WritableNativeArray result = Arguments.fromJavaArgs(new Object[0]);
+                        new ExtSdkMapHelperRN().toWritableArray(a, result);
+                        eventEmitter.emit(methodType, result);
+                    } else {
+                        throw new RuntimeException("Cannot support argument of type " + data.getClass());
+                    }
                 });
             }
 
