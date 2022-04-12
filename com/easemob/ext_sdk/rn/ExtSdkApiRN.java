@@ -147,6 +147,12 @@ public class ExtSdkApiRN extends ReactContextBaseJavaModule implements ExtSdkApi
     }
 
     @ReactMethod
+    public Object[] listeners(String methodType) throws Exception {
+        // Keep: Required for RN built in Event Emitter Calls.
+        throw new Exception("Required for RN built in Event Emitter Calls.");
+    }
+
+    @ReactMethod
     public void callMethod(String methodType, ReadableMap params, Promise promise) {
         Log.d(TAG, "callSdkApiRN: " + methodType + ": " + (params != null ? params : ""));
         ExtSdkThreadUtil.asyncExecute(() -> {
