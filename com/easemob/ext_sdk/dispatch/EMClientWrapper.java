@@ -276,7 +276,10 @@ public class EMClientWrapper extends EMWrapper {
     }
 
     public void addEMListener() {
-        EMClient.getInstance().addMultiDeviceListener(new EMMultiDeviceListener() {
+        if (this.multiDeviceListener != null) {
+            EMClient.getInstance().removeMultiDeviceListener(this.multiDeviceListener);
+        }
+        this.multiDeviceListener = new EMMultiDeviceListener() {
             @Override
             public void onContactEvent(int event, String target, String ext) {
                 Map<String, Object> data = new HashMap<>();
@@ -294,10 +297,14 @@ public class EMClientWrapper extends EMWrapper {
                 data.put("userNames", userNames);
                 onReceive(ExtSdkMethodType.onMultiDeviceEvent, data);
             }
-        });
+        };
+        EMClient.getInstance().addMultiDeviceListener(this.multiDeviceListener);
 
-        //setup connection listener
-        EMClient.getInstance().addConnectionListener(new EMConnectionListener() {
+        if (this.connectionListener != null) {
+            EMClient.getInstance().removeConnectionListener(this.connectionListener);
+        }
+
+        this.connectionListener = new EMConnectionListener() {
             @Override
             public void onConnected() {
                 Map<String, Object> data = new HashMap<>();
@@ -321,6 +328,13 @@ public class EMClientWrapper extends EMWrapper {
             public void onTokenWillExpire(){
                 onReceive(ExtSdkMethodType.onDisconnected, null);
             }
-        });
+        };
+
+        //setup connection listener
+        EMClient.getInstance().addConnectionListener(this.connectionListener);
+
     }
+
+    private EMConnectionListener connectionListener;
+    private EMMultiDeviceListener multiDeviceListener;
 }
