@@ -53,21 +53,15 @@ public class ExtSdkDispatch implements ExtSdkApi {
 
         JSONObject jsonParams = null;
 
-        try {
-            if (ExtSdkTypeUtil.currentArchitectureType() == ExtSdkTypeUtil.ExtSdkArchitectureTypeValue.ARCHITECTURE_FLUTTER) {
-                jsonParams = (JSONObject)params;
-            } else if (ExtSdkTypeUtil.currentArchitectureType() == ExtSdkTypeUtil.ExtSdkArchitectureTypeValue.ARCHITECTURE_UNITY) {
-
-            } else if (ExtSdkTypeUtil.currentArchitectureType() == ExtSdkTypeUtil.ExtSdkArchitectureTypeValue.ARCHITECTURE_RN) {
-                if (params instanceof Map) {
-                    jsonParams = new JSONObject((Map)params);
-                }
-            } else {
-                throw new Exception("not this type: " + ExtSdkTypeUtil.currentArchitectureType());
+        if (ExtSdkTypeUtil.currentArchitectureType() == ExtSdkTypeUtil.ExtSdkArchitectureTypeValue.ARCHITECTURE_FLUTTER) {
+            jsonParams = (JSONObject)params;
+        } else if (ExtSdkTypeUtil.currentArchitectureType() == ExtSdkTypeUtil.ExtSdkArchitectureTypeValue.ARCHITECTURE_UNITY) {
+        } else if (ExtSdkTypeUtil.currentArchitectureType() == ExtSdkTypeUtil.ExtSdkArchitectureTypeValue.ARCHITECTURE_RN) {
+            if (params instanceof Map) {
+                jsonParams = new JSONObject((Map)params);
             }
-        } catch (Exception e) {
-            EMWrapper.onError(callback, new JSONException(e.getMessage()), null);
-            return;
+        } else {
+            throw new Exception("not this type: " + ExtSdkTypeUtil.currentArchitectureType());
         }
 
         try {
