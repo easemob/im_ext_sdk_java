@@ -38,7 +38,8 @@ public class EMChatManagerWrapper extends EMWrapper {
                 Map<String, Object> map = new HashMap<>();
                 map.put("message", EMMessageHelper.toJson(msg));
                 map.put("localTime", msg.localTime());
-                EMWrapper.onReceive(ExtSdkMethodType.onMessageSuccess, map);
+                map.put("callbackType", ExtSdkMethodType.onMessageSuccess);
+                EMWrapper.onReceive(channelName, map);
             }
 
             @Override
@@ -47,7 +48,8 @@ public class EMChatManagerWrapper extends EMWrapper {
                 Map<String, Object> map = new HashMap<>();
                 map.put("progress", progress);
                 map.put("localTime", msg.localTime());
-                EMWrapper.onReceive(ExtSdkMethodType.onMessageProgressUpdate, map);
+                map.put("callbackType", ExtSdkMethodType.onMessageProgressUpdate);
+                EMWrapper.onReceive(channelName, map);
             }
 
             @Override
@@ -60,7 +62,8 @@ public class EMChatManagerWrapper extends EMWrapper {
                 map.put("message", EMMessageHelper.toJson(msg));
                 map.put("localTime", msg.localTime());
                 map.put("error", data);
-                EMWrapper.onReceive(ExtSdkMethodType.onMessageError, map);
+                map.put("callbackType", ExtSdkMethodType.onMessageError);
+                EMWrapper.onReceive(channelName, map);
             }
         });
 
@@ -83,7 +86,8 @@ public class EMChatManagerWrapper extends EMWrapper {
                 Map<String, Object> map = new HashMap<>();
                 map.put("message", EMMessageHelper.toJson(finalMsg));
                 map.put("localTime", finalMsg.localTime());
-                EMWrapper.onReceive(ExtSdkMethodType.onMessageSuccess, map);
+                map.put("callbackType", ExtSdkMethodType.onMessageSuccess);
+                EMWrapper.onReceive(channelName, map);
             }
 
             @Override
@@ -92,7 +96,8 @@ public class EMChatManagerWrapper extends EMWrapper {
                 Map<String, Object> map = new HashMap<>();
                 map.put("progress", progress);
                 map.put("localTime", finalMsg.localTime());
-                EMWrapper.onReceive(ExtSdkMethodType.onMessageProgressUpdate, map);
+                map.put("callbackType", ExtSdkMethodType.onMessageProgressUpdate);
+                EMWrapper.onReceive(channelName, map);
             }
 
             @Override
@@ -105,7 +110,8 @@ public class EMChatManagerWrapper extends EMWrapper {
                 map.put("message", EMMessageHelper.toJson(finalMsg));
                 map.put("localTime", finalMsg.localTime());
                 map.put("error", data);
-                EMWrapper.onReceive(ExtSdkMethodType.onMessageError, map);
+                map.put("callbackType", ExtSdkMethodType.onMessageError);
+                EMWrapper.onReceive(channelName, map);
             }
         });
         EMClient.getInstance().chatManager().sendMessage(msg);
