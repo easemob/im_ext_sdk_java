@@ -1,5 +1,6 @@
 package com.easemob.ext_sdk.rn;
 
+import android.net.Uri;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
@@ -48,6 +49,8 @@ public class ExtSdkMapHelperRN {
                 }
             } else if (value instanceof String) {
                 result.putString(key, value.toString());
+            } else if (value instanceof android.net.Uri) {
+                result.putString(key, value.toString());
             } else if (value instanceof Map) {
                 WritableMap m = Arguments.createMap();
                 toWritableMap((Map<String, Object>) value, m);
@@ -57,7 +60,7 @@ public class ExtSdkMapHelperRN {
                 toWritableArray((Object[]) value, a);
                 result.putArray(key, (WritableNativeArray) a);
             } else {
-                throw new RuntimeException("Cannot convert argument of type " + value);
+                throw new RuntimeException("Cannot convert argument of type " + value + " " + valueClass);
             }
         }
     }
@@ -92,6 +95,8 @@ public class ExtSdkMapHelperRN {
                 }
             } else if (value instanceof String) {
                 result.pushString(value.toString());
+            } else if (value instanceof android.net.Uri) {
+                result.pushString(value.toString());
             } else if (value instanceof Map) {
                 WritableMap m = Arguments.createMap();
                 toWritableMap((Map<String, Object>) value, m);
@@ -101,7 +106,7 @@ public class ExtSdkMapHelperRN {
                 toWritableArray((Object[]) value, a);
                 result.pushArray((WritableNativeArray) a);
             } else {
-                throw new RuntimeException("Cannot convert argument of type " + valueClass);
+                throw new RuntimeException("Cannot convert argument of type " + value + " " + valueClass);
             }
         }
     }
