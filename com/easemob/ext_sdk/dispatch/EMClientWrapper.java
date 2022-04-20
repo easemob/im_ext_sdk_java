@@ -209,18 +209,16 @@ public class EMClientWrapper extends EMWrapper {
     public void getLoggedInDevicesFromServer(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String username = param.getString("username");
         String password = param.getString("password");
-        new Thread(() -> {
-            try {
-                List<EMDeviceInfo> devices = EMClient.getInstance().getLoggedInDevicesFromServer(username, password);
-                List<Map> jsonList = new ArrayList<>();
-                for (EMDeviceInfo info : devices) {
-                    jsonList.add(EMDeviceInfoHelper.toJson(info));
-                }
-                onSuccess(result, channelName, jsonList);
-            } catch (HyphenateException e) {
-                onError(result, e, null);
+        try {
+            List<EMDeviceInfo> devices = EMClient.getInstance().getLoggedInDevicesFromServer(username, password);
+            List<Map> jsonList = new ArrayList<>();
+            for (EMDeviceInfo info : devices) {
+                jsonList.add(EMDeviceInfoHelper.toJson(info));
             }
-        });
+            onSuccess(result, channelName, jsonList);
+        } catch (HyphenateException e) {
+            onError(result, e, null);
+        }
     }
 
     public void init(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {

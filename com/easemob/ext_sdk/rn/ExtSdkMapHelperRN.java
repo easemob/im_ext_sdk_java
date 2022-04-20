@@ -11,7 +11,9 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class ExtSdkMapHelperRN {
@@ -59,6 +61,10 @@ public class ExtSdkMapHelperRN {
                 WritableNativeArray a = Arguments.fromJavaArgs(new Object[0]);
                 toWritableArray((Object[]) value, a);
                 result.putArray(key, (WritableNativeArray) a);
+            } else if (value instanceof List) {
+                WritableNativeArray a = Arguments.fromJavaArgs(new Object[0]);
+                toWritableArray((Object[]) ((List<?>) value).toArray(), a);
+                result.putArray(key, (WritableNativeArray) a);
             } else {
                 throw new RuntimeException("Cannot convert argument of type " + value + " " + valueClass);
             }
@@ -104,6 +110,10 @@ public class ExtSdkMapHelperRN {
             } else if (value instanceof Object[]) {
                 WritableNativeArray a = Arguments.fromJavaArgs(new Object[0]);
                 toWritableArray((Object[]) value, a);
+                result.pushArray((WritableNativeArray) a);
+            } else if (value instanceof List) {
+                WritableNativeArray a = Arguments.fromJavaArgs(new Object[0]);
+                toWritableArray((Object[]) ((List<?>) value).toArray(), a);
                 result.pushArray((WritableNativeArray) a);
             } else {
                 throw new RuntimeException("Cannot convert argument of type " + value + " " + valueClass);
