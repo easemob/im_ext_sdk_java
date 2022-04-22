@@ -273,6 +273,12 @@ public class EMClientWrapper extends EMWrapper {
         onSuccess(result, channelName, EMClient.getInstance().isConnected());
     }
 
+    public void renewToken(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        String agoraToken = param.getString("agora_token");
+        EMClient.getInstance().renewToken(agoraToken);
+        onSuccess(result, channelName, null);
+    }
+
     public void addEMListener() {
         if (this.multiDeviceListener != null) {
             EMClient.getInstance().removeMultiDeviceListener(this.multiDeviceListener);

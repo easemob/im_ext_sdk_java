@@ -18,6 +18,7 @@ public class ExtSdkMethodType {
     public static final String getToken = "getToken";
     public static final String loginWithAgoraToken = "loginWithAgoraToken";
     public static final String isConnected = "isConnected";
+    public static final String renewToken = "renewToken";
 
     public static final String onConnected = "onConnected";
     public static final String onDisconnected = "onDisconnected";

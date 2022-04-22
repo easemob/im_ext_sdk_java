@@ -89,6 +89,7 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 case ExtSdkMethodType.getToken: EMClientWrapper.getInstance().getToken(jsonParams, methodType, callback); break;
                 case ExtSdkMethodType.loginWithAgoraToken: EMClientWrapper.getInstance().loginWithAgoraToken(jsonParams, methodType, callback); break;
                 case ExtSdkMethodType.isConnected: EMClientWrapper.getInstance().isConnected(jsonParams, methodType, callback); break;
+                case ExtSdkMethodType.renewToken: EMClientWrapper.getInstance().renewToken(jsonParams, methodType, callback); break;
 
                 case ExtSdkMethodType.onConnected: callback.fail(1, "no implement: " + methodType); break;
                 case ExtSdkMethodType.onDisconnected: callback.fail(1, "no implement: " + methodType); break;
