@@ -1,8 +1,6 @@
 package com.easemob.ext_sdk.dispatch;
 
 
-import androidx.annotation.NonNull;
-
 import com.easemob.ext_sdk.common.ExtSdkContext;
 import com.easemob.ext_sdk.common.ExtSdkCallback;
 import com.easemob.ext_sdk.common.ExtSdkMethodType;
@@ -24,14 +22,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EMClientWrapper extends EMWrapper {
+public class ExtSdkClientWrapper extends ExtSdkWrapper {
 
     public static class SingleHolder {
-        static EMClientWrapper instance = new EMClientWrapper();
+        static ExtSdkClientWrapper instance = new ExtSdkClientWrapper();
     }
 
-    public static EMClientWrapper getInstance() {
-        return EMClientWrapper.SingleHolder.instance;
+    public static ExtSdkClientWrapper getInstance() {
+        return ExtSdkClientWrapper.SingleHolder.instance;
     }
 
     public void getToken(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException
@@ -62,12 +60,12 @@ public class EMClientWrapper extends EMWrapper {
                     Map<String, String> param = new HashMap<>();
                     param.put("username", EMClient.getInstance().getCurrentUser());
                     param.put("token", EMClient.getInstance().getAccessToken());
-                    EMClientWrapper.this.onSuccess(result, channelName, param);
+                    ExtSdkClientWrapper.this.onSuccess(result, channelName, param);
                 }
 
                 @Override
                 public void onError(int code, String error) {
-                    EMClientWrapper.this.onError(result, code, error);
+                    ExtSdkClientWrapper.this.onError(result, code, error);
                 }
 
                 @Override
@@ -82,12 +80,12 @@ public class EMClientWrapper extends EMWrapper {
                     Map<String, String> param = new HashMap<>();
                     param.put("username", EMClient.getInstance().getCurrentUser());
                     param.put("token", EMClient.getInstance().getAccessToken());
-                    EMClientWrapper.this.onSuccess(result, channelName, param);
+                    ExtSdkClientWrapper.this.onSuccess(result, channelName, param);
                 }
 
                 @Override
                 public void onError(int code, String error) {
-                    EMClientWrapper.this.onError(result, code, error);
+                    ExtSdkClientWrapper.this.onError(result, code, error);
                 }
 
                 @Override
@@ -104,12 +102,12 @@ public class EMClientWrapper extends EMWrapper {
         EMClient.getInstance().logout(unbindToken, new EMCallBack() {
             @Override
             public void onSuccess() {
-                EMClientWrapper.this.onSuccess(result, channelName, true);
+                ExtSdkClientWrapper.this.onSuccess(result, channelName, true);
             }
 
             @Override
             public void onError(int code, String error) {
-                EMClientWrapper.this.onError(result, code, error);
+                ExtSdkClientWrapper.this.onError(result, code, error);
             }
 
             @Override
@@ -213,7 +211,7 @@ public class EMClientWrapper extends EMWrapper {
             List<EMDeviceInfo> devices = EMClient.getInstance().getLoggedInDevicesFromServer(username, password);
             List<Map> jsonList = new ArrayList<>();
             for (EMDeviceInfo info : devices) {
-                jsonList.add(EMDeviceInfoHelper.toJson(info));
+                jsonList.add(ExtSdkDeviceInfoHelper.toJson(info));
             }
             onSuccess(result, channelName, jsonList);
         } catch (HyphenateException e) {
@@ -222,7 +220,7 @@ public class EMClientWrapper extends EMWrapper {
     }
 
     public void init(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        EMOptions options = EMOptionsHelper.fromJson(param, ExtSdkContext.context);
+        EMOptions options = ExtSdkOptionsHelper.fromJson(param, ExtSdkContext.context);
         boolean debugModel = param.getBoolean("debugModel");
 
         EMOptions finalOptions = options;
@@ -233,7 +231,7 @@ public class EMClientWrapper extends EMWrapper {
             EMClient.getInstance().init(ExtSdkContext.context, finalOptions);
             EMClient.getInstance().setDebugMode(finalDebugModel);
 
-            EMChatManagerWrapper.getInstance();
+            ExtSdkChatManagerWrapper.getInstance();
 
             addEMListener();
 
@@ -254,12 +252,12 @@ public class EMClientWrapper extends EMWrapper {
                 Map<String, String> param = new HashMap<>();
                 param.put("username", EMClient.getInstance().getCurrentUser());
                 param.put("token", EMClient.getInstance().getAccessToken());
-                EMClientWrapper.this.onSuccess(result, channelName, param);
+                ExtSdkClientWrapper.this.onSuccess(result, channelName, param);
             }
 
             @Override
             public void onError(int code, String error) {
-                EMClientWrapper.this.onError(result, code, error);
+                ExtSdkClientWrapper.this.onError(result, code, error);
             }
 
             @Override

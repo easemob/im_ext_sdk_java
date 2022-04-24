@@ -43,7 +43,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-class EMOptionsHelper {
+class ExtSdkOptionsHelper {
 
     static EMOptions fromJson(JSONObject json, Context context) throws JSONException {
         EMOptions options = new EMOptions();
@@ -127,7 +127,7 @@ class EMOptionsHelper {
     }
 }
 
-class EMGroupHelper {
+class ExtSdkGroupHelper {
     static Map<String, Object> toJson(EMGroup group) {
         Map<String, Object> data = new HashMap<>();
         data.put("groupId", group.getGroupId());
@@ -165,7 +165,7 @@ class EMGroupHelper {
                 options.style = EMGroupManager.EMGroupStyle.EMGroupStylePrivateOnlyOwnerInvite;
             }
         }
-        data.put("options", EMGroupOptionsHelper.toJson(options));
+        data.put("options", ExtSdkGroupOptionsHelper.toJson(options));
         return data;
     }
 
@@ -193,7 +193,7 @@ class EMGroupHelper {
     }
 }
 
-class EMGroupInfoHelper {
+class ExtSdkGroupInfoHelper {
     static Map<String, Object> toJson(EMGroupInfo group) {
         Map<String, Object> data = new HashMap<>();
         data.put("groupId", group.getGroupId());
@@ -202,7 +202,7 @@ class EMGroupInfoHelper {
     }
 }
 
-class EMMucSharedFileHelper {
+class ExtSdkMucSharedFileHelper {
     static Map<String, Object> toJson(EMMucSharedFile file) {
         Map<String, Object> data = new HashMap<>();
         data.put("fileId", file.getFileId());
@@ -215,7 +215,7 @@ class EMMucSharedFileHelper {
     }
 }
 
-class EMGroupOptionsHelper {
+class ExtSdkGroupOptionsHelper {
 
     static EMGroupOptions fromJson(JSONObject json) throws JSONException {
         EMGroupOptions options = new EMGroupOptions();
@@ -266,7 +266,7 @@ class EMGroupOptionsHelper {
     }
 }
 
-class EMChatRoomHelper {
+class ExtSdkChatRoomHelper {
 
     // chatroom 都是native -> flutter, 不需要fromJson
     // static EMChatRoom fromJson(JSONObject json) throws JSONException {
@@ -318,7 +318,7 @@ class EMChatRoomHelper {
     }
 }
 
-class EMMessageHelper {
+class ExtSdkMessageHelper {
 
     static EMMessage fromJson(JSONObject json) throws JSONException {
         EMMessage message = null;
@@ -328,42 +328,42 @@ class EMMessageHelper {
             switch (type) {
                 case "txt": {
                     message = EMMessage.createSendMessage(Type.TXT);
-                    message.addBody(EMMessageBodyHelper.textBodyFromJson(bodyJson));
+                    message.addBody(ExtSdkMessageBodyHelper.textBodyFromJson(bodyJson));
                 }
                 break;
                 case "img": {
                     message = EMMessage.createSendMessage(Type.IMAGE);
-                    message.addBody(EMMessageBodyHelper.imageBodyFromJson(bodyJson));
+                    message.addBody(ExtSdkMessageBodyHelper.imageBodyFromJson(bodyJson));
                 }
                 break;
                 case "loc": {
                     message = EMMessage.createSendMessage(Type.LOCATION);
-                    message.addBody(EMMessageBodyHelper.localBodyFromJson(bodyJson));
+                    message.addBody(ExtSdkMessageBodyHelper.localBodyFromJson(bodyJson));
                 }
                 break;
                 case "video": {
                     message = EMMessage.createSendMessage(Type.VIDEO);
-                    message.addBody(EMMessageBodyHelper.videoBodyFromJson(bodyJson));
+                    message.addBody(ExtSdkMessageBodyHelper.videoBodyFromJson(bodyJson));
                 }
                 break;
                 case "voice": {
                     message = EMMessage.createSendMessage(Type.VOICE);
-                    message.addBody(EMMessageBodyHelper.voiceBodyFromJson(bodyJson));
+                    message.addBody(ExtSdkMessageBodyHelper.voiceBodyFromJson(bodyJson));
                 }
                 break;
                 case "file": {
                     message = EMMessage.createSendMessage(Type.FILE);
-                    message.addBody(EMMessageBodyHelper.fileBodyFromJson(bodyJson));
+                    message.addBody(ExtSdkMessageBodyHelper.fileBodyFromJson(bodyJson));
                 }
                 break;
                 case "cmd": {
                     message = EMMessage.createSendMessage(Type.CMD);
-                    message.addBody(EMMessageBodyHelper.cmdBodyFromJson(bodyJson));
+                    message.addBody(ExtSdkMessageBodyHelper.cmdBodyFromJson(bodyJson));
                 }
                 break;
                 case "custom": {
                     message = EMMessage.createSendMessage(Type.CUSTOM);
-                    message.addBody(EMMessageBodyHelper.customBodyFromJson(bodyJson));
+                    message.addBody(ExtSdkMessageBodyHelper.customBodyFromJson(bodyJson));
                 }
                 break;
             }
@@ -371,42 +371,42 @@ class EMMessageHelper {
             switch (type) {
                 case "txt": {
                     message = EMMessage.createReceiveMessage(Type.TXT);
-                    message.addBody(EMMessageBodyHelper.textBodyFromJson(bodyJson));
+                    message.addBody(ExtSdkMessageBodyHelper.textBodyFromJson(bodyJson));
                 }
                 break;
                 case "img": {
                     message = EMMessage.createReceiveMessage(Type.IMAGE);
-                    message.addBody(EMMessageBodyHelper.imageBodyFromJson(bodyJson));
+                    message.addBody(ExtSdkMessageBodyHelper.imageBodyFromJson(bodyJson));
                 }
                 break;
                 case "loc": {
                     message = EMMessage.createReceiveMessage(Type.LOCATION);
-                    message.addBody(EMMessageBodyHelper.localBodyFromJson(bodyJson));
+                    message.addBody(ExtSdkMessageBodyHelper.localBodyFromJson(bodyJson));
                 }
                 break;
                 case "video": {
                     message = EMMessage.createReceiveMessage(Type.VIDEO);
-                    message.addBody(EMMessageBodyHelper.videoBodyFromJson(bodyJson));
+                    message.addBody(ExtSdkMessageBodyHelper.videoBodyFromJson(bodyJson));
                 }
                 break;
                 case "voice": {
                     message = EMMessage.createReceiveMessage(Type.VOICE);
-                    message.addBody(EMMessageBodyHelper.voiceBodyFromJson(bodyJson));
+                    message.addBody(ExtSdkMessageBodyHelper.voiceBodyFromJson(bodyJson));
                 }
                 break;
                 case "file": {
                     message = EMMessage.createReceiveMessage(Type.FILE);
-                    message.addBody(EMMessageBodyHelper.fileBodyFromJson(bodyJson));
+                    message.addBody(ExtSdkMessageBodyHelper.fileBodyFromJson(bodyJson));
                 }
                 break;
                 case "cmd": {
                     message = EMMessage.createReceiveMessage(Type.CMD);
-                    message.addBody(EMMessageBodyHelper.cmdBodyFromJson(bodyJson));
+                    message.addBody(ExtSdkMessageBodyHelper.cmdBodyFromJson(bodyJson));
                 }
                 break;
                 case "custom": {
                     message = EMMessage.createReceiveMessage(Type.CUSTOM);
-                    message.addBody(EMMessageBodyHelper.customBodyFromJson(bodyJson));
+                    message.addBody(ExtSdkMessageBodyHelper.customBodyFromJson(bodyJson));
                 }
                 break;
             }
@@ -468,42 +468,42 @@ class EMMessageHelper {
         switch (message.getType()) {
             case TXT: {
                 type = "txt";
-                data.put("body", EMMessageBodyHelper.textBodyToJson((EMTextMessageBody) message.getBody()));
+                data.put("body", ExtSdkMessageBodyHelper.textBodyToJson((EMTextMessageBody) message.getBody()));
             }
             break;
             case IMAGE: {
                 type = "img";
-                data.put("body", EMMessageBodyHelper.imageBodyToJson((EMImageMessageBody) message.getBody()));
+                data.put("body", ExtSdkMessageBodyHelper.imageBodyToJson((EMImageMessageBody) message.getBody()));
             }
             break;
             case LOCATION: {
                 type = "loc";
-                data.put("body", EMMessageBodyHelper.localBodyToJson((EMLocationMessageBody) message.getBody()));
+                data.put("body", ExtSdkMessageBodyHelper.localBodyToJson((EMLocationMessageBody) message.getBody()));
             }
             break;
             case CMD: {
                 type = "cmd";
-                data.put("body", EMMessageBodyHelper.cmdBodyToJson((EMCmdMessageBody) message.getBody()));
+                data.put("body", ExtSdkMessageBodyHelper.cmdBodyToJson((EMCmdMessageBody) message.getBody()));
             }
             break;
             case CUSTOM: {
                 type = "custom";
-                data.put("body", EMMessageBodyHelper.customBodyToJson((EMCustomMessageBody) message.getBody()));
+                data.put("body", ExtSdkMessageBodyHelper.customBodyToJson((EMCustomMessageBody) message.getBody()));
             }
             break;
             case FILE: {
                 type = "file";
-                data.put("body", EMMessageBodyHelper.fileBodyToJson((EMNormalFileMessageBody) message.getBody()));
+                data.put("body", ExtSdkMessageBodyHelper.fileBodyToJson((EMNormalFileMessageBody) message.getBody()));
             }
             break;
             case VIDEO: {
                 type = "video";
-                data.put("body", EMMessageBodyHelper.videoBodyToJson((EMVideoMessageBody) message.getBody()));
+                data.put("body", ExtSdkMessageBodyHelper.videoBodyToJson((EMVideoMessageBody) message.getBody()));
             }
             break;
             case VOICE: {
                 type = "voice";
-                data.put("body", EMMessageBodyHelper.voiceBodyToJson((EMVoiceMessageBody) message.getBody()));
+                data.put("body", ExtSdkMessageBodyHelper.voiceBodyToJson((EMVoiceMessageBody) message.getBody()));
             }
             break;
         }
@@ -583,7 +583,7 @@ class EMMessageHelper {
 
 }
 
-class EMGroupAckHelper {
+class ExtSdkGroupAckHelper {
     static Map<String, Object> toJson(EMGroupReadAck ack) {
         Map<String, Object> data = new HashMap<>();
         data.put("msg_id", ack.getMsgId());
@@ -599,7 +599,7 @@ class EMGroupAckHelper {
 }
 
 
-class EMMessageBodyHelper {
+class ExtSdkMessageBodyHelper {
 
     static EMTextMessageBody textBodyFromJson(JSONObject json) throws JSONException {
         String content = json.getString("content");
@@ -839,7 +839,7 @@ class EMMessageBodyHelper {
     }
 }
 
-class EMConversationHelper {
+class ExtSdkConversationHelper {
 
     // EMConversation 都是native -> flutter, 不需要fromJson
     // static EMConversation fromJson(JSONObject json) throws JSONException {
@@ -857,8 +857,8 @@ class EMConversationHelper {
         } catch (JSONException e) {
 
         } finally {
-            data.put("latestMessage", EMMessageHelper.toJson(conversation.getLastMessage()));
-            data.put("lastReceivedMessage", EMMessageHelper.toJson(conversation.getLatestMessageFromOthers()));
+            data.put("latestMessage", ExtSdkMessageHelper.toJson(conversation.getLastMessage()));
+            data.put("lastReceivedMessage", ExtSdkMessageHelper.toJson(conversation.getLatestMessageFromOthers()));
             return data;
         }
     }
@@ -927,7 +927,7 @@ class EMConversationHelper {
     }
 }
 
-class EMDeviceInfoHelper {
+class ExtSdkDeviceInfoHelper {
 
     static Map<String, Object> toJson(EMDeviceInfo device) {
         Map<String, Object> data = new HashMap<>();
@@ -939,7 +939,7 @@ class EMDeviceInfoHelper {
     }
 }
 
-class EMCursorResultHelper {
+class ExtSdkCursorResultHelper {
 
     static Map<String, Object> toJson(EMCursorResult result) {
         Map<String, Object> data = new HashMap<>();
@@ -948,19 +948,19 @@ class EMCursorResultHelper {
         List<Object> jsonList = new ArrayList<>();
         for (Object obj : list) {
             if (obj instanceof EMMessage) {
-                jsonList.add(EMMessageHelper.toJson((EMMessage) obj));
+                jsonList.add(ExtSdkMessageHelper.toJson((EMMessage) obj));
             }
 
             if (obj instanceof EMGroup) {
-                jsonList.add(EMGroupHelper.toJson((EMGroup) obj));
+                jsonList.add(ExtSdkGroupHelper.toJson((EMGroup) obj));
             }
 
             if (obj instanceof EMChatRoom) {
-                jsonList.add(EMChatRoomHelper.toJson((EMChatRoom) obj));
+                jsonList.add(ExtSdkChatRoomHelper.toJson((EMChatRoom) obj));
             }
 
             if (obj instanceof EMGroupReadAck) {
-                jsonList.add(EMGroupAckHelper.toJson((EMGroupReadAck) obj));
+                jsonList.add(ExtSdkGroupAckHelper.toJson((EMGroupReadAck) obj));
             }
 
             if (obj instanceof String) {
@@ -970,10 +970,10 @@ class EMCursorResultHelper {
             if (obj instanceof EMGroupInfo) {
                 EMGroup group = EMClient.getInstance().groupManager().getGroup(((EMGroupInfo) obj).getGroupId());
                 if (group != null) {
-                    jsonList.add(EMGroupHelper
+                    jsonList.add(ExtSdkGroupHelper
                             .toJson(EMClient.getInstance().groupManager().getGroup(((EMGroupInfo) obj).getGroupId())));
                 } else {
-                    jsonList.add(EMGroupInfoHelper.toJson((EMGroupInfo) obj));
+                    jsonList.add(ExtSdkGroupInfoHelper.toJson((EMGroupInfo) obj));
                 }
             }
         }
@@ -983,7 +983,7 @@ class EMCursorResultHelper {
     }
 }
 
-class EMPageResultHelper {
+class ExtSdkPageResultHelper {
 
     static Map<String, Object> toJson(EMPageResult result) {
         Map<String, Object> data = new HashMap<>();
@@ -992,15 +992,15 @@ class EMPageResultHelper {
         List<Map> jsonList = new ArrayList<>();
         for (Object obj : list) {
             if (obj instanceof EMMessage) {
-                jsonList.add(EMMessageHelper.toJson((EMMessage) obj));
+                jsonList.add(ExtSdkMessageHelper.toJson((EMMessage) obj));
             }
 
             if (obj instanceof EMGroup) {
-                jsonList.add(EMGroupHelper.toJson((EMGroup) obj));
+                jsonList.add(ExtSdkGroupHelper.toJson((EMGroup) obj));
             }
 
             if (obj instanceof EMChatRoom) {
-                jsonList.add(EMChatRoomHelper.toJson((EMChatRoom) obj));
+                jsonList.add(ExtSdkChatRoomHelper.toJson((EMChatRoom) obj));
             }
         }
         data.put("list", jsonList);
@@ -1008,7 +1008,7 @@ class EMPageResultHelper {
     }
 }
 
-class EMErrorHelper {
+class ExtSdkErrorHelper {
     static Map<String, Object> toJson(int errorCode, String desc) {
         Map<String, Object> data = new HashMap<>();
         data.put("code", errorCode);
@@ -1017,7 +1017,7 @@ class EMErrorHelper {
     }
 }
 
-class EMPushConfigsHelper {
+class ExtSdkPushConfigsHelper {
     static Map<String, Object> toJson(EMPushConfigs pushConfigs) {
         Map<String, Object> data = new HashMap<>();
         data.put("noDisturb", pushConfigs.isNoDisturbOn());
@@ -1028,7 +1028,7 @@ class EMPushConfigsHelper {
     }
 }
 
-class HyphenateExceptionHelper {
+class ExtSdkExceptionHelper {
     static Map<String, Object> toJson(HyphenateException e) {
         Map<String, Object> data = new HashMap<>();
         data.put("code", e.getErrorCode());
@@ -1037,7 +1037,7 @@ class HyphenateExceptionHelper {
     }
 }
 
-class JSONExceptionHelper {
+class ExtSdkJSONExceptionHelper {
     static Map<String, Object> toJson(JSONException e) {
         Map<String, Object> data = new HashMap<>();
         data.put("code", 1); // GENERAL_ERROR = 1 http://sdkdocs.easemob.com/apidoc/android/chat3.0/classcom_1_1hyphenate_1_1_e_m_error.html
@@ -1047,7 +1047,7 @@ class JSONExceptionHelper {
     }
 }
 
-class EMUserInfoHelper {
+class ExtSdkUserInfoHelper {
     static EMUserInfo fromJson(JSONObject obj) throws JSONException {
         EMUserInfo userInfo = new EMUserInfo();
 
