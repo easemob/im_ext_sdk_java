@@ -442,7 +442,10 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
     }
 
     private void registerEaseListener() {
-        EMClient.getInstance().chatroomManager().addChatRoomChangeListener(new EMChatRoomChangeListener() {
+        if (this.roomChangeListener != null) {
+            EMClient.getInstance().chatroomManager().removeChatRoomListener(this.roomChangeListener);
+        }
+        this.roomChangeListener = new EMChatRoomChangeListener() {
             @Override
             public void onWhiteListAdded(String chatRoomId, List<String> whitelist) {
                 Map<String, Object> data = new HashMap<>();
@@ -563,6 +566,9 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
                 data.put("chatRoomChange", "onAnnouncementChanged");
                 ExtSdkWrapper.onReceive(ExtSdkMethodType.chatRoomChange, data);
             }
-        });
+        };
+        EMClient.getInstance().chatroomManager().addChatRoomChangeListener(this.roomChangeListener);
     }
+
+    private EMChatRoomChangeListener roomChangeListener = null;
 }

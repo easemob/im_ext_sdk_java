@@ -439,7 +439,10 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
     }
 
     private void registerEaseListener() {
-        EMClient.getInstance().chatManager().addMessageListener(new EMMessageListener() {
+        if (this.messageListener != null) {
+            EMClient.getInstance().chatManager().removeMessageListener(this.messageListener);
+        }
+        this.messageListener = new EMMessageListener() {
             @Override
             public void onMessageReceived(List<EMMessage> messages) {
                 ArrayList<Map<String, Object>> msgList = new ArrayList<>();
@@ -507,9 +510,13 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
 
             @Override
             public void onReadAckForGroupMessageUpdated() {}
-        });
-        // setup conversation listener
-        EMClient.getInstance().chatManager().addConversationListener(new EMConversationListener() {
+        };
+        EMClient.getInstance().chatManager().addMessageListener(this.messageListener);
+
+        if (this.conversationListener != null) {
+            EMClient.getInstance().chatManager().removeConversationListener(this.conversationListener);
+        }
+        this.conversationListener = new EMConversationListener() {
             @Override
             public void onCoversationUpdate() {
                 Map<String, Object> data = new HashMap<>();
@@ -523,10 +530,14 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
                 data.put("to", to);
                 ExtSdkWrapper.onReceive(ExtSdkMethodType.onConversationHasRead, data);
             }
-        });
+        };
+        EMClient.getInstance().chatManager().addConversationListener(this.conversationListener);
     }
 
     private EMConversation.EMSearchDirection searchDirectionFromString(String direction) {
         return direction == "up" ? EMConversation.EMSearchDirection.UP : EMConversation.EMSearchDirection.DOWN;
     }
+
+    private EMMessageListener messageListener = null;
+    private EMConversationListener conversationListener = null;
 }

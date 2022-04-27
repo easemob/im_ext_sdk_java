@@ -963,7 +963,10 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
     }
 
     private void registerEaseListener() {
-        EMClient.getInstance().groupManager().addGroupChangeListener(new EMGroupChangeListener() {
+        if (this.groupChangeListener != null) {
+            EMClient.getInstance().groupManager().removeGroupChangeListener(this.groupChangeListener);
+        }
+        this.groupChangeListener = new EMGroupChangeListener() {
             @Override
             public void onWhiteListAdded(String groupId, List<String> whitelist) {
                 Map<String, Object> data = new HashMap<>();
@@ -1177,6 +1180,8 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
                 data.put("fileId", fileId);
                 ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
-        });
+        };
+        EMClient.getInstance().groupManager().addGroupChangeListener(this.groupChangeListener);
     }
+    private EMGroupChangeListener groupChangeListener = null;
 }

@@ -133,7 +133,10 @@ public class ExtSdkContactManagerWrapper extends ExtSdkWrapper {
     }
 
     private void registerEaseListener() {
-        EMClient.getInstance().contactManager().setContactListener(new EMContactListener() {
+        if (this.contactListener != null) {
+            EMClient.getInstance().contactManager().removeContactListener(this.contactListener);
+        }
+        this.contactListener = new EMContactListener() {
             @Override
             public void onContactAdded(String userName) {
                 Map<String, Object> data = new HashMap<>();
@@ -175,6 +178,8 @@ public class ExtSdkContactManagerWrapper extends ExtSdkWrapper {
                 data.put("username", userName);
                 onReceive(ExtSdkMethodType.onContactChanged, data);
             }
-        });
+        };
+        EMClient.getInstance().contactManager().setContactListener(this.contactListener);
     }
+    private EMContactListener contactListener = null;
 }
