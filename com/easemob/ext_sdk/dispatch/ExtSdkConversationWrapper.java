@@ -165,7 +165,7 @@ public class ExtSdkConversationWrapper extends ExtSdkWrapper {
         String sender = params.getString("sender");
         int count = params.getInt("count");
         EMConversation.EMSearchDirection direction = searchDirectionFromString(params.getString("direction"));
-        String typeStr = params.getString("type");
+        String typeStr = params.getString("msg_type");
         EMMessage.Type type = EMMessage.Type.TXT;
         switch (typeStr) {
             case "txt" : type = EMMessage.Type.TXT; break;

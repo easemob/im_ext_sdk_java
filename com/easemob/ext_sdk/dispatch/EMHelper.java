@@ -944,39 +944,43 @@ class ExtSdkCursorResultHelper {
     static Map<String, Object> toJson(EMCursorResult result) {
         Map<String, Object> data = new HashMap<>();
         data.put("cursor", result.getCursor());
-        List list = (List) result.getData();
         List<Object> jsonList = new ArrayList<>();
-        for (Object obj : list) {
-            if (obj instanceof EMMessage) {
-                jsonList.add(ExtSdkMessageHelper.toJson((EMMessage) obj));
-            }
+        if (null != result.getData()) {
+            List list = (List) result.getData();
 
-            if (obj instanceof EMGroup) {
-                jsonList.add(ExtSdkGroupHelper.toJson((EMGroup) obj));
-            }
+            for (Object obj : list) {
+                if (obj instanceof EMMessage) {
+                    jsonList.add(ExtSdkMessageHelper.toJson((EMMessage) obj));
+                }
 
-            if (obj instanceof EMChatRoom) {
-                jsonList.add(ExtSdkChatRoomHelper.toJson((EMChatRoom) obj));
-            }
+                if (obj instanceof EMGroup) {
+                    jsonList.add(ExtSdkGroupHelper.toJson((EMGroup) obj));
+                }
 
-            if (obj instanceof EMGroupReadAck) {
-                jsonList.add(ExtSdkGroupAckHelper.toJson((EMGroupReadAck) obj));
-            }
+                if (obj instanceof EMChatRoom) {
+                    jsonList.add(ExtSdkChatRoomHelper.toJson((EMChatRoom) obj));
+                }
 
-            if (obj instanceof String) {
-                jsonList.add(obj);
-            }
+                if (obj instanceof EMGroupReadAck) {
+                    jsonList.add(ExtSdkGroupAckHelper.toJson((EMGroupReadAck) obj));
+                }
 
-            if (obj instanceof EMGroupInfo) {
-                EMGroup group = EMClient.getInstance().groupManager().getGroup(((EMGroupInfo) obj).getGroupId());
-                if (group != null) {
-                    jsonList.add(ExtSdkGroupHelper
-                            .toJson(EMClient.getInstance().groupManager().getGroup(((EMGroupInfo) obj).getGroupId())));
-                } else {
-                    jsonList.add(ExtSdkGroupInfoHelper.toJson((EMGroupInfo) obj));
+                if (obj instanceof String) {
+                    jsonList.add(obj);
+                }
+
+                if (obj instanceof EMGroupInfo) {
+                    EMGroup group = EMClient.getInstance().groupManager().getGroup(((EMGroupInfo) obj).getGroupId());
+                    if (group != null) {
+                        jsonList.add(ExtSdkGroupHelper
+                                .toJson(EMClient.getInstance().groupManager().getGroup(((EMGroupInfo) obj).getGroupId())));
+                    } else {
+                        jsonList.add(ExtSdkGroupInfoHelper.toJson((EMGroupInfo) obj));
+                    }
                 }
             }
         }
+
         data.put("list", jsonList);
 
         return data;
@@ -988,21 +992,25 @@ class ExtSdkPageResultHelper {
     static Map<String, Object> toJson(EMPageResult result) {
         Map<String, Object> data = new HashMap<>();
         data.put("count", result.getPageCount());
-        List list = (List) result.getData();
         List<Map> jsonList = new ArrayList<>();
-        for (Object obj : list) {
-            if (obj instanceof EMMessage) {
-                jsonList.add(ExtSdkMessageHelper.toJson((EMMessage) obj));
-            }
+        if (null != result.getData()) {
+            List list = (List) result.getData();
 
-            if (obj instanceof EMGroup) {
-                jsonList.add(ExtSdkGroupHelper.toJson((EMGroup) obj));
-            }
+            for (Object obj : list) {
+                if (obj instanceof EMMessage) {
+                    jsonList.add(ExtSdkMessageHelper.toJson((EMMessage) obj));
+                }
 
-            if (obj instanceof EMChatRoom) {
-                jsonList.add(ExtSdkChatRoomHelper.toJson((EMChatRoom) obj));
+                if (obj instanceof EMGroup) {
+                    jsonList.add(ExtSdkGroupHelper.toJson((EMGroup) obj));
+                }
+
+                if (obj instanceof EMChatRoom) {
+                    jsonList.add(ExtSdkChatRoomHelper.toJson((EMChatRoom) obj));
+                }
             }
         }
+
         data.put("list", jsonList);
         return data;
     }
