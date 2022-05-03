@@ -156,12 +156,15 @@ public class ExtSdkApiRN extends ReactContextBaseJavaModule implements ExtSdkApi
     public void callMethod(String methodType, ReadableMap params, Promise promise) {
         Log.d(TAG, "callSdkApiRN: " + methodType + ": " + (params != null ? params : ""));
         ExtSdkThreadUtil.asyncExecute(() -> {
-            Iterator<Map.Entry<String, Object>> iterator = params.toHashMap().entrySet().iterator();
             Object subParams = null;
-            while (iterator.hasNext()) {
-                subParams = iterator.next().getValue();
-                break;
+            if (params != null) {
+                Iterator<Map.Entry<String, Object>> iterator = params.toHashMap().entrySet().iterator();
+                while (iterator.hasNext()) {
+                    subParams = iterator.next().getValue();
+                    break;
+                }
             }
+
             this.callSdkApi(methodType, subParams, new ExtSdkCallback() {
                 @Override
                 public void success(@Nullable Object data) {

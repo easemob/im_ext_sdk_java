@@ -13,17 +13,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EMContactManagerWrapper extends EMWrapper {
+public class ExtSdkContactManagerWrapper extends ExtSdkWrapper {
 
     public static class SingleHolder {
-        static EMContactManagerWrapper instance = new EMContactManagerWrapper();
+        static ExtSdkContactManagerWrapper instance = new ExtSdkContactManagerWrapper();
     }
 
-    public static EMContactManagerWrapper getInstance() {
-        return EMContactManagerWrapper.SingleHolder.instance;
+    public static ExtSdkContactManagerWrapper getInstance() {
+        return ExtSdkContactManagerWrapper.SingleHolder.instance;
     }
 
-    EMContactManagerWrapper() {
+    ExtSdkContactManagerWrapper() {
         registerEaseListener();
     }
 
@@ -133,7 +133,10 @@ public class EMContactManagerWrapper extends EMWrapper {
     }
 
     private void registerEaseListener() {
-        EMClient.getInstance().contactManager().setContactListener(new EMContactListener() {
+        if (this.contactListener != null) {
+            EMClient.getInstance().contactManager().removeContactListener(this.contactListener);
+        }
+        this.contactListener = new EMContactListener() {
             @Override
             public void onContactAdded(String userName) {
                 Map<String, Object> data = new HashMap<>();
@@ -175,6 +178,8 @@ public class EMContactManagerWrapper extends EMWrapper {
                 data.put("username", userName);
                 onReceive(ExtSdkMethodType.onContactChanged, data);
             }
-        });
+        };
+        EMClient.getInstance().contactManager().setContactListener(this.contactListener);
     }
+    private EMContactListener contactListener = null;
 }

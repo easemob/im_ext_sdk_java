@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.easemob.ext_sdk.common.ExtSdkCallback;
-import com.easemob.ext_sdk.common.ExtSdkThreadUtil;
 import com.hyphenate.exceptions.HyphenateException;
 
 import org.json.JSONException;
@@ -14,7 +13,7 @@ import org.json.JSONException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EMWrapper {
+public class ExtSdkWrapper {
 
     protected static void onSuccess(@NonNull ExtSdkCallback callback, @NonNull String methodType, @Nullable Object object) {
         Log.d(TAG, "onSuccess: " + methodType + ": " + (object != null ? object : ""));
@@ -29,11 +28,11 @@ public class EMWrapper {
         Log.d(TAG, "onError: " + (e != null ? e : "") + ": " + (ext != null ? ext : ""));
         Map<String, Object> data = new HashMap<>();
         if (e instanceof HyphenateException) {
-            data.put("error", HyphenateExceptionHelper.toJson((HyphenateException)e));
+            data.put("error", ExtSdkExceptionHelper.toJson((HyphenateException)e));
         } else if (e instanceof Integer) {
-            data.put("error", EMErrorHelper.toJson((int)e, ext.toString()));
+            data.put("error", ExtSdkErrorHelper.toJson((int)e, ext.toString()));
         } else if (e instanceof JSONException) {
-            data.put("error", JSONExceptionHelper.toJson((JSONException)e));
+            data.put("error", ExtSdkJSONExceptionHelper.toJson((JSONException)e));
         } else {
             data.put("error", "no implement");
         }

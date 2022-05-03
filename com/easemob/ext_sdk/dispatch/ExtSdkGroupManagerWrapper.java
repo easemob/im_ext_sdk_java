@@ -22,19 +22,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class EMGroupManagerWrapper extends EMWrapper {
+public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
 
-    public static class SingleHolder { static EMGroupManagerWrapper instance = new EMGroupManagerWrapper(); }
+    public static class SingleHolder { static ExtSdkGroupManagerWrapper instance = new ExtSdkGroupManagerWrapper(); }
 
-    public static EMGroupManagerWrapper getInstance() { return EMGroupManagerWrapper.SingleHolder.instance; }
+    public static ExtSdkGroupManagerWrapper getInstance() { return ExtSdkGroupManagerWrapper.SingleHolder.instance; }
 
-    EMGroupManagerWrapper() { registerEaseListener(); }
+    ExtSdkGroupManagerWrapper() { registerEaseListener(); }
 
     public void getGroupWithId(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String groupId = param.getString("groupId");
         EMGroup group = EMClient.getInstance().groupManager().getGroup(groupId);
         if (group != null) {
-            onSuccess(result, channelName, EMGroupHelper.toJson(group));
+            onSuccess(result, channelName, ExtSdkGroupHelper.toJson(group));
         } else {
             onSuccess(result, channelName, null);
         }
@@ -45,7 +45,7 @@ public class EMGroupManagerWrapper extends EMWrapper {
         List<EMGroup> groups = EMClient.getInstance().groupManager().getAllGroups();
         List<Map> groupList = new ArrayList<>();
         for (EMGroup group : groups) {
-            groupList.add(EMGroupHelper.toJson(group));
+            groupList.add(ExtSdkGroupHelper.toJson(group));
         }
         onSuccess(result, channelName, groupList);
     }
@@ -68,14 +68,14 @@ public class EMGroupManagerWrapper extends EMWrapper {
                 public void onSuccess(List<EMGroup> value) {
                     List<Map> groupList = new ArrayList<>();
                     for (EMGroup group : value) {
-                        groupList.add(EMGroupHelper.toJson(group));
+                        groupList.add(ExtSdkGroupHelper.toJson(group));
                     }
-                    EMWrapper.onSuccess(result, channelName, groupList);
+                    ExtSdkWrapper.onSuccess(result, channelName, groupList);
                 }
 
                 @Override
                 public void onError(int error, String errorMsg) {
-                    EMWrapper.onError(result, error, errorMsg);
+                    ExtSdkWrapper.onError(result, error, errorMsg);
                 }
             });
     }
@@ -91,12 +91,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
             pageSize, cursor, new EMValueCallBack<EMCursorResult<EMGroupInfo>>() {
                 @Override
                 public void onSuccess(EMCursorResult<EMGroupInfo> value) {
-                    EMWrapper.onSuccess(result, channelName, EMCursorResultHelper.toJson(value));
+                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkCursorResultHelper.toJson(value));
                 }
 
                 @Override
                 public void onError(int error, String errorMsg) {
-                    EMWrapper.onError(result, error, errorMsg);
+                    ExtSdkWrapper.onError(result, error, errorMsg);
                 }
             });
     }
@@ -130,17 +130,17 @@ public class EMGroupManagerWrapper extends EMWrapper {
             inviteReason = param.getString("inviteReason");
         }
 
-        EMGroupOptions options = EMGroupOptionsHelper.fromJson(param.getJSONObject("options"));
+        EMGroupOptions options = ExtSdkGroupOptionsHelper.fromJson(param.getJSONObject("options"));
         EMClient.getInstance().groupManager().asyncCreateGroup(
             groupName, desc, members, inviteReason, options, new EMValueCallBack<EMGroup>() {
                 @Override
                 public void onSuccess(EMGroup value) {
-                    EMWrapper.onSuccess(result, channelName, EMGroupHelper.toJson(value));
+                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(value));
                 }
 
                 @Override
                 public void onError(int error, String errorMsg) {
-                    EMWrapper.onError(result, error, errorMsg);
+                    ExtSdkWrapper.onError(result, error, errorMsg);
                 }
             });
     }
@@ -151,12 +151,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().asyncGetGroupFromServer(groupId, new EMValueCallBack<EMGroup>() {
             @Override
             public void onSuccess(EMGroup value) {
-                EMWrapper.onSuccess(result, channelName, EMGroupHelper.toJson(value));
+                ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(value));
             }
 
             @Override
             public void onError(int error, String errorMsg) {
-                EMWrapper.onError(result, error, errorMsg);
+                ExtSdkWrapper.onError(result, error, errorMsg);
             }
         });
     }
@@ -173,12 +173,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
             groupId, cursor, pageSize, new EMValueCallBack<EMCursorResult<String>>() {
                 @Override
                 public void onSuccess(EMCursorResult<String> value) {
-                    EMWrapper.onSuccess(result, channelName, EMCursorResultHelper.toJson(value));
+                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkCursorResultHelper.toJson(value));
                 }
 
                 @Override
                 public void onError(int error, String errorMsg) {
-                    EMWrapper.onError(result, error, errorMsg);
+                    ExtSdkWrapper.onError(result, error, errorMsg);
                 }
             });
     }
@@ -192,12 +192,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
             groupId, pageNum, pageSize, new EMValueCallBack<List<String>>() {
                 @Override
                 public void onSuccess(List<String> value) {
-                    EMWrapper.onSuccess(result, channelName, value);
+                    ExtSdkWrapper.onSuccess(result, channelName, value);
                 }
 
                 @Override
                 public void onError(int error, String errorMsg) {
-                    EMWrapper.onError(result, error, errorMsg);
+                    ExtSdkWrapper.onError(result, error, errorMsg);
                 }
             });
     }
@@ -211,12 +211,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
             groupId, pageNum, pageSize, new EMValueCallBack<Map<String, Long>>() {
                 @Override
                 public void onSuccess(Map<String, Long> value) {
-                    EMWrapper.onSuccess(result, channelName, value.keySet().toArray());
+                    ExtSdkWrapper.onSuccess(result, channelName, value.keySet().toArray());
                 }
 
                 @Override
                 public void onError(int error, String errorMsg) {
-                    EMWrapper.onError(result, error, errorMsg);
+                    ExtSdkWrapper.onError(result, error, errorMsg);
                 }
             });
     }
@@ -227,12 +227,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().fetchGroupWhiteList(groupId, new EMValueCallBack<List<String>>() {
             @Override
             public void onSuccess(List<String> value) {
-                EMWrapper.onSuccess(result, channelName, value);
+                ExtSdkWrapper.onSuccess(result, channelName, value);
             }
 
             @Override
             public void onError(int error, String errorMsg) {
-                EMWrapper.onError(result, error, errorMsg);
+                ExtSdkWrapper.onError(result, error, errorMsg);
             }
         });
     }
@@ -243,12 +243,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().checkIfInGroupWhiteList(groupId, new EMValueCallBack<Boolean>() {
             @Override
             public void onSuccess(Boolean value) {
-                EMWrapper.onSuccess(result, channelName, value);
+                ExtSdkWrapper.onSuccess(result, channelName, value);
             }
 
             @Override
             public void onError(int error, String errorMsg) {
-                EMWrapper.onError(result, error, errorMsg);
+                ExtSdkWrapper.onError(result, error, errorMsg);
             }
         });
     }
@@ -264,14 +264,14 @@ public class EMGroupManagerWrapper extends EMWrapper {
                 public void onSuccess(List<EMMucSharedFile> value) {
                     List<Map> fileList = new ArrayList<>();
                     for (EMMucSharedFile file : value) {
-                        fileList.add(EMMucSharedFileHelper.toJson(file));
+                        fileList.add(ExtSdkMucSharedFileHelper.toJson(file));
                     }
-                    EMWrapper.onSuccess(result, channelName, fileList);
+                    ExtSdkWrapper.onSuccess(result, channelName, fileList);
                 }
 
                 @Override
                 public void onError(int error, String errorMsg) {
-                    EMWrapper.onError(result, error, errorMsg);
+                    ExtSdkWrapper.onError(result, error, errorMsg);
                 }
             });
     }
@@ -282,12 +282,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().asyncFetchGroupAnnouncement(groupId, new EMValueCallBack<String>() {
             @Override
             public void onSuccess(String value) {
-                EMWrapper.onSuccess(result, channelName, value);
+                ExtSdkWrapper.onSuccess(result, channelName, value);
             }
 
             @Override
             public void onError(int error, String errorMsg) {
-                EMWrapper.onError(result, error, errorMsg);
+                ExtSdkWrapper.onError(result, error, errorMsg);
             }
         });
     }
@@ -306,12 +306,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().asyncInviteUser(groupId, members, reason, new EMCallBack() {
             @Override
             public void onSuccess() {
-                EMWrapper.onSuccess(result, channelName, true);
+                ExtSdkWrapper.onSuccess(result, channelName, true);
             }
 
             @Override
             public void onError(int code, String error) {
-                EMWrapper.onError(result, code, error);
+                ExtSdkWrapper.onError(result, code, error);
             }
 
             @Override
@@ -335,9 +335,9 @@ public class EMGroupManagerWrapper extends EMWrapper {
 
         try {
             EMClient.getInstance().groupManager().addUsersToGroup(groupId, members, welcome);
-            EMWrapper.onSuccess(result, channelName, true);
+            ExtSdkWrapper.onSuccess(result, channelName, true);
         } catch (HyphenateException e) {
-            EMWrapper.onError(result, e, null);
+            ExtSdkWrapper.onError(result, e, null);
         }
     }
 
@@ -353,12 +353,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().asyncRemoveUsersFromGroup(groupId, members, new EMCallBack() {
             @Override
             public void onSuccess() {
-                EMWrapper.onSuccess(result, channelName, true);
+                ExtSdkWrapper.onSuccess(result, channelName, true);
             }
 
             @Override
             public void onError(int code, String error) {
-                EMWrapper.onError(result, code, error);
+                ExtSdkWrapper.onError(result, code, error);
             }
 
             @Override
@@ -377,12 +377,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().asyncBlockUsers(groupId, members, new EMCallBack() {
             @Override
             public void onSuccess() {
-                EMWrapper.onSuccess(result, channelName, true);
+                ExtSdkWrapper.onSuccess(result, channelName, true);
             }
 
             @Override
             public void onError(int code, String error) {
-                EMWrapper.onError(result, code, error);
+                ExtSdkWrapper.onError(result, code, error);
             }
 
             @Override
@@ -401,12 +401,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().asyncUnblockUsers(groupId, members, new EMCallBack() {
             @Override
             public void onSuccess() {
-                EMWrapper.onSuccess(result, channelName, true);
+                ExtSdkWrapper.onSuccess(result, channelName, true);
             }
 
             @Override
             public void onError(int code, String error) {
-                EMWrapper.onError(result, code, error);
+                ExtSdkWrapper.onError(result, code, error);
             }
 
             @Override
@@ -421,12 +421,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().asyncChangeGroupName(groupId, name, new EMCallBack() {
             @Override
             public void onSuccess() {
-                EMWrapper.onSuccess(result, channelName, null);
+                ExtSdkWrapper.onSuccess(result, channelName, null);
             }
 
             @Override
             public void onError(int code, String error) {
-                EMWrapper.onError(result, code, error);
+                ExtSdkWrapper.onError(result, code, error);
             }
 
             @Override
@@ -441,12 +441,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().asyncChangeGroupDescription(groupId, desc, new EMCallBack() {
             @Override
             public void onSuccess() {
-                EMWrapper.onSuccess(result, channelName, null);
+                ExtSdkWrapper.onSuccess(result, channelName, null);
             }
 
             @Override
             public void onError(int code, String error) {
-                EMWrapper.onError(result, code, error);
+                ExtSdkWrapper.onError(result, code, error);
             }
 
             @Override
@@ -459,12 +459,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().asyncLeaveGroup(groupId, new EMCallBack() {
             @Override
             public void onSuccess() {
-                EMWrapper.onSuccess(result, channelName, true);
+                ExtSdkWrapper.onSuccess(result, channelName, true);
             }
 
             @Override
             public void onError(int code, String error) {
-                EMWrapper.onError(result, code, error);
+                ExtSdkWrapper.onError(result, code, error);
             }
 
             @Override
@@ -477,12 +477,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().asyncDestroyGroup(groupId, new EMCallBack() {
             @Override
             public void onSuccess() {
-                EMWrapper.onSuccess(result, channelName, true);
+                ExtSdkWrapper.onSuccess(result, channelName, true);
             }
 
             @Override
             public void onError(int code, String error) {
-                EMWrapper.onError(result, code, error);
+                ExtSdkWrapper.onError(result, code, error);
             }
 
             @Override
@@ -496,12 +496,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().asyncBlockGroupMessage(groupId, new EMCallBack() {
             @Override
             public void onSuccess() {
-                EMWrapper.onSuccess(result, channelName, null);
+                ExtSdkWrapper.onSuccess(result, channelName, null);
             }
 
             @Override
             public void onError(int code, String error) {
-                EMWrapper.onError(result, code, error);
+                ExtSdkWrapper.onError(result, code, error);
             }
 
             @Override
@@ -515,12 +515,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().asyncUnblockGroupMessage(groupId, new EMCallBack() {
             @Override
             public void onSuccess() {
-                EMWrapper.onSuccess(result, channelName, null);
+                ExtSdkWrapper.onSuccess(result, channelName, null);
             }
 
             @Override
             public void onError(int code, String error) {
-                EMWrapper.onError(result, code, error);
+                ExtSdkWrapper.onError(result, code, error);
             }
 
             @Override
@@ -535,12 +535,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().asyncChangeOwner(groupId, newOwner, new EMValueCallBack<EMGroup>() {
             @Override
             public void onSuccess(EMGroup value) {
-                EMWrapper.onSuccess(result, channelName, EMGroupHelper.toJson(value));
+                ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(value));
             }
 
             @Override
             public void onError(int error, String errorMsg) {
-                EMWrapper.onError(result, error, errorMsg);
+                ExtSdkWrapper.onError(result, error, errorMsg);
             }
         });
     }
@@ -552,12 +552,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().asyncAddGroupAdmin(groupId, admin, new EMValueCallBack<EMGroup>() {
             @Override
             public void onSuccess(EMGroup value) {
-                EMWrapper.onSuccess(result, channelName, EMGroupHelper.toJson(value));
+                ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(value));
             }
 
             @Override
             public void onError(int error, String errorMsg) {
-                EMWrapper.onError(result, error, errorMsg);
+                ExtSdkWrapper.onError(result, error, errorMsg);
             }
         });
     }
@@ -569,12 +569,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().asyncRemoveGroupAdmin(groupId, admin, new EMValueCallBack<EMGroup>() {
             @Override
             public void onSuccess(EMGroup value) {
-                EMWrapper.onSuccess(result, channelName, EMGroupHelper.toJson(value));
+                ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(value));
             }
 
             @Override
             public void onError(int error, String errorMsg) {
-                EMWrapper.onError(result, error, errorMsg);
+                ExtSdkWrapper.onError(result, error, errorMsg);
             }
         });
     }
@@ -592,12 +592,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
             groupId, members, duration, new EMValueCallBack<EMGroup>() {
                 @Override
                 public void onSuccess(EMGroup value) {
-                    EMWrapper.onSuccess(result, channelName, EMGroupHelper.toJson(value));
+                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(value));
                 }
 
                 @Override
                 public void onError(int error, String errorMsg) {
-                    EMWrapper.onError(result, error, errorMsg);
+                    ExtSdkWrapper.onError(result, error, errorMsg);
                 }
             });
     }
@@ -613,12 +613,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().asyncUnMuteGroupMembers(groupId, members, new EMValueCallBack<EMGroup>() {
             @Override
             public void onSuccess(EMGroup value) {
-                EMWrapper.onSuccess(result, channelName, EMGroupHelper.toJson(value));
+                ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(value));
             }
 
             @Override
             public void onError(int error, String errorMsg) {
-                EMWrapper.onError(result, error, errorMsg);
+                ExtSdkWrapper.onError(result, error, errorMsg);
             }
         });
     }
@@ -629,12 +629,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().muteAllMembers(groupId, new EMValueCallBack<EMGroup>() {
             @Override
             public void onSuccess(EMGroup value) {
-                EMWrapper.onSuccess(result, channelName, EMGroupHelper.toJson(value));
+                ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(value));
             }
 
             @Override
             public void onError(int error, String errorMsg) {
-                EMWrapper.onError(result, error, errorMsg);
+                ExtSdkWrapper.onError(result, error, errorMsg);
             }
         });
     }
@@ -645,12 +645,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().unmuteAllMembers(groupId, new EMValueCallBack<EMGroup>() {
             @Override
             public void onSuccess(EMGroup value) {
-                EMWrapper.onSuccess(result, channelName, EMGroupHelper.toJson(value));
+                ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(value));
             }
 
             @Override
             public void onError(int error, String errorMsg) {
-                EMWrapper.onError(result, error, errorMsg);
+                ExtSdkWrapper.onError(result, error, errorMsg);
             }
         });
     }
@@ -666,12 +666,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().addToGroupWhiteList(groupId, members, new EMCallBack() {
             @Override
             public void onSuccess() {
-                EMWrapper.onSuccess(result, channelName, true);
+                ExtSdkWrapper.onSuccess(result, channelName, true);
             }
 
             @Override
             public void onError(int code, String error) {
-                EMWrapper.onError(result, code, error);
+                ExtSdkWrapper.onError(result, code, error);
             }
 
             @Override
@@ -690,12 +690,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().removeFromGroupWhiteList(groupId, members, new EMCallBack() {
             @Override
             public void onSuccess() {
-                EMWrapper.onSuccess(result, channelName, true);
+                ExtSdkWrapper.onSuccess(result, channelName, true);
             }
 
             @Override
             public void onError(int code, String error) {
-                EMWrapper.onError(result, code, error);
+                ExtSdkWrapper.onError(result, code, error);
             }
 
             @Override
@@ -711,12 +711,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().asyncUploadGroupSharedFile(groupId, filePath, new EMCallBack() {
             @Override
             public void onSuccess() {
-                EMWrapper.onSuccess(result, channelName, true);
+                ExtSdkWrapper.onSuccess(result, channelName, true);
             }
 
             @Override
             public void onError(int code, String error) {
-                EMWrapper.onError(result, code, error);
+                ExtSdkWrapper.onError(result, code, error);
             }
 
             @Override
@@ -733,12 +733,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().asyncDownloadGroupSharedFile(groupId, fileId, savePath, new EMCallBack() {
             @Override
             public void onSuccess() {
-                EMWrapper.onSuccess(result, channelName, true);
+                ExtSdkWrapper.onSuccess(result, channelName, true);
             }
 
             @Override
             public void onError(int code, String error) {
-                EMWrapper.onError(result, code, error);
+                ExtSdkWrapper.onError(result, code, error);
             }
 
             @Override
@@ -753,12 +753,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().asyncDeleteGroupSharedFile(groupId, fileId, new EMCallBack() {
             @Override
             public void onSuccess() {
-                EMWrapper.onSuccess(result, channelName, true);
+                ExtSdkWrapper.onSuccess(result, channelName, true);
             }
 
             @Override
             public void onError(int code, String error) {
-                EMWrapper.onError(result, code, error);
+                ExtSdkWrapper.onError(result, code, error);
             }
 
             @Override
@@ -776,13 +776,13 @@ public class EMGroupManagerWrapper extends EMWrapper {
             public void onSuccess() {
                 ExtSdkThreadUtil.asyncExecute(() -> {
                     EMGroup group = EMClient.getInstance().groupManager().getGroup(groupId);
-                    EMWrapper.onSuccess(result, channelName, EMGroupHelper.toJson(group));
+                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(group));
                 });
             }
 
             @Override
             public void onError(int code, String error) {
-                EMWrapper.onError(result, code, error);
+                ExtSdkWrapper.onError(result, code, error);
             }
 
             @Override
@@ -795,7 +795,7 @@ public class EMGroupManagerWrapper extends EMWrapper {
         String ext = param.getString("ext");
         try {
             EMGroup group = EMClient.getInstance().groupManager().updateGroupExtension(groupId, ext);
-            onSuccess(result, channelName, EMGroupHelper.toJson(group));
+            onSuccess(result, channelName, ExtSdkGroupHelper.toJson(group));
         } catch (HyphenateException e) {
             onError(result, e, null);
         }
@@ -809,13 +809,13 @@ public class EMGroupManagerWrapper extends EMWrapper {
             public void onSuccess() {
                 ExtSdkThreadUtil.asyncExecute(() -> {
                     EMGroup group = EMClient.getInstance().groupManager().getGroup(groupId);
-                    EMWrapper.onSuccess(result, channelName, EMGroupHelper.toJson(group));
+                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(group));
                 });
             }
 
             @Override
             public void onError(int code, String error) {
-                EMWrapper.onError(result, code, error);
+                ExtSdkWrapper.onError(result, code, error);
             }
 
             @Override
@@ -836,13 +836,13 @@ public class EMGroupManagerWrapper extends EMWrapper {
             public void onSuccess() {
                 ExtSdkThreadUtil.asyncExecute(() -> {
                     EMGroup group = EMClient.getInstance().groupManager().getGroup(groupId);
-                    EMWrapper.onSuccess(result, channelName, EMGroupHelper.toJson(group));
+                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(group));
                 });
             }
 
             @Override
             public void onError(int code, String error) {
-                EMWrapper.onError(result, code, error);
+                ExtSdkWrapper.onError(result, code, error);
             }
 
             @Override
@@ -860,13 +860,13 @@ public class EMGroupManagerWrapper extends EMWrapper {
             public void onSuccess() {
                 ExtSdkThreadUtil.asyncExecute(() -> {
                     EMGroup group = EMClient.getInstance().groupManager().getGroup(groupId);
-                    EMWrapper.onSuccess(result, channelName, EMGroupHelper.toJson(group));
+                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(group));
                 });
             }
 
             @Override
             public void onError(int code, String error) {
-                EMWrapper.onError(result, code, error);
+                ExtSdkWrapper.onError(result, code, error);
             }
 
             @Override
@@ -888,13 +888,13 @@ public class EMGroupManagerWrapper extends EMWrapper {
             public void onSuccess() {
                 ExtSdkThreadUtil.asyncExecute(() -> {
                     EMGroup group = EMClient.getInstance().groupManager().getGroup(groupId);
-                    EMWrapper.onSuccess(result, channelName, EMGroupHelper.toJson(group));
+                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(group));
                 });
             }
 
             @Override
             public void onError(int code, String error) {
-                EMWrapper.onError(result, code, error);
+                ExtSdkWrapper.onError(result, code, error);
             }
 
             @Override
@@ -910,12 +910,12 @@ public class EMGroupManagerWrapper extends EMWrapper {
         EMClient.getInstance().groupManager().asyncAcceptInvitation(groupId, inviter, new EMValueCallBack<EMGroup>() {
             @Override
             public void onSuccess(EMGroup value) {
-                EMWrapper.onSuccess(result, channelName, EMGroupHelper.toJson(value));
+                ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(value));
             }
 
             @Override
             public void onError(int error, String errorMsg) {
-                EMWrapper.onError(result, error, errorMsg);
+                ExtSdkWrapper.onError(result, error, errorMsg);
             }
         });
     }
@@ -934,13 +934,13 @@ public class EMGroupManagerWrapper extends EMWrapper {
             public void onSuccess() {
                 ExtSdkThreadUtil.asyncExecute(() -> {
                     EMGroup group = EMClient.getInstance().groupManager().getGroup(groupId);
-                    EMWrapper.onSuccess(result, channelName, EMGroupHelper.toJson(group));
+                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(group));
                 });
             }
 
             @Override
             public void onError(int code, String error) {
-                EMWrapper.onError(result, code, error);
+                ExtSdkWrapper.onError(result, code, error);
             }
 
             @Override
@@ -956,21 +956,24 @@ public class EMGroupManagerWrapper extends EMWrapper {
         try {
             EMClient.getInstance().pushManager().updatePushServiceForGroup(list, !ignore);
             EMGroup group = EMClient.getInstance().groupManager().getGroup(groupId);
-            onSuccess(result, channelName, EMGroupHelper.toJson(group));
+            onSuccess(result, channelName, ExtSdkGroupHelper.toJson(group));
         } catch (HyphenateException e) {
             onError(result, e, null);
         }
     }
 
     private void registerEaseListener() {
-        EMClient.getInstance().groupManager().addGroupChangeListener(new EMGroupChangeListener() {
+        if (this.groupChangeListener != null) {
+            EMClient.getInstance().groupManager().removeGroupChangeListener(this.groupChangeListener);
+        }
+        this.groupChangeListener = new EMGroupChangeListener() {
             @Override
             public void onWhiteListAdded(String groupId, List<String> whitelist) {
                 Map<String, Object> data = new HashMap<>();
                 data.put("type", "onWhiteListAdded");
                 data.put("groupId", groupId);
                 data.put("whitelist", whitelist);
-                EMWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
 
             @Override
@@ -979,7 +982,7 @@ public class EMGroupManagerWrapper extends EMWrapper {
                 data.put("type", "onWhiteListRemoved");
                 data.put("groupId", groupId);
                 data.put("whitelist", whitelist);
-                EMWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
 
             @Override
@@ -988,7 +991,7 @@ public class EMGroupManagerWrapper extends EMWrapper {
                 data.put("type", "onAllMemberMuteStateChanged");
                 data.put("groupId", groupId);
                 data.put("isMuted", isMuted);
-                EMWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
 
             @Override
@@ -999,7 +1002,7 @@ public class EMGroupManagerWrapper extends EMWrapper {
                 data.put("groupName", groupName);
                 data.put("inviter", inviter);
                 data.put("reason", reason);
-                EMWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
 
             @Override
@@ -1010,7 +1013,7 @@ public class EMGroupManagerWrapper extends EMWrapper {
                 data.put("groupName", groupName);
                 data.put("applicant", applicant);
                 data.put("reason", reason);
-                EMWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
 
             @Override
@@ -1020,7 +1023,7 @@ public class EMGroupManagerWrapper extends EMWrapper {
                 data.put("groupId", groupId);
                 data.put("groupName", groupName);
                 data.put("accepter", accepter);
-                EMWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
 
             @Override
@@ -1031,7 +1034,7 @@ public class EMGroupManagerWrapper extends EMWrapper {
                 data.put("groupName", groupName);
                 data.put("decliner", decliner);
                 data.put("reason", reason);
-                EMWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
 
             @Override
@@ -1041,7 +1044,7 @@ public class EMGroupManagerWrapper extends EMWrapper {
                 data.put("groupId", groupId);
                 data.put("invitee", invitee);
                 data.put("reason", reason);
-                EMWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
 
             @Override
@@ -1051,7 +1054,7 @@ public class EMGroupManagerWrapper extends EMWrapper {
                 data.put("groupId", groupId);
                 data.put("invitee", invitee);
                 data.put("reason", reason);
-                EMWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
 
             @Override
@@ -1060,7 +1063,7 @@ public class EMGroupManagerWrapper extends EMWrapper {
                 data.put("type", "onUserRemoved");
                 data.put("groupId", groupId);
                 data.put("groupName", groupName);
-                EMWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
 
             @Override
@@ -1069,7 +1072,7 @@ public class EMGroupManagerWrapper extends EMWrapper {
                 data.put("type", "onGroupDestroyed");
                 data.put("groupId", groupId);
                 data.put("groupName", groupName);
-                EMWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
 
             @Override
@@ -1079,7 +1082,7 @@ public class EMGroupManagerWrapper extends EMWrapper {
                 data.put("groupId", groupId);
                 data.put("inviter", inviter);
                 data.put("inviteMessage", inviteMessage);
-                EMWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
 
             @Override
@@ -1089,7 +1092,7 @@ public class EMGroupManagerWrapper extends EMWrapper {
                 data.put("groupId", groupId);
                 data.put("mutes", mutes);
                 data.put("muteExpire", muteExpire);
-                EMWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
 
             @Override
@@ -1098,7 +1101,7 @@ public class EMGroupManagerWrapper extends EMWrapper {
                 data.put("type", "onMuteListRemoved");
                 data.put("groupId", groupId);
                 data.put("mutes", mutes);
-                EMWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
 
             @Override
@@ -1107,7 +1110,7 @@ public class EMGroupManagerWrapper extends EMWrapper {
                 data.put("type", "onAdminAdded");
                 data.put("groupId", groupId);
                 data.put("administrator", administrator);
-                EMWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
 
             @Override
@@ -1116,7 +1119,7 @@ public class EMGroupManagerWrapper extends EMWrapper {
                 data.put("type", "onAdminRemoved");
                 data.put("groupId", groupId);
                 data.put("administrator", administrator);
-                EMWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
 
             @Override
@@ -1126,7 +1129,7 @@ public class EMGroupManagerWrapper extends EMWrapper {
                 data.put("groupId", groupId);
                 data.put("newOwner", newOwner);
                 data.put("oldOwner", oldOwner);
-                EMWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
 
             @Override
@@ -1135,7 +1138,7 @@ public class EMGroupManagerWrapper extends EMWrapper {
                 data.put("type", "onMemberJoined");
                 data.put("groupId", groupId);
                 data.put("member", member);
-                EMWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
 
             @Override
@@ -1145,7 +1148,7 @@ public class EMGroupManagerWrapper extends EMWrapper {
                 data.put("type", "onMemberExited");
                 data.put("groupId", groupId);
                 data.put("member", member);
-                EMWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
 
             @Override
@@ -1155,7 +1158,7 @@ public class EMGroupManagerWrapper extends EMWrapper {
                 data.put("type", "onAnnouncementChanged");
                 data.put("groupId", groupId);
                 data.put("announcement", announcement);
-                EMWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
 
             @Override
@@ -1164,8 +1167,8 @@ public class EMGroupManagerWrapper extends EMWrapper {
                 Map<String, Object> data = new HashMap<>();
                 data.put("type", "onSharedFileAdded");
                 data.put("groupId", groupId);
-                data.put("sharedFile", EMMucSharedFileHelper.toJson(sharedFile));
-                EMWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
+                data.put("sharedFile", ExtSdkMucSharedFileHelper.toJson(sharedFile));
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
 
             @Override
@@ -1175,8 +1178,10 @@ public class EMGroupManagerWrapper extends EMWrapper {
                 data.put("type", "onSharedFileDeleted");
                 data.put("groupId", groupId);
                 data.put("fileId", fileId);
-                EMWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
-        });
+        };
+        EMClient.getInstance().groupManager().addGroupChangeListener(this.groupChangeListener);
     }
+    private EMGroupChangeListener groupChangeListener = null;
 }

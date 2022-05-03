@@ -1,5 +1,6 @@
 package com.easemob.ext_sdk.rn;
 
+import android.net.Uri;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
@@ -10,15 +11,20 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class ExtSdkMapHelperRN {
 
     public void toWritableMap(Map<String, Object> data, WritableMap result) {
-        ++safeCount;
-        if (MAX_COUNT < safeCount) {
-            throw new RuntimeException("Too many recursions. " + safeCount);
+        this.toWritableMap(data, result, 0);
+    }
+
+    public void toWritableMap(Map<String, Object> data, WritableMap result, int depth) {
+        if (MAX_COUNT < depth) {
+            throw new RuntimeException("Too many recursions. " + depth);
         }
         Iterator<Map.Entry<String, Object>> iterator = data.entrySet().iterator();
         while (iterator.hasNext()) {
@@ -48,24 +54,33 @@ public class ExtSdkMapHelperRN {
                 }
             } else if (value instanceof String) {
                 result.putString(key, value.toString());
+            } else if (value instanceof android.net.Uri) {
+                result.putString(key, value.toString());
             } else if (value instanceof Map) {
                 WritableMap m = Arguments.createMap();
                 toWritableMap((Map<String, Object>) value, m);
                 result.putMap(key, (WritableNativeMap) m);
             } else if (value instanceof Object[]) {
                 WritableNativeArray a = Arguments.fromJavaArgs(new Object[0]);
-                toWritableArray((Object[]) value, a);
+                toWritableArray((Object[]) value, a, ++depth);
+                result.putArray(key, (WritableNativeArray) a);
+            } else if (value instanceof List) {
+                WritableNativeArray a = Arguments.fromJavaArgs(new Object[0]);
+                toWritableArray((Object[]) ((List<?>) value).toArray(), a, ++depth);
                 result.putArray(key, (WritableNativeArray) a);
             } else {
-                throw new RuntimeException("Cannot convert argument of type " + value);
+                throw new RuntimeException("Cannot convert argument of type " + value + " " + valueClass);
             }
         }
     }
 
     protected void toWritableArray(Object[] data, WritableNativeArray result) {
-        ++safeCount;
-        if (MAX_COUNT < safeCount) {
-            throw new RuntimeException("Too many recursions. " + safeCount);
+        toWritableArray(data, result, 0);
+    }
+
+    protected void toWritableArray(Object[] data, WritableNativeArray result, int depth) {
+        if (MAX_COUNT < depth) {
+            throw new RuntimeException("Too many recursions. " + depth);
         }
         for (int i = 0; i < data.length; i++) {
             Object value = data[i];
@@ -92,20 +107,25 @@ public class ExtSdkMapHelperRN {
                 }
             } else if (value instanceof String) {
                 result.pushString(value.toString());
+            } else if (value instanceof android.net.Uri) {
+                result.pushString(value.toString());
             } else if (value instanceof Map) {
                 WritableMap m = Arguments.createMap();
                 toWritableMap((Map<String, Object>) value, m);
                 result.pushMap((WritableNativeMap) m);
             } else if (value instanceof Object[]) {
                 WritableNativeArray a = Arguments.fromJavaArgs(new Object[0]);
-                toWritableArray((Object[]) value, a);
+                toWritableArray((Object[]) value, a, ++depth);
+                result.pushArray((WritableNativeArray) a);
+            } else if (value instanceof List) {
+                WritableNativeArray a = Arguments.fromJavaArgs(new Object[0]);
+                toWritableArray((Object[]) ((List<?>) value).toArray(), a, ++depth);
                 result.pushArray((WritableNativeArray) a);
             } else {
-                throw new RuntimeException("Cannot convert argument of type " + valueClass);
+                throw new RuntimeException("Cannot convert argument of type " + value + " " + valueClass);
             }
         }
     }
 
-    private int safeCount = 0;
     private static final int MAX_COUNT = 50;
 }

@@ -1,45 +1,39 @@
 package com.easemob.ext_sdk.dispatch;
 
 import com.easemob.ext_sdk.common.ExtSdkCallback;
-import com.easemob.ext_sdk.common.ExtSdkMethodType;
-import com.easemob.ext_sdk.common.ExtSdkThreadUtil;
 import com.hyphenate.EMValueCallBack;
 import com.hyphenate.chat.EMClient;
-import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMUserInfo;
-import com.hyphenate.util.EMLog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class EMUserInfoManagerWrapper extends EMWrapper {
+public class ExtSdkUserInfoManagerWrapper extends ExtSdkWrapper {
     public static class SingleHolder {
-        static EMUserInfoManagerWrapper instance = new EMUserInfoManagerWrapper();
+        static ExtSdkUserInfoManagerWrapper instance = new ExtSdkUserInfoManagerWrapper();
     }
 
-    public static EMUserInfoManagerWrapper getInstance() {
-        return EMUserInfoManagerWrapper.SingleHolder.instance;
+    public static ExtSdkUserInfoManagerWrapper getInstance() {
+        return ExtSdkUserInfoManagerWrapper.SingleHolder.instance;
     }
 
     public void updateOwnUserInfo(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
         JSONObject obj = params.getJSONObject("userInfo");
-        EMUserInfo userInfo = EMUserInfoHelper.fromJson(obj);
+        EMUserInfo userInfo = ExtSdkUserInfoHelper.fromJson(obj);
 
         EMClient.getInstance().userInfoManager().updateOwnInfo(userInfo, new EMValueCallBack<String>() {
             @Override
             public void onSuccess(String value) {
-                EMWrapper.onSuccess(result, channelName, EMUserInfoHelper.toJson(userInfo));
+                ExtSdkWrapper.onSuccess(result, channelName, ExtSdkUserInfoHelper.toJson(userInfo));
             }
 
             @Override
             public void onError(int error, String errorMsg) {
-                EMWrapper.onError(result, error, errorMsg);
+                ExtSdkWrapper.onError(result, error, errorMsg);
             }
         });
 
@@ -59,18 +53,18 @@ public class EMUserInfoManagerWrapper extends EMWrapper {
                         obj = new JSONObject(value);
                         String userId = EMClient.getInstance().getCurrentUser();
                         obj.put("userId", userId);
-                        EMUserInfo userInfo = EMUserInfoHelper.fromJson(obj);
-                        EMWrapper.onSuccess(result, channelName, EMUserInfoHelper.toJson(userInfo));
+                        EMUserInfo userInfo = ExtSdkUserInfoHelper.fromJson(obj);
+                        ExtSdkWrapper.onSuccess(result, channelName, ExtSdkUserInfoHelper.toJson(userInfo));
 
                     } catch (JSONException e) {
-                        EMWrapper.onError(result, e, null);
+                        ExtSdkWrapper.onError(result, e, null);
                     }
                 }
             }
 
             @Override
             public void onError(int error, String errorMsg) {
-                EMWrapper.onError(result, error, errorMsg);
+                ExtSdkWrapper.onError(result, error, errorMsg);
             }
         });
     }
@@ -87,12 +81,12 @@ public class EMUserInfoManagerWrapper extends EMWrapper {
             @Override
             public void onSuccess(Map<String, EMUserInfo> value) {
                 final Map<String, Map> rMap = generateMapFromMap(value);
-                EMWrapper.onSuccess(result, channelName, rMap);
+                ExtSdkWrapper.onSuccess(result, channelName, rMap);
             }
 
             @Override
             public void onError(int error, String errorMsg) {
-                EMWrapper.onError(result, error, errorMsg);
+                ExtSdkWrapper.onError(result, error, errorMsg);
             }
         });
     }
@@ -117,12 +111,12 @@ public class EMUserInfoManagerWrapper extends EMWrapper {
             @Override
             public void onSuccess(Map<String, EMUserInfo> value) {
                 final Map<String, Map> rMap = generateMapFromMap(value);
-                EMWrapper.onSuccess(result, channelName, rMap);
+                ExtSdkWrapper.onSuccess(result, channelName, rMap);
             }
 
             @Override
             public void onError(int error, String errorMsg) {
-                EMWrapper.onError(result, error, errorMsg);
+                ExtSdkWrapper.onError(result, error, errorMsg);
             }
         });
 
@@ -136,7 +130,7 @@ public class EMUserInfoManagerWrapper extends EMWrapper {
         for (Map.Entry<String, EMUserInfo> entry : aMap.entrySet()) {
             String mapKey = entry.getKey();
             EMUserInfo mapValue = entry.getValue();
-            resultMap.put(mapKey, EMUserInfoHelper.toJson(mapValue));
+            resultMap.put(mapKey, ExtSdkUserInfoHelper.toJson(mapValue));
         }
         return resultMap;
     }
