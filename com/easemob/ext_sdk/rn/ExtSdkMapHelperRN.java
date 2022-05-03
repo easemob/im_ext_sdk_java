@@ -19,9 +19,12 @@ import java.util.Map;
 public class ExtSdkMapHelperRN {
 
     public void toWritableMap(Map<String, Object> data, WritableMap result) {
-        ++safeCount;
-        if (MAX_COUNT < safeCount) {
-            throw new RuntimeException("Too many recursions. " + safeCount);
+        this.toWritableMap(data, result, 0);
+    }
+
+    public void toWritableMap(Map<String, Object> data, WritableMap result, int depth) {
+        if (MAX_COUNT < depth) {
+            throw new RuntimeException("Too many recursions. " + depth);
         }
         Iterator<Map.Entry<String, Object>> iterator = data.entrySet().iterator();
         while (iterator.hasNext()) {
@@ -59,11 +62,11 @@ public class ExtSdkMapHelperRN {
                 result.putMap(key, (WritableNativeMap) m);
             } else if (value instanceof Object[]) {
                 WritableNativeArray a = Arguments.fromJavaArgs(new Object[0]);
-                toWritableArray((Object[]) value, a);
+                toWritableArray((Object[]) value, a, ++depth);
                 result.putArray(key, (WritableNativeArray) a);
             } else if (value instanceof List) {
                 WritableNativeArray a = Arguments.fromJavaArgs(new Object[0]);
-                toWritableArray((Object[]) ((List<?>) value).toArray(), a);
+                toWritableArray((Object[]) ((List<?>) value).toArray(), a, ++depth);
                 result.putArray(key, (WritableNativeArray) a);
             } else {
                 throw new RuntimeException("Cannot convert argument of type " + value + " " + valueClass);
@@ -72,9 +75,12 @@ public class ExtSdkMapHelperRN {
     }
 
     protected void toWritableArray(Object[] data, WritableNativeArray result) {
-        ++safeCount;
-        if (MAX_COUNT < safeCount) {
-            throw new RuntimeException("Too many recursions. " + safeCount);
+        toWritableArray(data, result, 0);
+    }
+
+    protected void toWritableArray(Object[] data, WritableNativeArray result, int depth) {
+        if (MAX_COUNT < depth) {
+            throw new RuntimeException("Too many recursions. " + depth);
         }
         for (int i = 0; i < data.length; i++) {
             Object value = data[i];
@@ -109,11 +115,11 @@ public class ExtSdkMapHelperRN {
                 result.pushMap((WritableNativeMap) m);
             } else if (value instanceof Object[]) {
                 WritableNativeArray a = Arguments.fromJavaArgs(new Object[0]);
-                toWritableArray((Object[]) value, a);
+                toWritableArray((Object[]) value, a, ++depth);
                 result.pushArray((WritableNativeArray) a);
             } else if (value instanceof List) {
                 WritableNativeArray a = Arguments.fromJavaArgs(new Object[0]);
-                toWritableArray((Object[]) ((List<?>) value).toArray(), a);
+                toWritableArray((Object[]) ((List<?>) value).toArray(), a, ++depth);
                 result.pushArray((WritableNativeArray) a);
             } else {
                 throw new RuntimeException("Cannot convert argument of type " + value + " " + valueClass);
@@ -121,6 +127,5 @@ public class ExtSdkMapHelperRN {
         }
     }
 
-    private int safeCount = 0;
     private static final int MAX_COUNT = 50;
 }

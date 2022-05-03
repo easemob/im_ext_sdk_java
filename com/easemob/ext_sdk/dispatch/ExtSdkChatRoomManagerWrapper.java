@@ -11,8 +11,11 @@ import com.hyphenate.chat.EMPageResult;
 import com.hyphenate.exceptions.HyphenateException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,8 +69,12 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
 
     public void fetchChatRoomInfoFromServer(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
+        boolean fetchMembers = false;
         String roomId = param.getString("roomId");
-        boolean fetchMembers = param.getBoolean("fetchMembers");
+        if (param.has("fetchMembers")) {
+            fetchMembers = param.getBoolean("fetchMembers");
+        }
+
         try {
             EMChatRoom room = null;
             if (fetchMembers) {
@@ -168,7 +175,7 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
 
     public void muteChatRoomMembers(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String roomId = param.getString("roomId");
-        long duration = Long.parseLong(param.getString("duration"));
+        long duration = param.getLong("duration");
         JSONArray muteMembers = param.getJSONArray("muteMembers");
         List<String> muteMembersList = new ArrayList<>();
         for (int i = 0; i < muteMembers.length(); i++) {
@@ -239,7 +246,13 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
         int pageSize = param.getInt("pageSize");
         try {
             Map map = EMClient.getInstance().chatroomManager().fetchChatRoomMuteList(roomId, pageNum, pageSize);
-            onSuccess(result, channelName, map);
+            ArrayList<String> ret = new ArrayList<>();
+            Iterator<Map.Entry<String, Long>> iter = map.entrySet().iterator();
+            while (iter.hasNext()) {
+                Map.Entry<String, Long> item = iter.next();
+                ret.add(item.getKey());
+            }
+            onSuccess(result, channelName, ret);
         } catch (HyphenateException e) {
             onError(result, e, null);
         }
