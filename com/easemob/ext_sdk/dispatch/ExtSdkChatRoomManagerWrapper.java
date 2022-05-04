@@ -15,16 +15,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
 
-    public static class SingleHolder { static ExtSdkChatRoomManagerWrapper instance = new ExtSdkChatRoomManagerWrapper(); }
+    public static class SingleHolder {
+        static ExtSdkChatRoomManagerWrapper instance = new ExtSdkChatRoomManagerWrapper();
+    }
 
-    public static ExtSdkChatRoomManagerWrapper getInstance() { return ExtSdkChatRoomManagerWrapper.SingleHolder.instance; }
+    public static ExtSdkChatRoomManagerWrapper getInstance() {
+        return ExtSdkChatRoomManagerWrapper.SingleHolder.instance;
+    }
 
     ExtSdkChatRoomManagerWrapper() { registerEaseListener(); }
 
@@ -246,13 +249,7 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
         int pageSize = param.getInt("pageSize");
         try {
             Map map = EMClient.getInstance().chatroomManager().fetchChatRoomMuteList(roomId, pageNum, pageSize);
-            ArrayList<String> ret = new ArrayList<>();
-            Iterator<Map.Entry<String, Long>> iter = map.entrySet().iterator();
-            while (iter.hasNext()) {
-                Map.Entry<String, Long> item = iter.next();
-                ret.add(item.getKey());
-            }
-            onSuccess(result, channelName, ret);
+            onSuccess(result, channelName, map.keySet().toArray());
         } catch (HyphenateException e) {
             onError(result, e, null);
         }
