@@ -59,8 +59,14 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
     public void getJoinedGroupsFromServer(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
 
-        int pageSize = param.getInt("pageSize");
-        int pageNum = param.getInt("pageNum");
+        int pageSize = 0;
+        if (param.has("pageSize")) {
+            pageSize = param.getInt("pageSize");
+        }
+        int pageNum = 0;
+        if (param.has("pageNum")) {
+            pageNum = param.getInt("pageNum");
+        }
 
         EMClient.getInstance().groupManager().asyncGetJoinedGroupsFromServer(
             pageNum, pageSize, new EMValueCallBack<List<EMGroup>>() {
@@ -82,7 +88,10 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
 
     public void getPublicGroupsFromServer(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
-        int pageSize = param.getInt("pageSize");
+        int pageSize = 0;
+        if (param.has("pageSize")) {
+            pageSize = param.getInt("pageSize");
+        }
         String cursor = null;
         if (param.has("cursor")) {
             cursor = param.getString("cursor");
@@ -186,8 +195,14 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
     public void getGroupBlockListFromServer(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         String groupId = param.getString("groupId");
-        int pageNum = param.getInt("pageNum");
-        int pageSize = param.getInt("pageSize");
+        int pageSize = 0;
+        if (param.has("pageSize")) {
+            pageSize = param.getInt("pageSize");
+        }
+        int pageNum = 0;
+        if (param.has("pageNum")) {
+            pageNum = param.getInt("pageNum");
+        }
         EMClient.getInstance().groupManager().asyncGetBlockedUsers(
             groupId, pageNum, pageSize, new EMValueCallBack<List<String>>() {
                 @Override
@@ -205,8 +220,14 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
     public void getGroupMuteListFromServer(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         String groupId = param.getString("groupId");
-        int pageNum = param.getInt("pageNum");
-        int pageSize = param.getInt("pageSize");
+        int pageSize = 0;
+        if (param.has("pageSize")) {
+            pageSize = param.getInt("pageSize");
+        }
+        int pageNum = 0;
+        if (param.has("pageNum")) {
+            pageNum = param.getInt("pageNum");
+        }
         EMClient.getInstance().groupManager().asyncFetchGroupMuteList(
             groupId, pageNum, pageSize, new EMValueCallBack<Map<String, Long>>() {
                 @Override
@@ -256,8 +277,14 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
     public void getGroupFileListFromServer(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         String groupId = param.getString("groupId");
-        int pageNum = param.getInt("pageNum");
-        int pageSize = param.getInt("pageSize");
+        int pageNum = 0;
+        if (param.has("pageNum")) {
+            pageNum = param.getInt("pageNum");
+        }
+        int pageSize = 0;
+        if (param.has("pageSize")) {
+            pageSize = param.getInt("pageSize");
+        }
         EMClient.getInstance().groupManager().asyncFetchGroupSharedFileList(
             groupId, pageNum, pageSize, new EMValueCallBack<List<EMMucSharedFile>>() {
                 @Override
@@ -321,11 +348,17 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
 
     public void addMembers(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String groupId = param.getString("groupId");
-        JSONArray array = param.getJSONArray("members");
 
-        String[] members = new String[array.length()];
-        for (int i = 0; i < array.length(); i++) {
-            members[i] = array.getString(i);
+        String[] members = null;
+        if (param.has("members")) {
+            JSONArray array = param.getJSONArray("members");
+            members = new String[array.length()];
+            for (int i = 0; i < array.length(); i++) {
+                members[i] = array.getString(i);
+            }
+        }
+        if (members == null) {
+            members = new String[0];
         }
 
         String welcome = null;
@@ -343,11 +376,12 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
 
     public void removeMembers(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String groupId = param.getString("groupId");
-        JSONArray array = param.getJSONArray("members");
-
         List<String> members = new ArrayList<>();
-        for (int i = 0; i < array.length(); i++) {
-            members.add(array.getString(i));
+        if (param.has("members")) {
+            JSONArray array = param.getJSONArray("members");
+            for (int i = 0; i < array.length(); i++) {
+                members.add(array.getString(i));
+            }
         }
 
         EMClient.getInstance().groupManager().asyncRemoveUsersFromGroup(groupId, members, new EMCallBack() {
@@ -368,10 +402,12 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
 
     public void blockMembers(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String groupId = param.getString("groupId");
-        JSONArray array = param.getJSONArray("members");
         List<String> members = new ArrayList<>();
-        for (int i = 0; i < array.length(); i++) {
-            members.add(array.getString(i));
+        if (param.has("members")) {
+            JSONArray array = param.getJSONArray("members");
+            for (int i = 0; i < array.length(); i++) {
+                members.add(array.getString(i));
+            }
         }
 
         EMClient.getInstance().groupManager().asyncBlockUsers(groupId, members, new EMCallBack() {
@@ -392,10 +428,12 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
 
     public void unblockMembers(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String groupId = param.getString("groupId");
-        JSONArray array = param.getJSONArray("members");
         List<String> members = new ArrayList<>();
-        for (int i = 0; i < array.length(); i++) {
-            members.add(array.getString(i));
+        if (param.has("members")) {
+            JSONArray array = param.getJSONArray("members");
+            for (int i = 0; i < array.length(); i++) {
+                members.add(array.getString(i));
+            }
         }
 
         EMClient.getInstance().groupManager().asyncUnblockUsers(groupId, members, new EMCallBack() {
@@ -416,7 +454,10 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
 
     public void updateGroupSubject(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String groupId = param.getString("groupId");
-        String name = param.getString("name");
+        String name = "";
+        if (param.has("name")) {
+            name = param.getString("name");
+        }
 
         EMClient.getInstance().groupManager().asyncChangeGroupName(groupId, name, new EMCallBack() {
             @Override
@@ -436,7 +477,10 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
 
     public void updateDescription(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String groupId = param.getString("groupId");
-        String desc = param.getString("desc");
+        String desc = "";
+        if (param.has("desc")) {
+            desc = param.getString("desc");
+        }
 
         EMClient.getInstance().groupManager().asyncChangeGroupDescription(groupId, desc, new EMCallBack() {
             @Override
@@ -581,11 +625,16 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
 
     public void muteMembers(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String groupId = param.getString("groupId");
-        int duration = param.getInt("duration");
-        JSONArray array = param.getJSONArray("members");
+        int duration = 0;
+        if (param.has("duration")) {
+            duration = param.getInt("duration");
+        }
         List<String> members = new ArrayList<>();
-        for (int i = 0; i < array.length(); i++) {
-            members.add(array.getString(i));
+        if (param.has("members")) {
+            JSONArray array = param.getJSONArray("members");
+            for (int i = 0; i < array.length(); i++) {
+                members.add(array.getString(i));
+            }
         }
 
         EMClient.getInstance().groupManager().aysncMuteGroupMembers(
@@ -604,10 +653,12 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
 
     public void unMuteMembers(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String groupId = param.getString("groupId");
-        JSONArray array = param.getJSONArray("members");
         List<String> members = new ArrayList<>();
-        for (int i = 0; i < array.length(); i++) {
-            members.add(array.getString(i));
+        if (param.has("members")) {
+            JSONArray array = param.getJSONArray("members");
+            for (int i = 0; i < array.length(); i++) {
+                members.add(array.getString(i));
+            }
         }
 
         EMClient.getInstance().groupManager().asyncUnMuteGroupMembers(groupId, members, new EMValueCallBack<EMGroup>() {
@@ -657,10 +708,12 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
 
     public void addWhiteList(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String groupId = param.getString("groupId");
-        JSONArray array = param.getJSONArray("members");
         List<String> members = new ArrayList<>();
-        for (int i = 0; i < array.length(); i++) {
-            members.add(array.getString(i));
+        if (param.has("members")) {
+            JSONArray array = param.getJSONArray("members");
+            for (int i = 0; i < array.length(); i++) {
+                members.add(array.getString(i));
+            }
         }
 
         EMClient.getInstance().groupManager().addToGroupWhiteList(groupId, members, new EMCallBack() {
@@ -681,10 +734,12 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
 
     public void removeWhiteList(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String groupId = param.getString("groupId");
-        JSONArray array = param.getJSONArray("members");
         List<String> members = new ArrayList<>();
-        for (int i = 0; i < array.length(); i++) {
-            members.add(array.getString(i));
+        if (param.has("members")) {
+            JSONArray array = param.getJSONArray("members");
+            for (int i = 0; i < array.length(); i++) {
+                members.add(array.getString(i));
+            }
         }
 
         EMClient.getInstance().groupManager().removeFromGroupWhiteList(groupId, members, new EMCallBack() {
@@ -706,7 +761,10 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
     public void uploadGroupSharedFile(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         String groupId = param.getString("groupId");
-        String filePath = param.getString("filePath");
+        String filePath = null;
+        if (param.has("filePath")) {
+            filePath = param.getString("filePath");
+        }
 
         EMClient.getInstance().groupManager().asyncUploadGroupSharedFile(groupId, filePath, new EMCallBack() {
             @Override
@@ -727,8 +785,14 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
     public void downloadGroupSharedFile(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         String groupId = param.getString("groupId");
-        String fileId = param.getString("fileId");
-        String savePath = param.getString("savePath");
+        String fileId = null;
+        if (param.has("fileId")) {
+            fileId = param.getString("fileId");
+        }
+        String savePath = null;
+        if (param.has("savePath")) {
+            savePath = param.getString("savePath");
+        }
 
         EMClient.getInstance().groupManager().asyncDownloadGroupSharedFile(groupId, fileId, savePath, new EMCallBack() {
             @Override
@@ -749,7 +813,10 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
     public void removeGroupSharedFile(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         String groupId = param.getString("groupId");
-        String fileId = param.getString("fileId");
+        String fileId = null;
+        if (param.has("fileId")) {
+            fileId = param.getString("fileId");
+        }
         EMClient.getInstance().groupManager().asyncDeleteGroupSharedFile(groupId, fileId, new EMCallBack() {
             @Override
             public void onSuccess() {
@@ -769,7 +836,10 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
     public void updateGroupAnnouncement(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         String groupId = param.getString("groupId");
-        String announcement = param.getString("announcement");
+        String announcement = null;
+        if (param.has("announcement")) {
+            announcement = param.getString("announcement");
+        }
 
         EMClient.getInstance().groupManager().asyncUpdateGroupAnnouncement(groupId, announcement, new EMCallBack() {
             @Override
@@ -792,7 +862,10 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
 
     public void updateGroupExt(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String groupId = param.getString("groupId");
-        String ext = param.getString("ext");
+        String ext = null;
+        if (param.has("ext")) {
+            ext = param.getString("ext");
+        }
         try {
             EMGroup group = EMClient.getInstance().groupManager().updateGroupExtension(groupId, ext);
             onSuccess(result, channelName, ExtSdkGroupHelper.toJson(group));
@@ -853,7 +926,10 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
     public void acceptJoinApplication(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         String groupId = param.getString("groupId");
-        String username = param.getString("username");
+        String username = null;
+        if (param.has("username")) {
+            username = param.getString("username");
+        }
 
         EMClient.getInstance().groupManager().asyncAcceptApplication(username, groupId, new EMCallBack() {
             @Override
@@ -877,7 +953,10 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
     public void declineJoinApplication(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         String groupId = param.getString("groupId");
-        String username = param.getString("username");
+        String username = null;
+        if (param.has("username")) {
+            username = param.getString("username");
+        }
         String reason = null;
         if (param.has("reason")) {
             reason = param.getString("reason");
@@ -905,7 +984,10 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
     public void acceptInvitationFromGroup(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         String groupId = param.getString("groupId");
-        String inviter = param.getString("inviter");
+        String inviter = null;
+        if (param.has("inviter")) {
+            inviter = param.getString("inviter");
+        }
 
         EMClient.getInstance().groupManager().asyncAcceptInvitation(groupId, inviter, new EMValueCallBack<EMGroup>() {
             @Override
@@ -923,7 +1005,10 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
     public void declineInvitationFromGroup(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         String groupId = param.getString("groupId");
-        String username = param.getString("username");
+        String username = null;
+        if (param.has("username")) {
+            username = param.getString("username");
+        }
         String reason = null;
         if (param.has("reason")) {
             reason = param.getString("reason");
@@ -1143,7 +1228,6 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
 
             @Override
             public void onMemberExited(String groupId, String member) {
-                EMLog.e("_emGroupManagerWrapper", "onMemberExited");
                 Map<String, Object> data = new HashMap<>();
                 data.put("type", "onMemberExited");
                 data.put("groupId", groupId);
@@ -1153,7 +1237,6 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
 
             @Override
             public void onAnnouncementChanged(String groupId, String announcement) {
-                EMLog.e("_emGroupManagerWrapper", "onAnnouncementChanged");
                 Map<String, Object> data = new HashMap<>();
                 data.put("type", "onAnnouncementChanged");
                 data.put("groupId", groupId);
@@ -1163,7 +1246,6 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
 
             @Override
             public void onSharedFileAdded(String groupId, EMMucSharedFile sharedFile) {
-                EMLog.e("_emGroupManagerWrapper", "onSharedFileAdded");
                 Map<String, Object> data = new HashMap<>();
                 data.put("type", "onSharedFileAdded");
                 data.put("groupId", groupId);
@@ -1173,7 +1255,6 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
 
             @Override
             public void onSharedFileDeleted(String groupId, String fileId) {
-                EMLog.e("_emGroupManagerWrapper", "onSharedFileDeleted");
                 Map<String, Object> data = new HashMap<>();
                 data.put("type", "onSharedFileDeleted");
                 data.put("groupId", groupId);

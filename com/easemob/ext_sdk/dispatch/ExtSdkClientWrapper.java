@@ -1,11 +1,10 @@
 package com.easemob.ext_sdk.dispatch;
 
-
-import com.easemob.ext_sdk.common.ExtSdkContext;
 import com.easemob.ext_sdk.common.ExtSdkCallback;
+import com.easemob.ext_sdk.common.ExtSdkContext;
 import com.easemob.ext_sdk.common.ExtSdkMethodType;
-
 import com.easemob.ext_sdk.common.ExtSdkThreadUtil;
+import com.easemob.im_flutter_sdk.EMListenerHandle;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMMultiDeviceListener;
@@ -13,27 +12,20 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMDeviceInfo;
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.exceptions.HyphenateException;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ExtSdkClientWrapper extends ExtSdkWrapper {
 
-    public static class SingleHolder {
-        static ExtSdkClientWrapper instance = new ExtSdkClientWrapper();
-    }
+    public static class SingleHolder { static ExtSdkClientWrapper instance = new ExtSdkClientWrapper(); }
 
-    public static ExtSdkClientWrapper getInstance() {
-        return ExtSdkClientWrapper.SingleHolder.instance;
-    }
+    public static ExtSdkClientWrapper getInstance() { return ExtSdkClientWrapper.SingleHolder.instance; }
 
-    public void getToken(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException
-    {
+    public void getToken(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         onSuccess(result, channelName, EMClient.getInstance().getAccessToken());
     }
 
@@ -96,7 +88,6 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
         }
     }
 
-
     public void logout(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         boolean unbindToken = param.getBoolean("unbindToken");
         EMClient.getInstance().logout(unbindToken, new EMCallBack() {
@@ -111,9 +102,7 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
             }
 
             @Override
-            public void onProgress(int progress, String status) {
-
-            }
+            public void onProgress(int progress, String status) {}
         });
     }
 
@@ -131,33 +120,16 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
         onSuccess(result, channelName, EMClient.getInstance().getCurrentUser());
     }
 
-    public void updateCurrentUserNick(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        String nickName = param.getString("nickname");
-        try {
-            boolean status = EMClient.getInstance().pushManager().updatePushNickname(nickName);
-            onSuccess(result, channelName, status);
-        } catch (HyphenateException e) {
-            onError(result, e, null);
-        }
-    }
-
-
     public void uploadLog(JSONObject param, String channelName, ExtSdkCallback result) {
         EMClient.getInstance().uploadLog(new EMCallBack() {
             @Override
-            public void onSuccess() {
-
-            }
+            public void onSuccess() {}
 
             @Override
-            public void onError(int code, String error) {
-
-            }
+            public void onError(int code, String error) {}
 
             @Override
-            public void onProgress(int progress, String status) {
-
-            }
+            public void onProgress(int progress, String status) {}
         });
     }
 
@@ -200,11 +172,10 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
         onSuccess(result, channelName, EMClient.getInstance().isLoggedInBefore());
     }
 
-    public void onMultiDeviceEvent(JSONObject param, String channelName, ExtSdkCallback result) {
+    public void onMultiDeviceEvent(JSONObject param, String channelName, ExtSdkCallback result) {}
 
-    }
-
-    public void getLoggedInDevicesFromServer(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+    public void getLoggedInDevicesFromServer(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
         String username = param.getString("username");
         String password = param.getString("password");
         try {
@@ -227,7 +198,6 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
         boolean finalDebugModel = debugModel;
 
         ExtSdkThreadUtil.mainThreadExecute(() -> {
-
             EMClient.getInstance().init(ExtSdkContext.context, finalOptions);
             EMClient.getInstance().setDebugMode(finalDebugModel);
 
@@ -235,10 +205,7 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
 
             addEMListener();
 
-            ExtSdkThreadUtil.asyncExecute(()->{
-                onSuccess(result, channelName, null);
-            });
-
+            ExtSdkThreadUtil.asyncExecute(() -> { onSuccess(result, channelName, null); });
         });
     }
 
@@ -261,13 +228,11 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
             }
 
             @Override
-            public void onProgress(int progress, String status) {
-
-            }
+            public void onProgress(int progress, String status) {}
         });
     }
 
-    public void isConnected(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException{
+    public void isConnected(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         onSuccess(result, channelName, EMClient.getInstance().isConnected());
     }
 
@@ -316,25 +281,38 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
 
             @Override
             public void onDisconnected(int errorCode) {
-                Map<String, Object> data = new HashMap<>();
-                data.put("errorCode", errorCode);
-                onReceive(ExtSdkMethodType.onDisconnected, data);
+                if (errorCode == 206) {
+                    onReceive(ExtSdkMethodType.onUserDidLoginFromOtherDevice, null);
+                } else if (errorCode == 207) {
+                    onReceive(ExtSdkMethodType.onUserDidRemoveFromServer, null);
+                } else if (errorCode == 305) {
+                    onReceive(ExtSdkMethodType.onUserDidForbidByServer, null);
+                } else if (errorCode == 216) {
+                    onReceive(ExtSdkMethodType.onUserDidChangePassword, null);
+                } else if (errorCode == 214) {
+                    onReceive(ExtSdkMethodType.onUserDidLoginTooManyDevice, null);
+                } else if (errorCode == 217) {
+                    onReceive(ExtSdkMethodType.onUserKickedByOtherDevice, null);
+                } else if (errorCode == 202) {
+                    onReceive(ExtSdkMethodType.onUserAuthenticationFailed, null);
+                } else {
+                    onReceive(ExtSdkMethodType.onDisconnected, null);
+                }
             }
 
             @Override
-            public void onTokenExpired(){
-                onReceive(ExtSdkMethodType.onDisconnected, null);
+            public void onTokenExpired() {
+                onReceive(ExtSdkMethodType.onTokenDidExpire, null);
             }
 
             @Override
-            public void onTokenWillExpire(){
-                onReceive(ExtSdkMethodType.onDisconnected, null);
+            public void onTokenWillExpire() {
+                onReceive(ExtSdkMethodType.onTokenWillExpire, null);
             }
         };
 
-        //setup connection listener
+        // setup connection listener
         EMClient.getInstance().addConnectionListener(this.connectionListener);
-
     }
 
     private EMConnectionListener connectionListener;

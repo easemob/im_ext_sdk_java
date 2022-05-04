@@ -5,13 +5,11 @@ import com.easemob.ext_sdk.common.ExtSdkMethodType;
 import com.hyphenate.EMContactListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.exceptions.HyphenateException;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ExtSdkContactManagerWrapper extends ExtSdkWrapper {
 
@@ -23,9 +21,7 @@ public class ExtSdkContactManagerWrapper extends ExtSdkWrapper {
         return ExtSdkContactManagerWrapper.SingleHolder.instance;
     }
 
-    ExtSdkContactManagerWrapper() {
-        registerEaseListener();
-    }
+    ExtSdkContactManagerWrapper() { registerEaseListener(); }
 
     public void addContact(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String username = param.getString("username");
@@ -36,7 +32,6 @@ public class ExtSdkContactManagerWrapper extends ExtSdkWrapper {
             onSuccess(result, channelName, username);
         } catch (HyphenateException e) {
             onError(result, e, null);
-
         }
     }
 
@@ -51,7 +46,8 @@ public class ExtSdkContactManagerWrapper extends ExtSdkWrapper {
         }
     }
 
-    public void getAllContactsFromServer(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
+    public void getAllContactsFromServer(JSONObject params, String channelName, ExtSdkCallback result)
+        throws JSONException {
         try {
             List contacts = EMClient.getInstance().contactManager().getAllContactsFromServer();
             onSuccess(result, channelName, contacts);
@@ -60,7 +56,8 @@ public class ExtSdkContactManagerWrapper extends ExtSdkWrapper {
         }
     }
 
-    public void getAllContactsFromDB(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
+    public void getAllContactsFromDB(JSONObject params, String channelName, ExtSdkCallback result)
+        throws JSONException {
         try {
             List contacts = EMClient.getInstance().contactManager().getContactsFromLocal();
             onSuccess(result, channelName, contacts);
@@ -79,7 +76,8 @@ public class ExtSdkContactManagerWrapper extends ExtSdkWrapper {
         }
     }
 
-    public void removeUserFromBlockList(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
+    public void removeUserFromBlockList(JSONObject params, String channelName, ExtSdkCallback result)
+        throws JSONException {
         String username = params.getString("username");
         try {
             EMClient.getInstance().contactManager().removeUserFromBlackList(username);
@@ -89,7 +87,8 @@ public class ExtSdkContactManagerWrapper extends ExtSdkWrapper {
         }
     }
 
-    public void getBlockListFromServer(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
+    public void getBlockListFromServer(JSONObject params, String channelName, ExtSdkCallback result)
+        throws JSONException {
         try {
             List contacts = EMClient.getInstance().contactManager().getBlackListFromServer();
             onSuccess(result, channelName, contacts);
@@ -123,7 +122,8 @@ public class ExtSdkContactManagerWrapper extends ExtSdkWrapper {
         }
     }
 
-    public void getSelfIdsOnOtherPlatform(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
+    public void getSelfIdsOnOtherPlatform(JSONObject params, String channelName, ExtSdkCallback result)
+        throws JSONException {
         try {
             List platforms = EMClient.getInstance().contactManager().getSelfIdsOnOtherPlatform();
             onSuccess(result, channelName, platforms);
@@ -143,7 +143,6 @@ public class ExtSdkContactManagerWrapper extends ExtSdkWrapper {
                 data.put("type", "onContactAdded");
                 data.put("username", userName);
                 onReceive(ExtSdkMethodType.onContactChanged, data);
-
             }
 
             @Override

@@ -410,36 +410,34 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         EMConversation.EMConversationType type = typeFromInt(param.getInt("conversationType"));
         boolean isDeleteRemoteMessage = param.getBoolean("isDeleteRemoteMessage");
         EMClient.getInstance().chatManager().deleteConversationFromServer(
-                conversationId, type, isDeleteRemoteMessage, new EMCallBack() {
-                    @Override
-                    public void onSuccess() {
-                        ExtSdkWrapper.onSuccess(result, channelName, null);
-                    }
+            conversationId, type, isDeleteRemoteMessage, new EMCallBack() {
+                @Override
+                public void onSuccess() {
+                    ExtSdkWrapper.onSuccess(result, channelName, null);
+                }
 
-                    @Override
-                    public void onError(int code, String error) {
-                        ExtSdkWrapper.onError(result, error, "");
-                    }
+                @Override
+                public void onError(int code, String error) {
+                    ExtSdkWrapper.onError(result, error, "");
+                }
 
-                    @Override
-                    public void onProgress(int progress, String status) {
-
-                    }
-                });
+                @Override
+                public void onProgress(int progress, String status) {}
+            });
     }
 
     private EMConversation.EMConversationType typeFromInt(int conversationType) {
         EMConversation.EMConversationType ret = EMConversation.EMConversationType.Chat;
         switch (conversationType) {
-            case 0:
-                ret = EMConversation.EMConversationType.Chat;
-                break;
-            case 1:
-                ret = EMConversation.EMConversationType.GroupChat;
-                break;
-            case 2:
-                ret = EMConversation.EMConversationType.ChatRoom;
-                break;
+        case 0:
+            ret = EMConversation.EMConversationType.Chat;
+            break;
+        case 1:
+            ret = EMConversation.EMConversationType.GroupChat;
+            break;
+        case 2:
+            ret = EMConversation.EMConversationType.ChatRoom;
+            break;
         }
         return ret;
     }
@@ -499,13 +497,6 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
             }
 
             @Override
-            public void onMessageChanged(EMMessage message, Object change) {
-                Map<String, Object> data = new HashMap<>();
-                data.put("message", ExtSdkMessageHelper.toJson(message));
-                ExtSdkWrapper.onReceive(ExtSdkMethodType.onMessageStatusChanged, data);
-            }
-
-            @Override
             public void onGroupMessageRead(List<EMGroupReadAck> var1) {
                 ArrayList<Map<String, Object>> msgList = new ArrayList<>();
                 for (EMGroupReadAck ack : var1) {
@@ -541,7 +532,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
     }
 
     private EMConversation.EMSearchDirection searchDirectionFromString(String direction) {
-        return direction == "up" ? EMConversation.EMSearchDirection.UP : EMConversation.EMSearchDirection.DOWN;
+        return direction.equals("up") ? EMConversation.EMSearchDirection.UP : EMConversation.EMSearchDirection.DOWN;
     }
 
     private EMMessageListener messageListener = null;
