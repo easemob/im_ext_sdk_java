@@ -46,7 +46,7 @@ public class ExtSdkUserInfoManagerWrapper extends ExtSdkWrapper {
                 @Override
                 public void onSuccess(String value) {
                     if (value != null && value.length() > 0) {
-                        JSONObject obj = null;
+                        JSONObject obj;
                         try {
                             obj = new JSONObject(value);
                             String userId = EMClient.getInstance().getCurrentUser();
@@ -135,10 +135,9 @@ public class ExtSdkUserInfoManagerWrapper extends ExtSdkWrapper {
 
     //获取用户属性类型
     private EMUserInfo.EMUserInfoType getUserInfoTypeFromInt(int value) {
-        int typeInt = value;
         EMUserInfo.EMUserInfoType infoType;
 
-        switch (typeInt) {
+        switch (value) {
         case 0: {
             infoType = EMUserInfo.EMUserInfoType.NICKNAME;
         } break;
@@ -172,7 +171,7 @@ public class ExtSdkUserInfoManagerWrapper extends ExtSdkWrapper {
         } break;
 
         default:
-            throw new IllegalStateException("Unexpected value: " + typeInt);
+            throw new IllegalStateException("Unexpected value: " + value);
         }
 
         return infoType;

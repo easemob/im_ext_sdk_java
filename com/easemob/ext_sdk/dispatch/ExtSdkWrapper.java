@@ -22,12 +22,12 @@ public class ExtSdkWrapper {
     }
 
     public static void onError(@NonNull ExtSdkCallback callback, @NonNull Object e, @Nullable Object ext) {
-        Log.d(TAG, "onError: " + (e != null ? e : "") + ": " + (ext != null ? ext : ""));
+        Log.d(TAG, "onError: " + e + ": " + (ext != null ? ext : ""));
         Map<String, Object> data = new HashMap<>();
         if (e instanceof HyphenateException) {
             data.put("error", ExtSdkExceptionHelper.toJson((HyphenateException)e));
         } else if (e instanceof Integer) {
-            data.put("error", ExtSdkErrorHelper.toJson((int)e, ext.toString()));
+            data.put("error", ExtSdkErrorHelper.toJson((int)e, ext != null ? ext.toString() : ""));
         } else if (e instanceof JSONException) {
             data.put("error", ExtSdkJSONExceptionHelper.toJson((JSONException)e));
         } else {

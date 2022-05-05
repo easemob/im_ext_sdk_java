@@ -51,12 +51,12 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
                     Map<String, String> param = new HashMap<>();
                     param.put("username", EMClient.getInstance().getCurrentUser());
                     param.put("token", EMClient.getInstance().getAccessToken());
-                    ExtSdkClientWrapper.this.onSuccess(result, channelName, param);
+                    ExtSdkWrapper.onSuccess(result, channelName, param);
                 }
 
                 @Override
                 public void onError(int code, String error) {
-                    ExtSdkClientWrapper.this.onError(result, code, error);
+                    ExtSdkWrapper.onError(result, code, error);
                 }
 
                 @Override
@@ -71,12 +71,12 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
                     Map<String, String> param = new HashMap<>();
                     param.put("username", EMClient.getInstance().getCurrentUser());
                     param.put("token", EMClient.getInstance().getAccessToken());
-                    ExtSdkClientWrapper.this.onSuccess(result, channelName, param);
+                    ExtSdkWrapper.onSuccess(result, channelName, param);
                 }
 
                 @Override
                 public void onError(int code, String error) {
-                    ExtSdkClientWrapper.this.onError(result, code, error);
+                    ExtSdkWrapper.onError(result, code, error);
                 }
 
                 @Override
@@ -92,12 +92,12 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
         EMClient.getInstance().logout(unbindToken, new EMCallBack() {
             @Override
             public void onSuccess() {
-                ExtSdkClientWrapper.this.onSuccess(result, channelName, true);
+                ExtSdkWrapper.onSuccess(result, channelName, true);
             }
 
             @Override
             public void onError(int code, String error) {
-                ExtSdkClientWrapper.this.onError(result, code, error);
+                ExtSdkWrapper.onError(result, code, error);
             }
 
             @Override
@@ -223,12 +223,12 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
                 Map<String, String> param = new HashMap<>();
                 param.put("username", EMClient.getInstance().getCurrentUser());
                 param.put("token", EMClient.getInstance().getAccessToken());
-                ExtSdkClientWrapper.this.onSuccess(result, channelName, param);
+                ExtSdkWrapper.onSuccess(result, channelName, param);
             }
 
             @Override
             public void onError(int code, String error) {
-                ExtSdkClientWrapper.this.onError(result, code, error);
+                ExtSdkWrapper.onError(result, code, error);
             }
 
             @Override

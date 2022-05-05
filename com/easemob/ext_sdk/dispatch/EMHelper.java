@@ -105,11 +105,11 @@ class ExtSdkOptionsHelper {
         data.put("requireDeliveryAck", options.getRequireDeliveryAck());
         data.put("sortMessageByServerTime", options.isSortMessageByServerTime());
         data.put("acceptInvitationAlways", options.getAcceptInvitationAlways());
-        data.put("autoAcceptGroupInvitation", options.isAutoAcceptGroupInvitation());
-        data.put("deleteMessagesAsExitGroup", options.isDeleteMessagesAsExitGroup());
-        data.put("deleteMessagesAsExitChatRoom", options.isDeleteMessagesAsExitChatRoom());
+        data.put("autoAcceptGroupInvitation", options.autoAcceptGroupInvitations());
+        data.put("deleteMessagesAsExitGroup", options.deleteMessagesOnLeaveGroup());
+        data.put("deleteMessagesAsExitChatRoom", options.deleteMessagesOnLeaveChatroom());
         data.put("isAutoDownload", options.getAutodownloadThumbnail());
-        data.put("isChatRoomOwnerLeaveAllowed", options.isChatroomOwnerLeaveAllowed());
+        data.put("isChatRoomOwnerLeaveAllowed", options.canChatroomOwnerLeave());
         // data.put("serverTransfer", "");
         // data.put("debugModel", options.);
         // data.put("serverTransfer", options.);
@@ -191,7 +191,7 @@ class ExtSdkGroupInfoHelper {
     static Map<String, Object> toJson(EMGroupInfo group) {
         Map<String, Object> data = new HashMap<>();
         data.put("groupId", group.getGroupId());
-        data.put("name", group.getGroupName());
+        data.put("groupName", group.getGroupName());
         return data;
     }
 }
@@ -277,7 +277,7 @@ class ExtSdkChatRoomHelper {
         data.put("memberCount", chatRoom.getMemberCount());
         data.put("adminList", chatRoom.getAdminList());
         data.put("memberList", chatRoom.getMemberList());
-        data.put("blockList", chatRoom.getBlackList());
+        data.put("blockList", chatRoom.getBlacklist());
         data.put("muteList", chatRoom.getMuteList());
         data.put("isAllMemberMuted", chatRoom.isAllMemberMuted());
         data.put("announcement", chatRoom.getAnnouncement());
@@ -439,38 +439,29 @@ class ExtSdkMessageHelper {
         if (message == null)
             return null;
         Map<String, Object> data = new HashMap<>();
-        String type = "";
         switch (message.getType()) {
         case TXT: {
-            type = "txt";
             data.put("body", ExtSdkMessageBodyHelper.textBodyToJson((EMTextMessageBody)message.getBody()));
         } break;
         case IMAGE: {
-            type = "img";
             data.put("body", ExtSdkMessageBodyHelper.imageBodyToJson((EMImageMessageBody)message.getBody()));
         } break;
         case LOCATION: {
-            type = "loc";
             data.put("body", ExtSdkMessageBodyHelper.localBodyToJson((EMLocationMessageBody)message.getBody()));
         } break;
         case CMD: {
-            type = "cmd";
             data.put("body", ExtSdkMessageBodyHelper.cmdBodyToJson((EMCmdMessageBody)message.getBody()));
         } break;
         case CUSTOM: {
-            type = "custom";
             data.put("body", ExtSdkMessageBodyHelper.customBodyToJson((EMCustomMessageBody)message.getBody()));
         } break;
         case FILE: {
-            type = "file";
             data.put("body", ExtSdkMessageBodyHelper.fileBodyToJson((EMNormalFileMessageBody)message.getBody()));
         } break;
         case VIDEO: {
-            type = "video";
             data.put("body", ExtSdkMessageBodyHelper.videoBodyToJson((EMVideoMessageBody)message.getBody()));
         } break;
         case VOICE: {
-            type = "voice";
             data.put("body", ExtSdkMessageBodyHelper.voiceBodyToJson((EMVoiceMessageBody)message.getBody()));
         } break;
         }
@@ -594,9 +585,7 @@ class ExtSdkMessageBodyHelper {
         double latitude = json.getDouble("latitude");
         double longitude = json.getDouble("longitude");
         String address = json.getString("address");
-
-        EMLocationMessageBody body = new EMLocationMessageBody(address, latitude, longitude);
-        return body;
+        return new EMLocationMessageBody(address, latitude, longitude);
     }
 
     static Map<String, Object> localBodyToJson(EMLocationMessageBody body) {
@@ -671,7 +660,6 @@ class ExtSdkMessageBodyHelper {
         data.put("displayName", body.getFileName());
         data.put("remotePath", body.getRemoteUrl());
         data.put("secret", body.getSecret());
-        data.put("fileSize", body.getFileSize());
         data.put("fileStatus", downloadStatusToInt(body.downloadStatus()));
         data.put("type", "file");
         return data;
@@ -686,7 +674,7 @@ class ExtSdkMessageBodyHelper {
         body.setRemoteUrl(json.getString("remotePath"));
         body.setSecret(json.getString("secret"));
         body.setDownloadStatus(downloadStatusFromInt(json.getInt("fileStatus")));
-        if (json.getString("thumbnailLocalPath") != null) {
+        if (json.has("thumbnailLocalPath")) {
             body.setThumbnailLocalPath(json.getString("thumbnailLocalPath"));
         }
         body.setThumbnailUrl(json.getString("thumbnailRemotePath"));
@@ -725,7 +713,7 @@ class ExtSdkMessageBodyHelper {
         int fileSize = json.getInt("fileSize");
         EMVideoMessageBody body = new EMVideoMessageBody(localPath, thumbnailLocalPath, duration, fileSize);
         body.setThumbnailUrl(json.getString("thumbnailRemotePath"));
-        if (json.getString("thumbnailLocalPath") != null) {
+        if (json.has("thumbnailLocalPath")) {
             body.setLocalThumb(json.getString("thumbnailLocalPath"));
         }
         body.setThumbnailSecret(json.getString("thumbnailSecret"));
@@ -754,7 +742,6 @@ class ExtSdkMessageBodyHelper {
         data.put("remotePath", body.getRemoteUrl());
         data.put("fileStatus", downloadStatusToInt(body.downloadStatus()));
         data.put("secret", body.getSecret());
-        data.put("fileSize", body.getVideoFileLength());
         data.put("type", "video");
 
         return data;
@@ -946,13 +933,7 @@ class ExtSdkCursorResultHelper {
                 }
 
                 if (obj instanceof EMGroupInfo) {
-                    EMGroup group = EMClient.getInstance().groupManager().getGroup(((EMGroupInfo)obj).getGroupId());
-                    if (group != null) {
-                        jsonList.add(ExtSdkGroupHelper.toJson(
-                            EMClient.getInstance().groupManager().getGroup(((EMGroupInfo)obj).getGroupId())));
-                    } else {
-                        jsonList.add(ExtSdkGroupInfoHelper.toJson((EMGroupInfo)obj));
-                    }
+                    jsonList.add(ExtSdkGroupInfoHelper.toJson((EMGroupInfo)obj));
                 }
             }
         }
@@ -1004,9 +985,9 @@ class ExtSdkErrorHelper {
 class ExtSdkPushConfigsHelper {
     static Map<String, Object> toJson(EMPushConfigs pushConfigs) {
         Map<String, Object> data = new HashMap<>();
-        data.put("noDisturb", pushConfigs.isNoDisturbOn());
-        data.put("noDisturbEndHour", pushConfigs.getNoDisturbEndHour());
-        data.put("noDisturbStartHour", pushConfigs.getNoDisturbStartHour());
+        data.put("noDisturb", pushConfigs.silentModeEnabled());
+        data.put("noDisturbEndHour", pushConfigs.getSilentModeEnd());
+        data.put("noDisturbStartHour", pushConfigs.getSilentModeStart());
         data.put("pushStyle", pushConfigs.getDisplayStyle() != EMPushManager.DisplayStyle.SimpleBanner);
         return data;
     }
@@ -1038,7 +1019,7 @@ class ExtSdkUserInfoHelper {
         EMUserInfo userInfo = new EMUserInfo();
 
         userInfo.setUserId(obj.getString("userId"));
-        userInfo.setNickName(obj.optString("nickName"));
+        userInfo.setNickname(obj.optString("nickName"));
         if (obj.has("gender")) {
             userInfo.setGender(obj.getInt("gender"));
         }
@@ -1056,7 +1037,7 @@ class ExtSdkUserInfoHelper {
     static Map<String, Object> toJson(EMUserInfo userInfo) {
         Map<String, Object> data = new HashMap<>();
         data.put("userId", userInfo.getUserId());
-        data.put("nickName", userInfo.getNickName());
+        data.put("nickName", userInfo.getNickname());
         data.put("avatarUrl", userInfo.getAvatarUrl());
         data.put("mail", userInfo.getEmail());
         data.put("phone", userInfo.getPhoneNumber());
