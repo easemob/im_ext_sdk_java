@@ -683,6 +683,33 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 ExtSdkUserInfoManagerWrapper.getInstance().fetchUserInfoByIdWithType(jsonParams, methodType, callback);
                 break;
 
+            case ExtSdkMethodType.translateMessage:
+                ExtSdkChatManagerWrapper.getInstance().translateMessage(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.fetchSupportedLanguages:
+                ExtSdkChatManagerWrapper.getInstance().fetchSupportedLanguages(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.onPresenceStatusChanged:
+                callback.fail(1, "no implement: " + methodType);
+                break;
+            case ExtSdkMethodType.presenceWithDescription:
+                ExtSdkPresenceManagerWrapper.getInstance().publishPresenceWithDescription(jsonParams, methodType,
+                                                                                          callback);
+                break;
+            case ExtSdkMethodType.presenceSubscribe:
+                ExtSdkPresenceManagerWrapper.getInstance().subscribe(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.presenceUnsubscribe:
+                ExtSdkPresenceManagerWrapper.getInstance().unsubscribe(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.fetchSubscribedMembersWithPageNum:
+                ExtSdkPresenceManagerWrapper.getInstance().fetchSubscribedMembersWithPageNum(jsonParams, methodType,
+                                                                                             callback);
+                break;
+            case ExtSdkMethodType.fetchPresenceStatus:
+                ExtSdkPresenceManagerWrapper.getInstance().fetchPresenceStatus(jsonParams, methodType, callback);
+                break;
+
             default:
                 callback.fail(1, "no implement: " + methodType);
                 break;

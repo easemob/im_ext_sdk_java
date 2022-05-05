@@ -4,7 +4,6 @@ import com.easemob.ext_sdk.common.ExtSdkCallback;
 import com.easemob.ext_sdk.common.ExtSdkContext;
 import com.easemob.ext_sdk.common.ExtSdkMethodType;
 import com.easemob.ext_sdk.common.ExtSdkThreadUtil;
-import com.easemob.im_flutter_sdk.EMListenerHandle;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMMultiDeviceListener;
@@ -172,8 +171,6 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
         onSuccess(result, channelName, EMClient.getInstance().isLoggedInBefore());
     }
 
-    public void onMultiDeviceEvent(JSONObject param, String channelName, ExtSdkCallback result) {}
-
     public void getLoggedInDevicesFromServer(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         String username = param.getString("username");
@@ -201,9 +198,16 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
             EMClient.getInstance().init(ExtSdkContext.context, finalOptions);
             EMClient.getInstance().setDebugMode(finalDebugModel);
 
-            ExtSdkChatManagerWrapper.getInstance();
-
             addEMListener();
+
+            ExtSdkChatManagerWrapper.getInstance();
+            ExtSdkChatRoomManagerWrapper.getInstance();
+            ExtSdkContactManagerWrapper.getInstance();
+            ExtSdkConversationWrapper.getInstance();
+            ExtSdkGroupManagerWrapper.getInstance();
+            ExtSdkPresenceManagerWrapper.getInstance();
+            ExtSdkPushManagerWrapper.getInstance();
+            ExtSdkUserInfoManagerWrapper.getInstance();
 
             ExtSdkThreadUtil.asyncExecute(() -> { onSuccess(result, channelName, null); });
         });

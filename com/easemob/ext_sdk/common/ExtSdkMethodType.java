@@ -74,6 +74,9 @@ public class ExtSdkMethodType {
     public static final String asyncFetchGroupAcks = "asyncFetchGroupAcks";
     public static final String deleteRemoteConversation = "deleteRemoteConversation";
 
+    public static final String translateMessage = "translateMessage";
+    public static final String fetchSupportedLanguages = "fetchSupportLanguages";
+
     /// EMChatManager listener
     public static final String onMessagesReceived = "onMessagesReceived";
     public static final String onCmdMessagesReceived = "onCmdMessagesReceived";
@@ -226,4 +229,14 @@ public class ExtSdkMethodType {
     public static final String updateOwnUserInfoWithType = "updateOwnUserInfoWithType";
     public static final String fetchUserInfoById = "fetchUserInfoById";
     public static final String fetchUserInfoByIdWithType = "fetchUserInfoByIdWithType";
+
+    /// EMPresenceManager methods
+    public static final String presenceWithDescription = "publishPresenceWithDescription";
+    public static final String presenceSubscribe = "presenceSubscribe";
+    public static final String presenceUnsubscribe = "presenceUnsubscribe";
+    public static final String fetchSubscribedMembersWithPageNum = "fetchSubscribedMembersWithPageNum";
+    public static final String fetchPresenceStatus = "fetchPresenceStatus";
+
+    /// EMPresenceManagerListener
+    public static final String onPresenceStatusChanged = "onPresenceStatusChanged";
 }
