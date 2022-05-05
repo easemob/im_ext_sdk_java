@@ -15,6 +15,7 @@ import com.hyphenate.chat.EMGroupManager;
 import com.hyphenate.chat.EMGroupOptions;
 import com.hyphenate.chat.EMGroupReadAck;
 import com.hyphenate.chat.EMImageMessageBody;
+import com.hyphenate.chat.EMLanguage;
 import com.hyphenate.chat.EMLocationMessageBody;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMMessage.Type;
@@ -22,6 +23,7 @@ import com.hyphenate.chat.EMMucSharedFile;
 import com.hyphenate.chat.EMNormalFileMessageBody;
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.chat.EMPageResult;
+import com.hyphenate.chat.EMPresence;
 import com.hyphenate.chat.EMPushConfigs;
 import com.hyphenate.chat.EMPushManager;
 import com.hyphenate.chat.EMTextMessageBody;
@@ -566,7 +568,15 @@ class ExtSdkMessageBodyHelper {
 
     static EMTextMessageBody textBodyFromJson(JSONObject json) throws JSONException {
         String content = json.getString("content");
+        List<String> list = new ArrayList<>();
+        if (json.has("targetLanguages")) {
+            JSONArray ja = json.getJSONArray("targetLanguages");
+            for (int i = 0; i < ja.length(); i++) {
+                list.add(ja.getString(i));
+            }
+        }
         EMTextMessageBody body = new EMTextMessageBody(content);
+        body.setTargetLanguages(list);
         return body;
     }
 
@@ -574,6 +584,9 @@ class ExtSdkMessageBodyHelper {
         Map<String, Object> data = new HashMap<>();
         data.put("content", body.getMessage());
         data.put("type", "txt");
+        if (body.getTargetLanguages() != null) {
+            data.put("targetLanguages", body.getTargetLanguages());
+        }
         return data;
     }
 
@@ -1052,6 +1065,29 @@ class ExtSdkUserInfoHelper {
         data.put("birth", userInfo.getBirth());
         data.put("ext", userInfo.getExt());
 
+        return data;
+    }
+}
+
+class ExtSdkPresenceHelper {
+
+    static Map<String, Object> toJson(EMPresence presence) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("publisher", presence.getPublisher());
+        data.put("statusDescription", presence.getExt());
+        data.put("lastTime", presence.getLatestTime());
+        data.put("expirytime", presence.getExpiryTime());
+        data.put("statusDetails", presence.getStatusList());
+        return data;
+    }
+}
+
+class ExtSdkLanguageHelper {
+    static Map<String, Object> toJson(EMLanguage language) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("code", language.LanguageCode);
+        data.put("name", language.LanguageName);
+        data.put("nativeName", language.LanguageLocalName);
         return data;
     }
 }

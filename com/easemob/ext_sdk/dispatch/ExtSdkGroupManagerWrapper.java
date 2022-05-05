@@ -844,10 +844,7 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
         EMClient.getInstance().groupManager().asyncUpdateGroupAnnouncement(groupId, announcement, new EMCallBack() {
             @Override
             public void onSuccess() {
-                ExtSdkThreadUtil.asyncExecute(() -> {
-                    EMGroup group = EMClient.getInstance().groupManager().getGroup(groupId);
-                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(group));
-                });
+                ExtSdkWrapper.onSuccess(result, channelName, null);
             }
 
             @Override
@@ -880,10 +877,7 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
         EMClient.getInstance().groupManager().asyncJoinGroup(groupId, new EMCallBack() {
             @Override
             public void onSuccess() {
-                ExtSdkThreadUtil.asyncExecute(() -> {
-                    EMGroup group = EMClient.getInstance().groupManager().getGroup(groupId);
-                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(group));
-                });
+                ExtSdkWrapper.onSuccess(result, channelName, null);
             }
 
             @Override
@@ -907,10 +901,7 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
         EMClient.getInstance().groupManager().asyncApplyJoinToGroup(groupId, reason, new EMCallBack() {
             @Override
             public void onSuccess() {
-                ExtSdkThreadUtil.asyncExecute(() -> {
-                    EMGroup group = EMClient.getInstance().groupManager().getGroup(groupId);
-                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(group));
-                });
+                ExtSdkWrapper.onSuccess(result, channelName, null);
             }
 
             @Override
@@ -934,10 +925,7 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
         EMClient.getInstance().groupManager().asyncAcceptApplication(username, groupId, new EMCallBack() {
             @Override
             public void onSuccess() {
-                ExtSdkThreadUtil.asyncExecute(() -> {
-                    EMGroup group = EMClient.getInstance().groupManager().getGroup(groupId);
-                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(group));
-                });
+                ExtSdkWrapper.onSuccess(result, channelName, null);
             }
 
             @Override
@@ -965,10 +953,7 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
         EMClient.getInstance().groupManager().asyncDeclineApplication(username, groupId, reason, new EMCallBack() {
             @Override
             public void onSuccess() {
-                ExtSdkThreadUtil.asyncExecute(() -> {
-                    EMGroup group = EMClient.getInstance().groupManager().getGroup(groupId);
-                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(group));
-                });
+                ExtSdkWrapper.onSuccess(result, channelName, null);
             }
 
             @Override
@@ -1017,10 +1002,7 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
         EMClient.getInstance().groupManager().asyncDeclineInvitation(groupId, username, reason, new EMCallBack() {
             @Override
             public void onSuccess() {
-                ExtSdkThreadUtil.asyncExecute(() -> {
-                    EMGroup group = EMClient.getInstance().groupManager().getGroup(groupId);
-                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(group));
-                });
+                ExtSdkWrapper.onSuccess(result, channelName, null);
             }
 
             @Override

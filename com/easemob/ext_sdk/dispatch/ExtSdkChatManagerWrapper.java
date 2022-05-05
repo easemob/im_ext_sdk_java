@@ -10,6 +10,7 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMCursorResult;
 import com.hyphenate.chat.EMGroupReadAck;
+import com.hyphenate.chat.EMLanguage;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.exceptions.HyphenateException;
 import java.util.ArrayList;
@@ -440,6 +441,47 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
             break;
         }
         return ret;
+    }
+
+    public void translateMessage(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        EMMessage msg = ExtSdkMessageHelper.fromJson(param.getJSONObject("message"));
+        List<String> list = new ArrayList<String>();
+        if (param.has("languages")) {
+            JSONArray array = param.getJSONArray("languages");
+            for (int i = 0; i < array.length(); i++) {
+                list.add(array.getString(i));
+            }
+        }
+        EMClient.getInstance().chatManager().translateMessage(msg, list, new EMValueCallBack<EMMessage>() {
+            @Override
+            public void onSuccess(EMMessage value) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("message", ExtSdkMessageHelper.toJson(value));
+                ExtSdkWrapper.onSuccess(result, channelName, data);
+            }
+
+            @Override
+            public void onError(int error, String errorMsg) {
+                ExtSdkWrapper.onError(result, error, errorMsg);
+            }
+        });
+    }
+
+    public void fetchSupportedLanguages(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        EMClient.getInstance().chatManager().fetchSupportLanguages(new EMValueCallBack<List<EMLanguage>>() {
+            @Override
+            public void onSuccess(List<EMLanguage> value) {
+                List<Map> list = new ArrayList<>();
+                for (EMLanguage language : value) {
+                    list.add(ExtSdkLanguageHelper.toJson(language));
+                }
+                ExtSdkWrapper.onSuccess(result, channelName, list);
+            }
+
+            @Override
+            public void onError(int error, String errorMsg) {}
+        });
     }
 
     private void registerEaseListener() {
