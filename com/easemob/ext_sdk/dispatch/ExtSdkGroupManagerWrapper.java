@@ -766,20 +766,43 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
             filePath = param.getString("filePath");
         }
 
+        String finalFilePath = filePath;
         EMClient.getInstance().groupManager().asyncUploadGroupSharedFile(groupId, filePath, new EMCallBack() {
             @Override
             public void onSuccess() {
-                ExtSdkWrapper.onSuccess(result, channelName, true);
+                Map<String, Object> map = new HashMap<>();
+                map.put("groupId", groupId);
+                map.put("filePath", finalFilePath);
+                map.put("callbackType", ExtSdkMethodType.onMessageSuccess);
+                ExtSdkWrapper.onReceive(channelName, map);
             }
 
             @Override
             public void onError(int code, String error) {
-                ExtSdkWrapper.onError(result, code, error);
+                Map<String, Object> data = new HashMap<>();
+                data.put("code", code);
+                data.put("description", error);
+
+                Map<String, Object> map = new HashMap<>();
+                map.put("groupId", groupId);
+                map.put("filePath", finalFilePath);
+                map.put("error", data);
+                map.put("callbackType", ExtSdkMethodType.onMessageError);
+                ExtSdkWrapper.onReceive(channelName, map);
             }
 
             @Override
-            public void onProgress(int progress, String status) {}
+            public void onProgress(int progress, String status) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("progress", progress);
+                map.put("groupId", groupId);
+                map.put("filePath", finalFilePath);
+                map.put("callbackType", ExtSdkMethodType.onMessageProgressUpdate);
+                ExtSdkWrapper.onReceive(channelName, map);
+            }
         });
+
+        ExtSdkWrapper.onSuccess(result, channelName, true);
     }
 
     public void downloadGroupSharedFile(JSONObject param, String channelName, ExtSdkCallback result)
@@ -794,20 +817,43 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
             savePath = param.getString("savePath");
         }
 
+        String finalSavePath = savePath;
         EMClient.getInstance().groupManager().asyncDownloadGroupSharedFile(groupId, fileId, savePath, new EMCallBack() {
             @Override
             public void onSuccess() {
-                ExtSdkWrapper.onSuccess(result, channelName, true);
+                Map<String, Object> map = new HashMap<>();
+                map.put("groupId", groupId);
+                map.put("filePath", finalSavePath);
+                map.put("callbackType", ExtSdkMethodType.onMessageSuccess);
+                ExtSdkWrapper.onReceive(channelName, map);
             }
 
             @Override
             public void onError(int code, String error) {
-                ExtSdkWrapper.onError(result, code, error);
+                Map<String, Object> data = new HashMap<>();
+                data.put("code", code);
+                data.put("description", error);
+
+                Map<String, Object> map = new HashMap<>();
+                map.put("groupId", groupId);
+                map.put("filePath", finalSavePath);
+                map.put("error", data);
+                map.put("callbackType", ExtSdkMethodType.onMessageError);
+                ExtSdkWrapper.onReceive(channelName, map);
             }
 
             @Override
-            public void onProgress(int progress, String status) {}
+            public void onProgress(int progress, String status) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("progress", progress);
+                map.put("groupId", groupId);
+                map.put("filePath", finalSavePath);
+                map.put("callbackType", ExtSdkMethodType.onMessageProgressUpdate);
+                ExtSdkWrapper.onReceive(channelName, map);
+            }
         });
+
+        ExtSdkWrapper.onSuccess(result, channelName, true);
     }
 
     public void removeGroupSharedFile(JSONObject param, String channelName, ExtSdkCallback result)
