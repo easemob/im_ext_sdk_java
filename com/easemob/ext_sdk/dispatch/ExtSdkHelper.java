@@ -567,7 +567,7 @@ class ExtSdkMessageBodyHelper {
             }
         }
         EMTextMessageBody body = new EMTextMessageBody(content);
-        body.setTargetLanguages(list);
+//        body.setTargetLanguages(list);
         return body;
     }
 
@@ -575,9 +575,9 @@ class ExtSdkMessageBodyHelper {
         Map<String, Object> data = new HashMap<>();
         data.put("content", body.getMessage());
         data.put("type", "txt");
-        if (body.getTargetLanguages() != null) {
-            data.put("targetLanguages", body.getTargetLanguages());
-        }
+//        if (body.getTargetLanguages() != null) {
+//            data.put("targetLanguages", body.getTargetLanguages());
+//        }
         return data;
     }
 
