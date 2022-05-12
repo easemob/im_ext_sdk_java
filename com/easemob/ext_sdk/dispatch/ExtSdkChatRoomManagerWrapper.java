@@ -95,7 +95,11 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
     public void getChatRoom(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String roomId = param.getString("roomId");
         EMChatRoom room = EMClient.getInstance().chatroomManager().getChatRoom(roomId);
-        onSuccess(result, channelName, ExtSdkChatRoomHelper.toJson(room));
+        if (room != null) {
+            onSuccess(result, channelName, ExtSdkChatRoomHelper.toJson(room));
+        } else {
+            onError(result, 1, "This room is not exist.");
+        }
     }
 
     public void getAllChatRooms(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {

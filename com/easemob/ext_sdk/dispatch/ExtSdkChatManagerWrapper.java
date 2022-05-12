@@ -204,8 +204,12 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
     public void updateChatMessage(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         EMMessage msg = ExtSdkMessageHelper.fromJson(param.getJSONObject("message"));
 
-        EMClient.getInstance().chatManager().updateMessage(msg);
-        onSuccess(result, channelName, ExtSdkMessageHelper.toJson(msg));
+        boolean ret = EMClient.getInstance().chatManager().updateMessage(msg);
+        if (ret) {
+            onSuccess(result, channelName, ExtSdkMessageHelper.toJson(msg));
+        } else {
+            onError(result, 1, "Failed to update the message.");
+        }
     }
 
     public void importMessages(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
