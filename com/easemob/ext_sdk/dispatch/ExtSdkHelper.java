@@ -1,6 +1,10 @@
 package com.easemob.ext_sdk.dispatch;
 
 import android.content.Context;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import com.hyphenate.chat.EMChatRoom;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCmdMessageBody;
@@ -1064,8 +1068,10 @@ class ExtSdkPresenceHelper {
         data.put("publisher", presence.getPublisher());
         data.put("statusDescription", presence.getExt());
         data.put("lastTime", presence.getLatestTime());
-        data.put("expirytime", presence.getExpiryTime());
-        data.put("statusDetails", presence.getStatusList());
+        data.put("expiryTime", presence.getExpiryTime());
+        Map<String, Integer> statusList = new HashMap<String, Integer>();
+        statusList.putAll(presence.getStatusList());
+        data.put("statusDetails", statusList);
         return data;
     }
 }
