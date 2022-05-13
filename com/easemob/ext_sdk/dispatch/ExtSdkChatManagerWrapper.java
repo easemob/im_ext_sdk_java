@@ -116,7 +116,6 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
             }
         });
         EMClient.getInstance().chatManager().sendMessage(msg);
-
         onSuccess(result, channelName, ExtSdkMessageHelper.toJson(finalMsg));
     }
 
@@ -143,6 +142,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
 
         try {
             EMClient.getInstance().chatManager().ackGroupMessageRead(to, msgId, finalContent);
+            onSuccess(result, channelName, null);
         } catch (HyphenateException e) {
             onError(result, e, null);
         }
@@ -166,8 +166,10 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
             EMMessage msg = EMClient.getInstance().chatManager().getMessage(msgId);
             if (msg != null) {
                 EMClient.getInstance().chatManager().recallMessage(msg);
+                onSuccess(result, channelName, null);
+            } else {
+                onError(result, 1, "This message is not find.");
             }
-            onSuccess(result, channelName, true);
         } catch (HyphenateException e) {
             onError(result, e, null);
         }
@@ -183,15 +185,19 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
     public void getConversation(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String conId = param.getString("con_id");
         EMConversation.EMConversationType type = ExtSdkConversationHelper.typeFromInt(param.getInt("type"));
+        boolean createIfNeed = true;
+        if (param.has("createIfNeed")) {
+            createIfNeed = param.getBoolean("createIfNeed");
+        }
 
-        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(conId, type, true);
+        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(conId, type, createIfNeed);
         onSuccess(result, channelName, ExtSdkConversationHelper.toJson(conversation));
     }
 
     public void markAllChatMsgAsRead(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         EMClient.getInstance().chatManager().markAllConversationsAsRead();
 
-        onSuccess(result, channelName, true);
+        onSuccess(result, channelName, null);
     }
 
     public void getUnreadMessageCount(JSONObject param, String channelName, ExtSdkCallback result)
@@ -221,19 +227,23 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         }
 
         EMClient.getInstance().chatManager().importMessages(messages);
-        onSuccess(result, channelName, true);
+        onSuccess(result, channelName, null);
     }
 
     public void downloadAttachment(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         EMMessage tempMsg = ExtSdkMessageHelper.fromJson(param.getJSONObject("message"));
-        final EMMessage msg = EMClient.getInstance().chatManager().getMessage(tempMsg.getMsgId());
+        EMMessage msg = EMClient.getInstance().chatManager().getMessage(tempMsg.getMsgId());
+        if (null == msg) {
+            msg = tempMsg;
+        }
+        EMMessage finalMsg = msg;
         msg.setMessageStatusCallback(new EMCallBack() {
             @Override
             public void onSuccess() {
 
                 Map<String, Object> map = new HashMap<>();
-                map.put("message", ExtSdkMessageHelper.toJson(msg));
-                map.put("localTime", msg.localTime());
+                map.put("message", ExtSdkMessageHelper.toJson(finalMsg));
+                map.put("localTime", finalMsg.localTime());
                 map.put("callbackType", ExtSdkMethodType.onMessageSuccess);
                 ExtSdkWrapper.onReceive(channelName, map);
             }
@@ -243,7 +253,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
 
                 Map<String, Object> map = new HashMap<>();
                 map.put("progress", progress);
-                map.put("localTime", msg.localTime());
+                map.put("localTime", finalMsg.localTime());
                 map.put("callbackType", ExtSdkMethodType.onMessageProgressUpdate);
                 ExtSdkWrapper.onReceive(channelName, map);
             }
@@ -255,8 +265,8 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
                 data.put("description", desc);
 
                 Map<String, Object> map = new HashMap<>();
-                map.put("message", ExtSdkMessageHelper.toJson(msg));
-                map.put("localTime", msg.localTime());
+                map.put("message", ExtSdkMessageHelper.toJson(finalMsg));
+                map.put("localTime", finalMsg.localTime());
                 map.put("error", data);
                 map.put("callbackType", ExtSdkMethodType.onMessageError);
                 ExtSdkWrapper.onReceive(channelName, map);
@@ -269,14 +279,18 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
 
     public void downloadThumbnail(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         EMMessage tempMsg = ExtSdkMessageHelper.fromJson(param.getJSONObject("message"));
-        final EMMessage msg = EMClient.getInstance().chatManager().getMessage(tempMsg.getMsgId());
+        EMMessage msg = EMClient.getInstance().chatManager().getMessage(tempMsg.getMsgId());
+        if (null == msg) {
+            msg = tempMsg;
+        }
+        EMMessage finalMsg = msg;
         msg.setMessageStatusCallback(new EMCallBack() {
             @Override
             public void onSuccess() {
 
                 Map<String, Object> map = new HashMap<>();
-                map.put("message", ExtSdkMessageHelper.toJson(msg));
-                map.put("localTime", msg.localTime());
+                map.put("message", ExtSdkMessageHelper.toJson(finalMsg));
+                map.put("localTime", finalMsg.localTime());
                 map.put("callbackType", ExtSdkMethodType.onMessageSuccess);
                 ExtSdkWrapper.onReceive(channelName, map);
             }
@@ -286,7 +300,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
 
                 Map<String, Object> map = new HashMap<>();
                 map.put("progress", progress);
-                map.put("localTime", msg.localTime());
+                map.put("localTime", finalMsg.localTime());
                 map.put("callbackType", ExtSdkMethodType.onMessageProgressUpdate);
                 ExtSdkWrapper.onReceive(channelName, map);
             }
@@ -298,8 +312,8 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
                 data.put("description", desc);
 
                 Map<String, Object> map = new HashMap<>();
-                map.put("message", ExtSdkMessageHelper.toJson(msg));
-                map.put("localTime", msg.localTime());
+                map.put("message", ExtSdkMessageHelper.toJson(finalMsg));
+                map.put("localTime", finalMsg.localTime());
                 map.put("error", data);
                 map.put("callbackType", ExtSdkMethodType.onMessageError);
                 ExtSdkWrapper.onReceive(channelName, map);
@@ -357,7 +371,11 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         boolean isDelete = param.getBoolean("deleteMessages");
 
         boolean ret = EMClient.getInstance().chatManager().deleteConversation(conId, isDelete);
-        onSuccess(result, channelName, ret);
+        if (ret) {
+            onSuccess(result, channelName, null);
+        } else {
+            onError(result, 1, "remove conversation is failed.");
+        }
     }
 
     public void fetchHistoryMessages(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
@@ -423,7 +441,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
 
                 @Override
                 public void onError(int code, String error) {
-                    ExtSdkWrapper.onError(result, error, "");
+                    ExtSdkWrapper.onError(result, error, error);
                 }
 
                 @Override
@@ -484,7 +502,9 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
             }
 
             @Override
-            public void onError(int error, String errorMsg) {}
+            public void onError(int error, String errorMsg) {
+                ExtSdkWrapper.onError(result, error, errorMsg);
+            }
         });
     }
 

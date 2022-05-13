@@ -49,7 +49,7 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
     public void leaveChatRoom(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String roomId = param.getString("roomId");
         EMClient.getInstance().chatroomManager().leaveChatRoom(roomId);
-        onSuccess(result, channelName, true);
+        onSuccess(result, channelName, null);
     }
 
     public void fetchPublicChatRoomsFromServer(JSONObject param, String channelName, ExtSdkCallback result)
@@ -95,11 +95,7 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
     public void getChatRoom(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String roomId = param.getString("roomId");
         EMChatRoom room = EMClient.getInstance().chatroomManager().getChatRoom(roomId);
-        if (room != null) {
-            onSuccess(result, channelName, ExtSdkChatRoomHelper.toJson(room));
-        } else {
-            onError(result, 1, "This room is not exist.");
-        }
+        onSuccess(result, channelName, ExtSdkChatRoomHelper.toJson(room));
     }
 
     public void getAllChatRooms(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
@@ -134,7 +130,7 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
         String roomId = param.getString("roomId");
         try {
             EMClient.getInstance().chatroomManager().destroyChatRoom(roomId);
-            onSuccess(result, channelName, true);
+            onSuccess(result, channelName, null);
         } catch (HyphenateException e) {
             onError(result, e, null);
         }
@@ -326,7 +322,7 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
         String announcement = param.getString("announcement");
         try {
             EMClient.getInstance().chatroomManager().updateChatRoomAnnouncement(roomId, announcement);
-            onSuccess(result, channelName, true);
+            onSuccess(result, channelName, null);
         } catch (HyphenateException e) {
             onError(result, e, null);
         }
@@ -568,7 +564,7 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
                 data.put("roomId", chatRoomId);
                 data.put("newOwner", newOwner);
                 data.put("oldOwner", oldOwner);
-                data.put("chatRoomChange", "onOwnerChanged");
+                data.put("type", "onOwnerChanged");
                 ExtSdkWrapper.onReceive(ExtSdkMethodType.chatRoomChange, data);
             }
 
@@ -577,7 +573,7 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
                 Map<String, Object> data = new HashMap<>();
                 data.put("roomId", chatRoomId);
                 data.put("announcement", announcement);
-                data.put("chatRoomChange", "onAnnouncementChanged");
+                data.put("type", "onAnnouncementChanged");
                 ExtSdkWrapper.onReceive(ExtSdkMethodType.chatRoomChange, data);
             }
         };

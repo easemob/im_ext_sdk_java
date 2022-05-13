@@ -28,14 +28,14 @@ public class ExtSdkConversationWrapper extends ExtSdkWrapper {
         throws JSONException {
         EMConversation conversation = conversationWithParam(params);
         conversation.markAllMessagesAsRead();
-        onSuccess(result, channelName, true);
+        onSuccess(result, channelName, null);
     }
 
     public void markMessageAsRead(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
         EMConversation conversation = conversationWithParam(params);
         String msg_id = params.getString("msg_id");
         conversation.markMessageAsRead(msg_id);
-        onSuccess(result, channelName, true);
+        onSuccess(result, channelName, null);
     }
 
     public void syncConversationExt(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
@@ -46,14 +46,14 @@ public class ExtSdkConversationWrapper extends ExtSdkWrapper {
             jsonStr = ext.toString();
         }
         conversation.setExtField(jsonStr);
-        onSuccess(result, channelName, true);
+        onSuccess(result, channelName, null);
     }
 
     public void removeMessage(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
         EMConversation conversation = conversationWithParam(params);
         String msg_id = params.getString("msg_id");
         conversation.removeMessage(msg_id);
-        onSuccess(result, channelName, true);
+        onSuccess(result, channelName, null);
     }
 
     public void getLatestMessage(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
@@ -72,7 +72,7 @@ public class ExtSdkConversationWrapper extends ExtSdkWrapper {
     public void clearAllMessages(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
         EMConversation conversation = conversationWithParam(params);
         conversation.clearAllMessages();
-        onSuccess(result, channelName, true);
+        onSuccess(result, channelName, null);
     }
 
     public void insertMessage(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
@@ -80,7 +80,7 @@ public class ExtSdkConversationWrapper extends ExtSdkWrapper {
         JSONObject msg = params.getJSONObject("msg");
         EMMessage message = ExtSdkMessageHelper.fromJson(msg);
         conversation.insertMessage(message);
-        onSuccess(result, channelName, true);
+        onSuccess(result, channelName, null);
     }
 
     public void appendMessage(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
@@ -88,7 +88,7 @@ public class ExtSdkConversationWrapper extends ExtSdkWrapper {
         JSONObject msg = params.getJSONObject("msg");
         EMMessage message = ExtSdkMessageHelper.fromJson(msg);
         conversation.appendMessage(message);
-        onSuccess(result, channelName, true);
+        onSuccess(result, channelName, null);
     }
 
     public void updateConversationMessage(JSONObject params, String channelName, ExtSdkCallback result)
@@ -97,7 +97,7 @@ public class ExtSdkConversationWrapper extends ExtSdkWrapper {
         JSONObject msg = params.getJSONObject("msg");
         EMMessage message = ExtSdkMessageHelper.fromJson(msg);
         conversation.updateMessage(message);
-        onSuccess(result, channelName, true);
+        onSuccess(result, channelName, null);
     }
 
     public void loadMsgWithId(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {

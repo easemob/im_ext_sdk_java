@@ -127,6 +127,9 @@ class ExtSdkOptionsHelper {
 
 class ExtSdkGroupHelper {
     static Map<String, Object> toJson(EMGroup group) {
+        if (group == null) {
+            return null;
+        }
         Map<String, Object> data = new HashMap<>();
         data.put("groupId", group.getGroupId());
         data.put("name", group.getGroupName());
@@ -262,12 +265,10 @@ class ExtSdkGroupOptionsHelper {
 
 class ExtSdkChatRoomHelper {
 
-    // chatroom 都是native -> flutter, 不需要fromJson
-    // static EMChatRoom fromJson(JSONObject json) throws JSONException {
-    // EMChatRoom chatRoom = new EMChatRoom();
-    // }
-
     static Map<String, Object> toJson(EMChatRoom chatRoom) {
+        if (chatRoom == null) {
+            return null;
+        }
         Map<String, Object> data = new HashMap<>();
         data.put("roomId", chatRoom.getId());
         data.put("name", chatRoom.getName());
@@ -436,8 +437,9 @@ class ExtSdkMessageHelper {
     }
 
     static Map<String, Object> toJson(EMMessage message) {
-        if (message == null)
+        if (message == null) {
             return null;
+        }
         Map<String, Object> data = new HashMap<>();
         switch (message.getType()) {
         case TXT: {
@@ -567,7 +569,7 @@ class ExtSdkMessageBodyHelper {
             }
         }
         EMTextMessageBody body = new EMTextMessageBody(content);
-//        body.setTargetLanguages(list);
+        //        body.setTargetLanguages(list);
         return body;
     }
 
@@ -575,9 +577,9 @@ class ExtSdkMessageBodyHelper {
         Map<String, Object> data = new HashMap<>();
         data.put("content", body.getMessage());
         data.put("type", "txt");
-//        if (body.getTargetLanguages() != null) {
-//            data.put("targetLanguages", body.getTargetLanguages());
-//        }
+        //        if (body.getTargetLanguages() != null) {
+        //            data.put("targetLanguages", body.getTargetLanguages());
+        //        }
         return data;
     }
 
@@ -804,26 +806,28 @@ class ExtSdkMessageBodyHelper {
 
 class ExtSdkConversationHelper {
 
-    // EMConversation 都是native -> flutter, 不需要fromJson
-    // static EMConversation fromJson(JSONObject json) throws JSONException {
-    // EMConversation conv = new EMConversation();
-    // return conv;
-    // }
-
     static Map<String, Object> toJson(EMConversation conversation) {
+        if (conversation == null) {
+            return null;
+        }
         Map<String, Object> data = new HashMap<>();
         data.put("con_id", conversation.conversationId());
         data.put("type", typeToInt(conversation.getType()));
         data.put("unreadCount", conversation.getUnreadMsgCount());
         try {
             data.put("ext", jsonStringToMap(conversation.getExtField()));
-        } catch (JSONException e) {
-
-        } finally {
-            data.put("latestMessage", ExtSdkMessageHelper.toJson(conversation.getLastMessage()));
-            data.put("lastReceivedMessage", ExtSdkMessageHelper.toJson(conversation.getLatestMessageFromOthers()));
+            EMMessage msg = conversation.getLastMessage();
+            if (msg != null) {
+                data.put("latestMessage", ExtSdkMessageHelper.toJson(msg));
+            }
+            msg = conversation.getLatestMessageFromOthers();
+            if (msg != null) {
+                data.put("lastReceivedMessage", ExtSdkMessageHelper.toJson(msg));
+            }
+        } catch (Exception ignored) {
             return data;
         }
+        return data;
     }
 
     static EMConversation.EMConversationType typeFromInt(int type) {
@@ -1035,6 +1039,9 @@ class ExtSdkUserInfoHelper {
     }
 
     static Map<String, Object> toJson(EMUserInfo userInfo) {
+        if (userInfo == null) {
+            return null;
+        }
         Map<String, Object> data = new HashMap<>();
         data.put("userId", userInfo.getUserId());
         data.put("nickName", userInfo.getNickname());

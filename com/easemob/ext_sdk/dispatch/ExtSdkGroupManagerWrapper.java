@@ -33,11 +33,7 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
     public void getGroupWithId(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String groupId = param.getString("groupId");
         EMGroup group = EMClient.getInstance().groupManager().getGroup(groupId);
-        if (group != null) {
-            onSuccess(result, channelName, ExtSdkGroupHelper.toJson(group));
-        } else {
-            onSuccess(result, channelName, null);
-        }
+        onSuccess(result, channelName, ExtSdkGroupHelper.toJson(group));
     }
 
     public void getJoinedGroups(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
@@ -333,7 +329,7 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
         EMClient.getInstance().groupManager().asyncInviteUser(groupId, members, reason, new EMCallBack() {
             @Override
             public void onSuccess() {
-                ExtSdkWrapper.onSuccess(result, channelName, true);
+                ExtSdkWrapper.onSuccess(result, channelName, null);
             }
 
             @Override
@@ -368,7 +364,7 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
 
         try {
             EMClient.getInstance().groupManager().addUsersToGroup(groupId, members, welcome);
-            ExtSdkWrapper.onSuccess(result, channelName, true);
+            ExtSdkWrapper.onSuccess(result, channelName, null);
         } catch (HyphenateException e) {
             ExtSdkWrapper.onError(result, e, null);
         }
@@ -387,7 +383,7 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
         EMClient.getInstance().groupManager().asyncRemoveUsersFromGroup(groupId, members, new EMCallBack() {
             @Override
             public void onSuccess() {
-                ExtSdkWrapper.onSuccess(result, channelName, true);
+                ExtSdkWrapper.onSuccess(result, channelName, null);
             }
 
             @Override
@@ -413,7 +409,7 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
         EMClient.getInstance().groupManager().asyncBlockUsers(groupId, members, new EMCallBack() {
             @Override
             public void onSuccess() {
-                ExtSdkWrapper.onSuccess(result, channelName, true);
+                ExtSdkWrapper.onSuccess(result, channelName, null);
             }
 
             @Override
@@ -439,7 +435,7 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
         EMClient.getInstance().groupManager().asyncUnblockUsers(groupId, members, new EMCallBack() {
             @Override
             public void onSuccess() {
-                ExtSdkWrapper.onSuccess(result, channelName, true);
+                ExtSdkWrapper.onSuccess(result, channelName, null);
             }
 
             @Override
@@ -503,7 +499,7 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
         EMClient.getInstance().groupManager().asyncLeaveGroup(groupId, new EMCallBack() {
             @Override
             public void onSuccess() {
-                ExtSdkWrapper.onSuccess(result, channelName, true);
+                ExtSdkWrapper.onSuccess(result, channelName, null);
             }
 
             @Override
@@ -521,7 +517,7 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
         EMClient.getInstance().groupManager().asyncDestroyGroup(groupId, new EMCallBack() {
             @Override
             public void onSuccess() {
-                ExtSdkWrapper.onSuccess(result, channelName, true);
+                ExtSdkWrapper.onSuccess(result, channelName, null);
             }
 
             @Override
@@ -719,7 +715,7 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
         EMClient.getInstance().groupManager().addToGroupWhiteList(groupId, members, new EMCallBack() {
             @Override
             public void onSuccess() {
-                ExtSdkWrapper.onSuccess(result, channelName, true);
+                ExtSdkWrapper.onSuccess(result, channelName, null);
             }
 
             @Override
@@ -745,7 +741,7 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
         EMClient.getInstance().groupManager().removeFromGroupWhiteList(groupId, members, new EMCallBack() {
             @Override
             public void onSuccess() {
-                ExtSdkWrapper.onSuccess(result, channelName, true);
+                ExtSdkWrapper.onSuccess(result, channelName, null);
             }
 
             @Override
@@ -802,7 +798,7 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
             }
         });
 
-        ExtSdkWrapper.onSuccess(result, channelName, true);
+        ExtSdkWrapper.onSuccess(result, channelName, null);
     }
 
     public void downloadGroupSharedFile(JSONObject param, String channelName, ExtSdkCallback result)
@@ -853,7 +849,7 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
             }
         });
 
-        ExtSdkWrapper.onSuccess(result, channelName, true);
+        ExtSdkWrapper.onSuccess(result, channelName, null);
     }
 
     public void removeGroupSharedFile(JSONObject param, String channelName, ExtSdkCallback result)
@@ -866,7 +862,7 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
         EMClient.getInstance().groupManager().asyncDeleteGroupSharedFile(groupId, fileId, new EMCallBack() {
             @Override
             public void onSuccess() {
-                ExtSdkWrapper.onSuccess(result, channelName, true);
+                ExtSdkWrapper.onSuccess(result, channelName, null);
             }
 
             @Override

@@ -121,7 +121,6 @@ public class ExtSdkUserInfoManagerWrapper extends ExtSdkWrapper {
             });
     }
 
-    //组装response map
     Map<String, Map> generateMapFromMap(Map<String, EMUserInfo> aMap) {
         Map<String, Map> resultMap = new HashMap<>();
 
@@ -133,7 +132,6 @@ public class ExtSdkUserInfoManagerWrapper extends ExtSdkWrapper {
         return resultMap;
     }
 
-    //获取用户属性类型
     private EMUserInfo.EMUserInfoType getUserInfoTypeFromInt(int value) {
         EMUserInfo.EMUserInfoType infoType;
 

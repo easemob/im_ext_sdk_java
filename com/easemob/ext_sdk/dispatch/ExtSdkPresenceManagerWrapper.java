@@ -33,7 +33,7 @@ public class ExtSdkPresenceManagerWrapper extends ExtSdkWrapper {
         EMClient.getInstance().presenceManager().publishPresence(desc, new EMCallBack() {
             @Override
             public void onSuccess() {
-                ExtSdkWrapper.onSuccess(result, channelName, true);
+                ExtSdkWrapper.onSuccess(result, channelName, null);
             }
 
             @Override
