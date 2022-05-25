@@ -12,6 +12,8 @@ import com.hyphenate.chat.EMCursorResult;
 import com.hyphenate.chat.EMGroupReadAck;
 import com.hyphenate.chat.EMLanguage;
 import com.hyphenate.chat.EMMessage;
+import com.hyphenate.chat.EMMessageReaction;
+import com.hyphenate.chat.EMMessageReactionChange;
 import com.hyphenate.exceptions.HyphenateException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -508,6 +510,121 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         });
     }
 
+    public void addReaction(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        String reaction = param.getString("reaction");
+        String msgId = param.getString("msgId");
+        EMClient.getInstance().chatManager().asyncAddReaction(msgId, reaction, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onSuccess(result, channelName, null);
+            }
+
+            @Override
+            public void onError(int code, String error) {
+                ExtSdkWrapper.onError(result, code, error);
+            }
+        });
+    }
+
+    public void removeReaction(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        String reaction = param.getString("reaction");
+        String msgId = param.getString("msgId");
+        EMClient.getInstance().chatManager().asyncRemoveReaction(msgId, reaction, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onSuccess(result, channelName, null);
+            }
+
+            @Override
+            public void onError(int code, String error) {
+                ExtSdkWrapper.onError(result, code, error);
+            }
+        });
+    }
+
+    public void fetchReactionList(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        List<String> msgIds = new ArrayList<>();
+        JSONArray ja = param.getJSONArray("msgIds");
+        for (int i = 0; i < ja.length(); i++) {
+            msgIds.add(ja.getString(i));
+        }
+        String groupId = null;
+        if (param.has("groupId")) {
+            groupId = param.getString("groupId");
+        }
+        EMMessage.ChatType type = EMMessage.ChatType.Chat;
+        int iType = param.getInt("chatType");
+        if (iType == 0) {
+            type = EMMessage.ChatType.Chat;
+        } else if (iType == 1) {
+            type = EMMessage.ChatType.GroupChat;
+        } else {
+            type = EMMessage.ChatType.ChatRoom;
+        }
+        EMClient.getInstance().chatManager().asyncGetReactionList(
+            msgIds, type, groupId, new EMValueCallBack<Map<String, List<EMMessageReaction>>>() {
+                @Override
+                public void onSuccess(Map<String, List<EMMessageReaction>> value) {
+                    HashMap<String, List<Map<String, Object>>> map = new HashMap<>();
+                    if (value != null) {
+                        for (Map.Entry<String, List<EMMessageReaction>> entry : value.entrySet()) {
+                            List<EMMessageReaction> list = entry.getValue();
+                            ArrayList<Map<String, Object>> ary = new ArrayList<>();
+                            for (int i = 0; i < list.size(); i++) {
+                                ary.add(ExtSdkMessageReactionHelper.toJson(list.get(i)));
+                            }
+                            map.put(entry.getKey(), ary);
+                        }
+                    }
+                    ExtSdkWrapper.onSuccess(result, channelName, map);
+                }
+
+                @Override
+                public void onError(int error, String errorMsg) {
+                    ExtSdkWrapper.onError(result, error, errorMsg);
+                }
+            });
+    }
+
+    public void fetchReactionDetail(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        String msgId = param.getString("msgId");
+        String reaction = param.getString("reaction");
+        String cursor = null;
+        if (param.has("cursor")) {
+            cursor = param.getString("cursor");
+        }
+        int pageSize = param.getInt("pageSize");
+        EMClient.getInstance().chatManager().asyncGetReactionDetail(
+            msgId, reaction, cursor, pageSize, new EMValueCallBack<EMCursorResult<EMMessageReaction>>() {
+                @Override
+                public void onSuccess(EMCursorResult<EMMessageReaction> value) {
+                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkCursorResultHelper.toJson(value));
+                }
+
+                @Override
+                public void onError(int error, String errorMsg) {
+                    ExtSdkWrapper.onError(result, error, errorMsg);
+                }
+            });
+    }
+
+    public void reportMessage(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        String msgId = param.getString("msgId");
+        String tag = param.getString("tag");
+        String reason = param.getString("reason");
+        EMClient.getInstance().chatManager().asyncReportMessage(msgId, tag, reason, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onSuccess(result, channelName, null);
+            }
+
+            @Override
+            public void onError(int code, String error) {
+                ExtSdkWrapper.onError(result, code, error);
+            }
+        });
+    }
+
     private void registerEaseListener() {
         if (this.messageListener != null) {
             EMClient.getInstance().chatManager().removeMessageListener(this.messageListener);
@@ -572,7 +689,18 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
             }
 
             @Override
-            public void onReadAckForGroupMessageUpdated() {}
+            public void onReadAckForGroupMessageUpdated() {
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onReadAckForGroupMessageUpdated, null);
+            }
+
+            @Override
+            public void onReactionChanged(List<EMMessageReactionChange> messageReactionChangeList) {
+                ArrayList<Map<String, Object>> list = new ArrayList<>();
+                for (EMMessageReactionChange change : messageReactionChangeList) {
+                    list.add(ExtSdkMessageReactionChangeHelper.toJson(change));
+                }
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onMessageReactionDidChange, list);
+            }
         };
         EMClient.getInstance().chatManager().addMessageListener(this.messageListener);
 
