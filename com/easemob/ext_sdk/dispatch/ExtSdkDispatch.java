@@ -43,14 +43,11 @@ public class ExtSdkDispatch implements ExtSdkApi {
         JSONObject jsonParams = null;
 
         try {
-            if (ExtSdkTypeUtil.currentArchitectureType() ==
-                ExtSdkTypeUtil.ExtSdkArchitectureTypeValue.ARCHITECTURE_FLUTTER) {
+            if (ExtSdkTypeUtil.currentArchitectureType() == ExtSdkTypeUtil.ExtSdkArchitectureTypeValue.ARCHITECTURE_FLUTTER) {
                 jsonParams = (JSONObject)params;
-            } else if (ExtSdkTypeUtil.currentArchitectureType() ==
-                       ExtSdkTypeUtil.ExtSdkArchitectureTypeValue.ARCHITECTURE_UNITY) {
+            } else if (ExtSdkTypeUtil.currentArchitectureType() == ExtSdkTypeUtil.ExtSdkArchitectureTypeValue.ARCHITECTURE_UNITY) {
 
-            } else if (ExtSdkTypeUtil.currentArchitectureType() ==
-                       ExtSdkTypeUtil.ExtSdkArchitectureTypeValue.ARCHITECTURE_RN) {
+            } else if (ExtSdkTypeUtil.currentArchitectureType() == ExtSdkTypeUtil.ExtSdkArchitectureTypeValue.ARCHITECTURE_RN) {
                 if (params instanceof Map) {
                     jsonParams = new JSONObject((Map)params);
                 }
@@ -375,12 +372,10 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 ExtSdkChatRoomManagerWrapper.getInstance().leaveChatRoom(jsonParams, methodType, callback);
                 break;
             case ExtSdkMethodType.fetchPublicChatRoomsFromServer:
-                ExtSdkChatRoomManagerWrapper.getInstance().fetchPublicChatRoomsFromServer(jsonParams, methodType,
-                                                                                          callback);
+                ExtSdkChatRoomManagerWrapper.getInstance().fetchPublicChatRoomsFromServer(jsonParams, methodType, callback);
                 break;
             case ExtSdkMethodType.fetchChatRoomInfoFromServer:
-                ExtSdkChatRoomManagerWrapper.getInstance().fetchChatRoomInfoFromServer(jsonParams, methodType,
-                                                                                       callback);
+                ExtSdkChatRoomManagerWrapper.getInstance().fetchChatRoomInfoFromServer(jsonParams, methodType, callback);
                 break;
             case ExtSdkMethodType.getChatRoom:
                 ExtSdkChatRoomManagerWrapper.getInstance().getChatRoom(jsonParams, methodType, callback);
@@ -441,20 +436,16 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 break;
 
             case ExtSdkMethodType.addMembersToChatRoomWhiteList:
-                ExtSdkChatRoomManagerWrapper.getInstance().addMembersToChatRoomWhiteList(jsonParams, methodType,
-                                                                                         callback);
+                ExtSdkChatRoomManagerWrapper.getInstance().addMembersToChatRoomWhiteList(jsonParams, methodType, callback);
                 break;
             case ExtSdkMethodType.removeMembersFromChatRoomWhiteList:
-                ExtSdkChatRoomManagerWrapper.getInstance().removeMembersFromChatRoomWhiteList(jsonParams, methodType,
-                                                                                              callback);
+                ExtSdkChatRoomManagerWrapper.getInstance().removeMembersFromChatRoomWhiteList(jsonParams, methodType, callback);
                 break;
             case ExtSdkMethodType.fetchChatRoomWhiteListFromServer:
-                ExtSdkChatRoomManagerWrapper.getInstance().fetchChatRoomWhiteListFromServer(jsonParams, methodType,
-                                                                                            callback);
+                ExtSdkChatRoomManagerWrapper.getInstance().fetchChatRoomWhiteListFromServer(jsonParams, methodType, callback);
                 break;
             case ExtSdkMethodType.isMemberInChatRoomWhiteListFromServer:
-                ExtSdkChatRoomManagerWrapper.getInstance().isMemberInChatRoomWhiteListFromServer(jsonParams, methodType,
-                                                                                                 callback);
+                ExtSdkChatRoomManagerWrapper.getInstance().isMemberInChatRoomWhiteListFromServer(jsonParams, methodType, callback);
                 break;
 
             case ExtSdkMethodType.muteAllChatRoomMembers:
@@ -477,8 +468,7 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 ExtSdkGroupManagerWrapper.getInstance().getJoinedGroups(jsonParams, methodType, callback);
                 break;
             case ExtSdkMethodType.getGroupsWithoutPushNotification:
-                ExtSdkGroupManagerWrapper.getInstance().getGroupsWithoutPushNotification(jsonParams, methodType,
-                                                                                         callback);
+                ExtSdkGroupManagerWrapper.getInstance().getGroupsWithoutPushNotification(jsonParams, methodType, callback);
                 break;
             case ExtSdkMethodType.getJoinedGroupsFromServer:
                 ExtSdkGroupManagerWrapper.getInstance().getJoinedGroupsFromServer(jsonParams, methodType, callback);
@@ -490,8 +480,7 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 ExtSdkGroupManagerWrapper.getInstance().createGroup(jsonParams, methodType, callback);
                 break;
             case ExtSdkMethodType.getGroupSpecificationFromServer:
-                ExtSdkGroupManagerWrapper.getInstance().getGroupSpecificationFromServer(jsonParams, methodType,
-                                                                                        callback);
+                ExtSdkGroupManagerWrapper.getInstance().getGroupSpecificationFromServer(jsonParams, methodType, callback);
                 break;
             case ExtSdkMethodType.getGroupMemberListFromServer:
                 ExtSdkGroupManagerWrapper.getInstance().getGroupMemberListFromServer(jsonParams, methodType, callback);
@@ -512,8 +501,7 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 ExtSdkGroupManagerWrapper.getInstance().getGroupFileListFromServer(jsonParams, methodType, callback);
                 break;
             case ExtSdkMethodType.getGroupAnnouncementFromServer:
-                ExtSdkGroupManagerWrapper.getInstance().getGroupAnnouncementFromServer(jsonParams, methodType,
-                                                                                       callback);
+                ExtSdkGroupManagerWrapper.getInstance().getGroupAnnouncementFromServer(jsonParams, methodType, callback);
                 break;
             case ExtSdkMethodType.addMembers:
                 ExtSdkGroupManagerWrapper.getInstance().addMembers(jsonParams, methodType, callback);
@@ -609,7 +597,7 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 ExtSdkGroupManagerWrapper.getInstance().declineInvitationFromGroup(jsonParams, methodType, callback);
                 break;
             case ExtSdkMethodType.ignoreGroupPush:
-                ExtSdkGroupManagerWrapper.getInstance().ignoreGroupPush(jsonParams, methodType, callback);
+                callback.fail(1, "no implement: " + methodType);
                 break;
 
                 /// EMGroupManagerListener
@@ -693,8 +681,7 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 callback.fail(1, "no implement: " + methodType);
                 break;
             case ExtSdkMethodType.presenceWithDescription:
-                ExtSdkPresenceManagerWrapper.getInstance().publishPresenceWithDescription(jsonParams, methodType,
-                                                                                          callback);
+                ExtSdkPresenceManagerWrapper.getInstance().publishPresenceWithDescription(jsonParams, methodType, callback);
                 break;
             case ExtSdkMethodType.presenceSubscribe:
                 ExtSdkPresenceManagerWrapper.getInstance().subscribe(jsonParams, methodType, callback);
@@ -703,11 +690,77 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 ExtSdkPresenceManagerWrapper.getInstance().unsubscribe(jsonParams, methodType, callback);
                 break;
             case ExtSdkMethodType.fetchSubscribedMembersWithPageNum:
-                ExtSdkPresenceManagerWrapper.getInstance().fetchSubscribedMembersWithPageNum(jsonParams, methodType,
-                                                                                             callback);
+                ExtSdkPresenceManagerWrapper.getInstance().fetchSubscribedMembersWithPageNum(jsonParams, methodType, callback);
                 break;
             case ExtSdkMethodType.fetchPresenceStatus:
                 ExtSdkPresenceManagerWrapper.getInstance().fetchPresenceStatus(jsonParams, methodType, callback);
+                break;
+
+            case ExtSdkMethodType.addReaction:
+                ExtSdkChatManagerWrapper.getInstance().addReaction(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.removeReaction:
+                ExtSdkChatManagerWrapper.getInstance().removeReaction(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.fetchReactionList:
+                ExtSdkChatManagerWrapper.getInstance().fetchReactionList(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.fetchReactionDetail:
+                ExtSdkChatManagerWrapper.getInstance().fetchReactionDetail(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.reportMessage:
+                ExtSdkChatManagerWrapper.getInstance().reportMessage(jsonParams, methodType, callback);
+                break;
+
+            case ExtSdkMethodType.onReadAckForGroupMessageUpdated:
+                callback.fail(1, "no implement: " + methodType);
+                break;
+            case ExtSdkMethodType.onMessageReactionDidChange:
+                callback.fail(1, "no implement: " + methodType);
+                break;
+
+            case ExtSdkMethodType.getReactionList:
+                ExtSdkChatMessageWrapper.getInstance().getReactionList(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.groupAckCount:
+                ExtSdkChatMessageWrapper.getInstance().groupAckCount(jsonParams, methodType, callback);
+                break;
+
+            case ExtSdkMethodType.fetchChatThread:
+                ExtSdkChatThreadManagerWrapper.getInstance().fetchChatThread(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.fetchChatThreadDetail:
+                ExtSdkChatThreadManagerWrapper.getInstance().fetchChatThreadDetail(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.fetchJoinedChatThreads:
+                ExtSdkChatThreadManagerWrapper.getInstance().fetchJoinedChatThreads(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.fetchChatThreadsWithParentId:
+                ExtSdkChatThreadManagerWrapper.getInstance().fetchChatThreadsWithParentId(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.fetchChatThreadMember:
+                ExtSdkChatThreadManagerWrapper.getInstance().fetchChatThreadMember(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.fetchLastMessageWithChatThreads:
+                ExtSdkChatThreadManagerWrapper.getInstance().fetchLastMessageWithChatThreads(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.removeMemberFromChatThread:
+                ExtSdkChatThreadManagerWrapper.getInstance().removeMemberFromChatThread(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.updateChatThreadSubject:
+                ExtSdkChatThreadManagerWrapper.getInstance().updateChatThreadSubject(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.createChatThread:
+                ExtSdkChatThreadManagerWrapper.getInstance().createChatThread(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.joinChatThread:
+                ExtSdkChatThreadManagerWrapper.getInstance().joinChatThread(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.leaveChatThread:
+                ExtSdkChatThreadManagerWrapper.getInstance().leaveChatThread(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.destroyChatThread:
+                ExtSdkChatThreadManagerWrapper.getInstance().destroyChatThread(jsonParams, methodType, callback);
                 break;
 
             default:

@@ -1057,20 +1057,6 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
         });
     }
 
-    public void ignoreGroupPush(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        String groupId = param.getString("groupId");
-        boolean ignore = param.getBoolean("ignore");
-        List<String> list = new ArrayList<>();
-        list.add(groupId);
-        try {
-            EMClient.getInstance().pushManager().updatePushServiceForGroup(list, !ignore);
-            EMGroup group = EMClient.getInstance().groupManager().getGroup(groupId);
-            onSuccess(result, channelName, ExtSdkGroupHelper.toJson(group));
-        } catch (HyphenateException e) {
-            onError(result, e, null);
-        }
-    }
-
     private void registerEaseListener() {
         if (this.groupChangeListener != null) {
             EMClient.getInstance().groupManager().removeGroupChangeListener(this.groupChangeListener);

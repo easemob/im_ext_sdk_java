@@ -87,7 +87,9 @@ public class ExtSdkConversationWrapper extends ExtSdkWrapper {
         EMConversation conversation = conversationWithParam(params);
         JSONObject msg = params.getJSONObject("msg");
         EMMessage message = ExtSdkMessageHelper.fromJson(msg);
-        conversation.appendMessage(message);
+        if (message != null) {
+            conversation.appendMessage(message);
+        }
         onSuccess(result, channelName, null);
     }
 

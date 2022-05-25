@@ -48,7 +48,6 @@ public class ExtSdkMethodType {
     public static final String declineInvitation = "declineInvitation";
     public static final String getSelfIdsOnOtherPlatform = "getSelfIdsOnOtherPlatform";
 
-
     public static final String onContactChanged = "onContactChanged";
 
     /// EMChatManager methods
@@ -77,6 +76,12 @@ public class ExtSdkMethodType {
     public static final String translateMessage = "translateMessage";
     public static final String fetchSupportedLanguages = "fetchSupportLanguages";
 
+    public static final String addReaction = "addReaction";
+    public static final String removeReaction = "removeReaction";
+    public static final String fetchReactionList = "fetchReactionList";
+    public static final String fetchReactionDetail = "fetchReactionDetail";
+    public static final String reportMessage = "reportMessage";
+
     /// EMChatManager listener
     public static final String onMessagesReceived = "onMessagesReceived";
     public static final String onCmdMessagesReceived = "onCmdMessagesReceived";
@@ -87,6 +92,9 @@ public class ExtSdkMethodType {
 
     public static final String onConversationUpdate = "onConversationUpdate";
     public static final String onConversationHasRead = "onConversationHasRead";
+
+    public static final String onReadAckForGroupMessageUpdated = "onReadAckForGroupMessageUpdated";
+    public static final String onMessageReactionDidChange = "messageReactionDidChange";
 
     /// EMMessage listener
     public static final String onMessageProgressUpdate = "onMessageProgressUpdate";
@@ -115,6 +123,10 @@ public class ExtSdkMethodType {
     public static final String loadMsgWithKeywords = "loadMsgWithKeywords";
     public static final String loadMsgWithMsgType = "loadMsgWithMsgType";
     public static final String loadMsgWithTime = "loadMsgWithTime";
+
+    // EMMessage method
+    public static final String getReactionList = "getReactionList";
+    public static final String groupAckCount = "groupAckCount";
 
     // EMChatRoomManager
     public static final String joinChatRoom = "joinChatRoom";
@@ -148,7 +160,6 @@ public class ExtSdkMethodType {
 
     public static final String muteAllChatRoomMembers = "muteAllChatRoomMembers";
     public static final String unMuteAllChatRoomMembers = "unMuteAllChatRoomMembers";
-
 
     // EMChatRoomManagerListener
     public static final String chatRoomChange = "onChatRoomChanged";
@@ -199,7 +210,7 @@ public class ExtSdkMethodType {
     public static final String declineJoinApplication = "declineJoinApplication";
     public static final String acceptInvitationFromGroup = "acceptInvitationFromGroup";
     public static final String declineInvitationFromGroup = "declineInvitationFromGroup";
-    public static final String ignoreGroupPush = "ignoreGroupPush";
+    public static final String ignoreGroupPush = "ignoreGroupPush"; // deprecated 2022.05.25
 
     /// EMGroupManagerListener
     public static final String onGroupChanged = "onGroupChanged";
@@ -213,7 +224,7 @@ public class ExtSdkMethodType {
     public static final String enableOfflinePush = "enableOfflinePush";
     public static final String disableOfflinePush = "disableOfflinePush";
     public static final String getNoPushGroups = "getNoPushGroups";
-    public static final String setNoDisturbUsers = "setNoDisturbUsers"; // deprecated 2022.05.04
+    public static final String setNoDisturbUsers = "setNoDisturbUsers";                     // deprecated 2022.05.04
     public static final String getNoDisturbUsersFromServer = "getNoDisturbUsersFromServer"; // deprecated 2022.05.04
 
     /// ImPushConfig
@@ -239,4 +250,20 @@ public class ExtSdkMethodType {
 
     /// EMPresenceManagerListener
     public static final String onPresenceStatusChanged = "onPresenceStatusChanged";
+
+    /// EMChatThreadManager methods
+    public static final String fetchChatThread = "fetchChatThread";
+    public static final String fetchChatThreadDetail = "fetchChatThreadDetail";
+    public static final String fetchJoinedChatThreads = "fetchJoinedChatThreads";
+    public static final String fetchChatThreadsWithParentId = "fetchChatThreadsWithParentId";
+    public static final String fetchChatThreadMember = "fetchChatThreadMember";
+    public static final String fetchLastMessageWithChatThreads = "fetchLastMessageWithChatThreads";
+    public static final String removeMemberFromChatThread = "removeMemberFromChatThread";
+    public static final String updateChatThreadSubject = "updateChatThreadSubject";
+    public static final String createChatThread = "createChatThread";
+    public static final String joinChatThread = "joinChatThread";
+    public static final String leaveChatThread = "leaveChatThread";
+    public static final String destroyChatThread = "destroyChatThread";
+
+    // TODO: EMChatThreadManagerListener
 }
