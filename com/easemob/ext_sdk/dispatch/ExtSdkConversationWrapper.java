@@ -198,9 +198,9 @@ public class ExtSdkConversationWrapper extends ExtSdkWrapper {
     }
 
     private EMConversation conversationWithParam(JSONObject params) throws JSONException {
-        String con_id = params.getString("con_id");
-        EMConversation.EMConversationType type = ExtSdkConversationHelper.typeFromInt(params.getInt("type"));
-        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(con_id, type, true);
+        String convId = params.getString("convId");
+        EMConversation.EMConversationType type = ExtSdkConversationHelper.typeFromInt(params.getInt("convType"));
+        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(convId, type, true);
         return conversation;
     }
 

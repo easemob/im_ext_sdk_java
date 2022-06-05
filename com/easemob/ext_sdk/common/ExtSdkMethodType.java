@@ -252,10 +252,10 @@ public class ExtSdkMethodType {
     public static final String onPresenceStatusChanged = "onPresenceStatusChanged";
 
     /// EMChatThreadManager methods
-    public static final String fetchChatThread = "fetchChatThread";
     public static final String fetchChatThreadDetail = "fetchChatThreadDetail";
     public static final String fetchJoinedChatThreads = "fetchJoinedChatThreads";
     public static final String fetchChatThreadsWithParentId = "fetchChatThreadsWithParentId";
+    public static final String fetchJoinedChatThreadsWithParentId = "fetchJoinedChatThreadsWithParentId";
     public static final String fetchChatThreadMember = "fetchChatThreadMember";
     public static final String fetchLastMessageWithChatThreads = "fetchLastMessageWithChatThreads";
     public static final String removeMemberFromChatThread = "removeMemberFromChatThread";
@@ -264,6 +264,13 @@ public class ExtSdkMethodType {
     public static final String joinChatThread = "joinChatThread";
     public static final String leaveChatThread = "leaveChatThread";
     public static final String destroyChatThread = "destroyChatThread";
+    public static final String getMessageThread = "getMessageThread";
+
+    /// EMChatThreadChangeListener 
+    public static final String onChatThreadCreated = "onChatThreadCreated";
+    public static final String onChatThreadUpdated = "onChatThreadUpdated";
+    public static final String onChatThreadDestroyed = "onChatThreadDestroyed";
+    public static final String onChatThreadUserRemoved = "onChatThreadUserRemoved";
 
     // TODO: EMChatThreadManagerListener
 }

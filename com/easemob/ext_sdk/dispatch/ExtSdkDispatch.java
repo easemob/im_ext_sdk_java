@@ -19,10 +19,7 @@ public class ExtSdkDispatch implements ExtSdkApi {
     public static ExtSdkDispatch getInstance() { return ExtSdkDispatch.SingleHolder.instance; }
 
     @Override
-    public void init(@NonNull Object config) {
-        // EMClientWrapper.getInstance();
-        // EMChatManagerWrapper.getInstance();
-    }
+    public void init(@NonNull Object config) {}
 
     @Override
     public void unInit(@Nullable Object params) {}
@@ -726,9 +723,6 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 ExtSdkChatMessageWrapper.getInstance().groupAckCount(jsonParams, methodType, callback);
                 break;
 
-            case ExtSdkMethodType.fetchChatThread:
-                ExtSdkChatThreadManagerWrapper.getInstance().fetchChatThread(jsonParams, methodType, callback);
-                break;
             case ExtSdkMethodType.fetchChatThreadDetail:
                 ExtSdkChatThreadManagerWrapper.getInstance().fetchChatThreadDetail(jsonParams, methodType, callback);
                 break;
@@ -737,6 +731,9 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 break;
             case ExtSdkMethodType.fetchChatThreadsWithParentId:
                 ExtSdkChatThreadManagerWrapper.getInstance().fetchChatThreadsWithParentId(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.fetchJoinedChatThreadsWithParentId:
+                ExtSdkChatThreadManagerWrapper.getInstance().fetchJoinedChatThreadsWithParentId(jsonParams, methodType, callback);
                 break;
             case ExtSdkMethodType.fetchChatThreadMember:
                 ExtSdkChatThreadManagerWrapper.getInstance().fetchChatThreadMember(jsonParams, methodType, callback);
@@ -761,6 +758,9 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 break;
             case ExtSdkMethodType.destroyChatThread:
                 ExtSdkChatThreadManagerWrapper.getInstance().destroyChatThread(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.getMessageThread:
+                ExtSdkChatThreadManagerWrapper.getInstance().getMessageThread(jsonParams, methodType, callback);
                 break;
 
             default:

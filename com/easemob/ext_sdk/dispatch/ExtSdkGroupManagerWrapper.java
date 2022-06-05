@@ -153,17 +153,16 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
     public void getGroupSpecificationFromServer(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         String groupId = param.getString("groupId");
-        EMClient.getInstance().groupManager().asyncGetGroupFromServer(groupId, new EMValueCallBack<EMGroup>() {
-            @Override
-            public void onSuccess(EMGroup value) {
-                ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(value));
-            }
-
-            @Override
-            public void onError(int error, String errorMsg) {
-                ExtSdkWrapper.onError(result, error, errorMsg);
-            }
-        });
+        boolean isFetchMembers = false;
+        if (param.has("fetchMembers")) {
+            isFetchMembers = param.getBoolean("fetchMembers");
+        }
+        try {
+            EMGroup group = EMClient.getInstance().groupManager().getGroupFromServer(groupId, isFetchMembers);
+            ExtSdkWrapper.onSuccess(result, channelName, ExtSdkGroupHelper.toJson(group));
+        } catch (HyphenateException e) {
+            ExtSdkWrapper.onError(result, e, null);
+        }
     }
 
     public void getGroupMemberListFromServer(JSONObject param, String channelName, ExtSdkCallback result)

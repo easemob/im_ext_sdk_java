@@ -4,6 +4,9 @@ import android.content.Context;
 import android.os.Build;
 import androidx.annotation.RequiresApi;
 import com.hyphenate.chat.EMChatRoom;
+import com.hyphenate.chat.EMChatThread;
+import com.hyphenate.chat.EMChatThreadEvent;
+import com.hyphenate.chat.EMChatThreadInfo;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCmdMessageBody;
 import com.hyphenate.chat.EMConversation;
@@ -408,6 +411,9 @@ class ExtSdkMessageHelper {
         if (json.has("msgId")) {
             message.setMsgId(json.getString("msgId"));
         }
+        if (json.has("isChatThread")) {
+            message.setIsThread(json.getBoolean("isChatThread"));
+        }
 
         if (json.has("attributes")) {
             JSONObject data = json.getJSONObject("attributes");
@@ -482,6 +488,7 @@ class ExtSdkMessageHelper {
         data.put("hasRead", !message.isUnread());
         data.put("needGroupAck", message.isNeedGroupAck());
         data.put("groupAckCount", message.groupAckCount());
+        data.put("isChatThread", message.isThread());
 
         return data;
     }
@@ -567,6 +574,7 @@ class ExtSdkMessageBodyHelper {
         }
         EMTextMessageBody body = new EMTextMessageBody(content);
         body.setTargetLanguages(list);
+        // 给底层的时候不需要设置
         return body;
     }
 
@@ -576,6 +584,16 @@ class ExtSdkMessageBodyHelper {
         data.put("type", "txt");
         if (body.getTargetLanguages() != null) {
             data.put("targetLanguages", body.getTargetLanguages());
+        }
+        if (body.getTranslations() != null) {
+            HashMap<String, String> map = new HashMap<>();
+            List<EMTextMessageBody.EMTranslationInfo> list = body.getTranslations();
+            for (int i = 0; i< list.size(); ++i) {
+                String key = list.get(i).languageCode;
+                String value = list.get(i).translationText;
+                map.put(key, value);
+            }
+            data.put("translations", map);
         }
         return data;
     }
@@ -875,8 +893,8 @@ class ExtSdkConversationHelper {
             return null;
         }
         Map<String, Object> data = new HashMap<>();
-        data.put("con_id", conversation.conversationId());
-        data.put("type", typeToInt(conversation.getType()));
+        data.put("convId", conversation.conversationId());
+        data.put("convType", typeToInt(conversation.getType()));
         try {
             data.put("ext", jsonStringToMap(conversation.getExtField()));
         } catch (Exception ignored) {
@@ -993,6 +1011,10 @@ class ExtSdkCursorResultHelper {
 
                 if (obj instanceof EMGroupInfo) {
                     jsonList.add(ExtSdkGroupInfoHelper.toJson((EMGroupInfo)obj));
+                }
+
+                if (obj instanceof EMChatThread) {
+                    jsonList.add(ExtSdkChatThreadHelper.toJson((EMChatThread)obj));
                 }
             }
         }
@@ -1153,6 +1175,9 @@ class ExtSdkLanguageHelper {
 
 class ExtSdkMessageReactionHelper {
     static Map<String, Object> toJson(EMMessageReaction reaction) {
+        if (reaction == null) {
+            return null;
+        }
         Map<String, Object> data = new HashMap<>();
         data.put("reaction", reaction.getReaction());
         data.put("count", reaction.getUserCount());
@@ -1177,6 +1202,58 @@ class ExtSdkMessageReactionChangeHelper {
     }
 }
 
-class ExtSdkChatThreadHelper {}
+class ExtSdkChatThreadHelper {
+    static Map<String, Object> toJson(EMChatThread thread) {
+        if (thread == null) {
+            return null;
+        }
+        Map<String, Object> data = new HashMap<>();
+        data.put("threadId", thread.getChatThreadId());
+        data.put("threadName", thread.getChatThreadName());
+        data.put("owner", thread.getCreator());
+        data.put("parentId", thread.getParentId());
+        data.put("msgId", thread.getMessageId());
+        data.put("memberCount", thread.getMemberCount());
+        data.put("timestamp", thread.getCreateTimestamp());
 
-class ExtSdkChatThreadEventHelper {}
+        return data;
+    }
+}
+
+class ExtSdkChatThreadEventHelper {
+    static Map<String, Object> toJson(EMChatThreadEvent thread) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("threadId", thread.getChatThreadId());
+        data.put("threadName", thread.getChatThreadName());
+        data.put("parentId", thread.getParentId());
+        data.put("msgId", thread.getMessageId());
+        data.put("msgCount", thread.getMessageCount());
+        data.put("timestamp", thread.getCreateTimestamp());
+        data.put("operation", thread.getType().toString());
+        data.put("fromId", thread.getOperatorId());
+        EMMessage message = thread.getLastMessage();
+        if (message != null) {
+            data.put("lastMsg", ExtSdkMessageHelper.toJson(message));
+        }
+
+        return data;
+    }
+}
+
+class ExtSdkChatThreadInfoHelper {
+    static Map<String, Object> toJson(EMChatThreadInfo thread) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("threadId", thread.getChatThreadId());
+        data.put("threadName", thread.getChatThreadName());
+        data.put("parentId", thread.getParentId());
+        data.put("msgId", thread.getMessageId());
+        data.put("msgCount", thread.getMessageCount());
+        data.put("timestamp", thread.getCreateTimestamp());
+        EMMessage message = thread.getLastMessage();
+        if (message != null) {
+            data.put("lastMsg", ExtSdkMessageHelper.toJson(message));
+        }
+
+        return data;
+    }
+}

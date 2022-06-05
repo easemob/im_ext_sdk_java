@@ -265,7 +265,16 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
                 Map<String, Object> data = new HashMap<>();
                 data.put("event", Integer.valueOf(event));
                 data.put("target", target);
-                data.put("userNames", userNames);
+                data.put("ext", userNames);
+                onReceive(ExtSdkMethodType.onMultiDeviceEvent, data);
+            }
+
+            @Override
+            public void onThreadEvent(int event, String target, List<String> usernames) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("event", Integer.valueOf(event));
+                data.put("target", target);
+                data.put("ext", usernames);
                 onReceive(ExtSdkMethodType.onMultiDeviceEvent, data);
             }
         };

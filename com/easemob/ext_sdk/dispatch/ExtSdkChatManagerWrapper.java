@@ -151,7 +151,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
     }
 
     public void ackConversationRead(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        String conversationId = param.getString("con_id");
+        String conversationId = param.getString("convId");
 
         try {
             EMClient.getInstance().chatManager().ackConversationRead(conversationId);
@@ -185,8 +185,8 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
     }
 
     public void getConversation(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        String conId = param.getString("con_id");
-        EMConversation.EMConversationType type = ExtSdkConversationHelper.typeFromInt(param.getInt("type"));
+        String conId = param.getString("convId");
+        EMConversation.EMConversationType type = ExtSdkConversationHelper.typeFromInt(param.getInt("convType"));
         boolean createIfNeed = true;
         if (param.has("createIfNeed")) {
             createIfNeed = param.getBoolean("createIfNeed");
@@ -369,7 +369,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
     }
 
     public void deleteConversation(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        String conId = param.getString("con_id");
+        String conId = param.getString("convId");
         boolean isDelete = param.getBoolean("deleteMessages");
 
         boolean ret = EMClient.getInstance().chatManager().deleteConversation(conId, isDelete);
@@ -381,8 +381,8 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
     }
 
     public void fetchHistoryMessages(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        String conId = param.getString("con_id");
-        EMConversation.EMConversationType type = ExtSdkConversationHelper.typeFromInt(param.getInt("type"));
+        String conId = param.getString("convId");
+        EMConversation.EMConversationType type = ExtSdkConversationHelper.typeFromInt(param.getInt("convType"));
         int pageSize = param.getInt("pageSize");
         String startMsgId = param.getString("startMsgId");
 
@@ -593,7 +593,10 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         if (param.has("cursor")) {
             cursor = param.getString("cursor");
         }
-        int pageSize = param.getInt("pageSize");
+        int pageSize = 50;
+        if (param.has("pageSize")) {
+            pageSize = param.getInt("pageSize");
+        }
         EMClient.getInstance().chatManager().asyncGetReactionDetail(
             msgId, reaction, cursor, pageSize, new EMValueCallBack<EMCursorResult<EMMessageReaction>>() {
                 @Override
