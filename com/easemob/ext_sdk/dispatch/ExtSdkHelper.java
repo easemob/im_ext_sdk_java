@@ -1,12 +1,9 @@
 package com.easemob.ext_sdk.dispatch;
 
 import android.content.Context;
-import android.os.Build;
-import androidx.annotation.RequiresApi;
 import com.hyphenate.chat.EMChatRoom;
 import com.hyphenate.chat.EMChatThread;
 import com.hyphenate.chat.EMChatThreadEvent;
-import com.hyphenate.chat.EMChatThreadInfo;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCmdMessageBody;
 import com.hyphenate.chat.EMConversation;
@@ -412,7 +409,7 @@ class ExtSdkMessageHelper {
             message.setMsgId(json.getString("msgId"));
         }
         if (json.has("isChatThread")) {
-            message.setIsThread(json.getBoolean("isChatThread"));
+            message.setIsChatThreadMessage(json.getBoolean("isChatThread"));
         }
 
         if (json.has("attributes")) {
@@ -488,7 +485,7 @@ class ExtSdkMessageHelper {
         data.put("hasRead", !message.isUnread());
         data.put("needGroupAck", message.isNeedGroupAck());
         data.put("groupAckCount", message.groupAckCount());
-        data.put("isChatThread", message.isThread());
+        data.put("isChatThread", message.isChatThreadMessage());
 
         return data;
     }
@@ -1213,12 +1210,18 @@ class ExtSdkChatThreadHelper {
         }
         Map<String, Object> data = new HashMap<>();
         data.put("threadId", thread.getChatThreadId());
-        data.put("threadName", thread.getChatThreadName());
-        data.put("owner", thread.getCreator());
+        if (thread.getChatThreadName() != null) {
+            data.put("threadName", thread.getChatThreadName());
+        }
+        data.put("owner", thread.getOwner());
+        data.put("messageId", thread.getMessageId());
         data.put("parentId", thread.getParentId());
-        data.put("msgId", thread.getMessageId());
         data.put("memberCount", thread.getMemberCount());
-        data.put("timestamp", thread.getCreateTimestamp());
+        data.put("messageCount", thread.getMessageCount());
+        data.put("createAt", thread.getCreateAt());
+        if (thread.getLastMessage() != null) {
+            data.put("lastMessage", ExtSdkMessageHelper.toJson(thread.getLastMessage()));
+        }
 
         return data;
     }
@@ -1227,35 +1230,26 @@ class ExtSdkChatThreadHelper {
 class ExtSdkChatThreadEventHelper {
     static Map<String, Object> toJson(EMChatThreadEvent thread) {
         Map<String, Object> data = new HashMap<>();
-        data.put("threadId", thread.getChatThreadId());
-        data.put("threadName", thread.getChatThreadName());
-        data.put("parentId", thread.getParentId());
-        data.put("msgId", thread.getMessageId());
-        data.put("msgCount", thread.getMessageCount());
-        data.put("timestamp", thread.getCreateTimestamp());
-        data.put("operation", thread.getType().toString());
-        data.put("fromId", thread.getOperatorId());
-        EMMessage message = thread.getLastMessage();
-        if (message != null) {
-            data.put("lastMsg", ExtSdkMessageHelper.toJson(message));
+        switch (thread.getType()) {
+            case UNKNOWN:
+                data.put("type", 0);
+                break;
+            case CREATE:
+                data.put("type", 1);
+                break;
+            case UPDATE:
+                data.put("type", 2);
+                break;
+            case DELETE:
+                data.put("type", 3);
+                break;
+            case UPDATE_MSG:
+                data.put("type", 4);
+                break;
         }
-
-        return data;
-    }
-}
-
-class ExtSdkChatThreadInfoHelper {
-    static Map<String, Object> toJson(EMChatThreadInfo thread) {
-        Map<String, Object> data = new HashMap<>();
-        data.put("threadId", thread.getChatThreadId());
-        data.put("threadName", thread.getChatThreadName());
-        data.put("parentId", thread.getParentId());
-        data.put("msgId", thread.getMessageId());
-        data.put("msgCount", thread.getMessageCount());
-        data.put("timestamp", thread.getCreateTimestamp());
-        EMMessage message = thread.getLastMessage();
-        if (message != null) {
-            data.put("lastMsg", ExtSdkMessageHelper.toJson(message));
+        data.put("from", thread.getFrom());
+        if (thread.getChatThread() != null) {
+            data.put("thread", ExtSdkChatThreadHelper.toJson(thread.getChatThread()));
         }
 
         return data;
