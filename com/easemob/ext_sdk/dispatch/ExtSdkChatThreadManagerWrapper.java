@@ -7,7 +7,6 @@ import com.hyphenate.EMChatThreadChangeListener;
 import com.hyphenate.EMValueCallBack;
 import com.hyphenate.chat.EMChatThread;
 import com.hyphenate.chat.EMChatThreadEvent;
-import com.hyphenate.chat.EMChatThreadInfo;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCursorResult;
 import com.hyphenate.chat.EMMessage;
@@ -147,7 +146,7 @@ public class ExtSdkChatThreadManagerWrapper {
     public void fetchLastMessageWithChatThreads(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         List<String> list = new ArrayList<String>();
-        JSONArray array = param.getJSONArray("threadId");
+        JSONArray array = param.getJSONArray("threadIds");
         for (int i = 0; i < array.length(); i++) {
             list.add(array.getString(i));
         }
@@ -188,7 +187,7 @@ public class ExtSdkChatThreadManagerWrapper {
         throws JSONException {
         String threadId = param.getString("threadId");
         String name = param.getString("name");
-        EMClient.getInstance().chatThreadManager().changeChatThreadName(threadId, name, new EMCallBack() {
+        EMClient.getInstance().chatThreadManager().updateChatThreadName(threadId, name, new EMCallBack() {
             @Override
             public void onSuccess() {
                 ExtSdkWrapper.onSuccess(result, channelName, null);
@@ -263,9 +262,9 @@ public class ExtSdkChatThreadManagerWrapper {
         String msgId = param.getString("msgId");
         EMMessage msg = EMClient.getInstance().chatManager().getMessage(msgId);
         if (msg != null) {
-            if (msg.isThread()) {
-                EMChatThreadInfo info = msg.getThreadOverview();
-                ExtSdkWrapper.onSuccess(result, channelName, ExtSdkChatThreadInfoHelper.toJson(info));
+            if (msg.isChatThreadMessage()) {
+                EMChatThread info = msg.getChatThread();
+                ExtSdkWrapper.onSuccess(result, channelName, ExtSdkChatThreadHelper.toJson(info));
             } else {
                 ExtSdkWrapper.onSuccess(result, channelName, null);
             }
