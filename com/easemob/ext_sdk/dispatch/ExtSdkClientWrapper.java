@@ -270,7 +270,7 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
             }
 
             @Override
-            public void onThreadEvent(int event, String target, List<String> usernames) {
+            public void onChatThreadEvent(int event, String target, List<String> usernames) {
                 Map<String, Object> data = new HashMap<>();
                 data.put("event", Integer.valueOf(event));
                 data.put("target", target);

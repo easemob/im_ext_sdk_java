@@ -585,7 +585,7 @@ class ExtSdkMessageBodyHelper {
         if (body.getTranslations() != null) {
             HashMap<String, String> map = new HashMap<>();
             List<EMTextMessageBody.EMTranslationInfo> list = body.getTranslations();
-            for (int i = 0; i< list.size(); ++i) {
+            for (int i = 0; i < list.size(); ++i) {
                 String key = list.get(i).languageCode;
                 String value = list.get(i).translationText;
                 map.put(key, value);
@@ -1231,21 +1231,21 @@ class ExtSdkChatThreadEventHelper {
     static Map<String, Object> toJson(EMChatThreadEvent thread) {
         Map<String, Object> data = new HashMap<>();
         switch (thread.getType()) {
-            case UNKNOWN:
-                data.put("type", 0);
-                break;
-            case CREATE:
-                data.put("type", 1);
-                break;
-            case UPDATE:
-                data.put("type", 2);
-                break;
-            case DELETE:
-                data.put("type", 3);
-                break;
-            case UPDATE_MSG:
-                data.put("type", 4);
-                break;
+        case UNKNOWN:
+            data.put("type", 0);
+            break;
+        case CREATE:
+            data.put("type", 1);
+            break;
+        case UPDATE:
+            data.put("type", 2);
+            break;
+        case DELETE:
+            data.put("type", 3);
+            break;
+        case UPDATE_MSG:
+            data.put("type", 4);
+            break;
         }
         data.put("from", thread.getFrom());
         if (thread.getChatThread() != null) {

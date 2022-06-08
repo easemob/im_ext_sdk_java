@@ -4,29 +4,22 @@ import com.easemob.ext_sdk.common.ExtSdkCallback;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMMessageReaction;
-//import com.hyphenate.chat.EMMessageReaction;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+// import com.hyphenate.chat.EMMessageReaction;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ExtSdkChatMessageWrapper {
 
-    public static class SingleHolder {
-        static ExtSdkChatMessageWrapper instance = new ExtSdkChatMessageWrapper();
-    }
+    public static class SingleHolder { static ExtSdkChatMessageWrapper instance = new ExtSdkChatMessageWrapper(); }
 
-    public static ExtSdkChatMessageWrapper getInstance() {
-        return ExtSdkChatMessageWrapper.SingleHolder.instance;
-    }
+    public static ExtSdkChatMessageWrapper getInstance() { return ExtSdkChatMessageWrapper.SingleHolder.instance; }
 
     ExtSdkChatMessageWrapper() { registerEaseListener(); }
 
-    private void registerEaseListener() {
-    }
+    private void registerEaseListener() {}
 
     public void getReactionList(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String msgId = param.getString("msgId");

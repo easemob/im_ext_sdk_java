@@ -1,7 +1,6 @@
 package com.easemob.ext_sdk.dispatch;
 
 import android.util.Log;
-
 import com.easemob.ext_sdk.common.ExtSdkCallback;
 import com.easemob.ext_sdk.common.ExtSdkMethodType;
 import com.hyphenate.EMCallBack;

@@ -36,22 +36,26 @@ public class ExtSdkChatThreadManagerWrapper {
         this.threadChangeListener = new EMChatThreadChangeListener() {
             @Override
             public void onChatThreadCreated(EMChatThreadEvent event) {
-                ExtSdkWrapper.onReceive(ExtSdkMethodType.onChatThreadCreated, ExtSdkChatThreadEventHelper.toJson(event));
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onChatThreadCreated,
+                                        ExtSdkChatThreadEventHelper.toJson(event));
             }
 
             @Override
             public void onChatThreadUpdated(EMChatThreadEvent event) {
-                ExtSdkWrapper.onReceive(ExtSdkMethodType.onChatThreadUpdated, ExtSdkChatThreadEventHelper.toJson(event));
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onChatThreadUpdated,
+                                        ExtSdkChatThreadEventHelper.toJson(event));
             }
 
             @Override
             public void onChatThreadDestroyed(EMChatThreadEvent event) {
-                ExtSdkWrapper.onReceive(ExtSdkMethodType.onChatThreadDestroyed, ExtSdkChatThreadEventHelper.toJson(event));
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onChatThreadDestroyed,
+                                        ExtSdkChatThreadEventHelper.toJson(event));
             }
 
             @Override
             public void onChatThreadUserRemoved(EMChatThreadEvent event) {
-                ExtSdkWrapper.onReceive(ExtSdkMethodType.onChatThreadUserRemoved, ExtSdkChatThreadEventHelper.toJson(event));
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onChatThreadUserRemoved,
+                                        ExtSdkChatThreadEventHelper.toJson(event));
             }
         };
     }
