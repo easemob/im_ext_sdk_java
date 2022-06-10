@@ -208,6 +208,7 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
             ExtSdkPresenceManagerWrapper.getInstance();
             ExtSdkPushManagerWrapper.getInstance();
             ExtSdkUserInfoManagerWrapper.getInstance();
+            ExtSdkChatThreadManagerWrapper.getInstance();
 
             ExtSdkThreadUtil.asyncExecute(() -> { onSuccess(result, channelName, null); });
         });

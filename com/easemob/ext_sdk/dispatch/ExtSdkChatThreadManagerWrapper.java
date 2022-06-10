@@ -58,6 +58,7 @@ public class ExtSdkChatThreadManagerWrapper {
                                         ExtSdkChatThreadEventHelper.toJson(event));
             }
         };
+        EMClient.getInstance().chatThreadManager().addChatThreadChangeListener(this.threadChangeListener);
     }
 
     public void fetchChatThreadDetail(JSONObject param, String channelName, ExtSdkCallback result)
@@ -266,7 +267,7 @@ public class ExtSdkChatThreadManagerWrapper {
         String msgId = param.getString("msgId");
         EMMessage msg = EMClient.getInstance().chatManager().getMessage(msgId);
         if (msg != null) {
-            if (msg.isChatThreadMessage()) {
+            if (!msg.isChatThreadMessage()) {
                 EMChatThread info = msg.getChatThread();
                 ExtSdkWrapper.onSuccess(result, channelName, ExtSdkChatThreadHelper.toJson(info));
             } else {
