@@ -1214,10 +1214,10 @@ class ExtSdkChatThreadHelper {
             data.put("threadName", thread.getChatThreadName());
         }
         data.put("owner", thread.getOwner());
-        data.put("messageId", thread.getMessageId());
+        data.put("msgId", thread.getMessageId());
         data.put("parentId", thread.getParentId());
         data.put("memberCount", thread.getMemberCount());
-        data.put("messageCount", thread.getMessageCount());
+        data.put("msgCount", thread.getMessageCount());
         data.put("createAt", thread.getCreateAt());
         if (thread.getLastMessage() != null) {
             data.put("lastMessage", ExtSdkMessageHelper.toJson(thread.getLastMessage()));
