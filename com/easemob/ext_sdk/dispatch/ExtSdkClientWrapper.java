@@ -1,5 +1,7 @@
 package com.easemob.ext_sdk.dispatch;
 
+import android.util.Log;
+
 import com.easemob.ext_sdk.common.ExtSdkCallback;
 import com.easemob.ext_sdk.common.ExtSdkContext;
 import com.easemob.ext_sdk.common.ExtSdkMethodType;
@@ -245,6 +247,23 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
         String agoraToken = param.getString("agora_token");
         EMClient.getInstance().renewToken(agoraToken);
         onSuccess(result, channelName, null);
+    }
+
+    public void updatePushConfig(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        JSONObject config = param.getJSONObject("config");
+        String deviceId = config.getString("deviceId");
+        String deviceToken = config.getString("deviceToken");
+        EMClient.getInstance().pushManager().bindDeviceToken(deviceId, deviceToken, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onSuccess(result, channelName, null);
+            }
+
+            @Override
+            public void onError(int code, String error) {
+                ExtSdkWrapper.onError(result, code, error);
+            }
+        });
     }
 
     public void addEMListener() {

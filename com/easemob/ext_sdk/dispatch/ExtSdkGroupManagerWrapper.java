@@ -1270,6 +1270,14 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
                 data.put("fileId", fileId);
                 ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
+
+            @Override
+            public void onSpecificationChanged(EMGroup group) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("type", "onSpecificationChanged");
+                data.put("group", ExtSdkGroupHelper.toJson(group));
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
+            }
         };
         EMClient.getInstance().groupManager().addGroupChangeListener(this.groupChangeListener);
     }

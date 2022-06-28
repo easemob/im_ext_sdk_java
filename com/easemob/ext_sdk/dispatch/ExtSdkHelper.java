@@ -72,28 +72,44 @@ class ExtSdkOptionsHelper {
         }
 
         if (json.has("pushConfig")) {
-            EMPushConfig.Builder builder = new EMPushConfig.Builder(context);
-            JSONObject pushConfig = json.getJSONObject("pushConfig");
-            if (pushConfig.getBoolean("enableMiPush")) {
-                builder.enableMiPush(pushConfig.getString("miAppId"), pushConfig.getString("miAppKey"));
-            }
-            if (pushConfig.getBoolean("enableFCM")) {
-                builder.enableFCM(pushConfig.getString("fcmId"));
-                options.setUseFCM(true);
-            }
-            if (pushConfig.getBoolean("enableOppoPush")) {
-                builder.enableOppoPush(pushConfig.getString("oppoAppKey"), pushConfig.getString("oppoAppSecret"));
-            }
-            if (pushConfig.getBoolean("enableHWPush")) {
-                builder.enableHWPush();
-            }
-            if (pushConfig.getBoolean("enableMeiZuPush")) {
-                builder.enableMeiZuPush(pushConfig.getString("mzAppId"), pushConfig.getString("mzAppKey"));
-            }
-            if (pushConfig.getBoolean("enableVivoPush")) {
-                builder.enableVivoPush();
-            }
-            options.setPushConfig(builder.build());
+//            EMPushConfig.Builder builder = new EMPushConfig.Builder(context);
+//            JSONObject pushConfig = json.getJSONObject("pushConfig");
+//            String manufacturer = pushConfig.getString("manufacturer");
+//            if (manufacturer.equalsIgnoreCase("google")) {
+//                builder.enableFCM(pushConfig.getString("deviceId"));
+//            } else if (manufacturer.equalsIgnoreCase("huawei")) {
+//                builder.enableHWPush();
+//            } else if (manufacturer.equalsIgnoreCase("meizu")) {
+//                builder.enableFCM(pushConfig.getString("deviceId"));
+//            } else if (manufacturer.equalsIgnoreCase("xiaomi")) {
+//                builder.enableFCM(pushConfig.getString("deviceId"));
+//            } else if (manufacturer.equalsIgnoreCase("oppo")) {
+//                builder.enableOppoPush(pushConfig.getString("deviceId"));
+//            } else if (manufacturer.equalsIgnoreCase("vivo")) {
+//                builder.enableFCM(pushConfig.getString("deviceId"));
+//            } else {
+//                builder.enableFCM(pushConfig.getString("deviceId"));
+//            }
+//            if (pushConfig.getBoolean("enableMiPush")) {
+//                builder.enableMiPush(pushConfig.getString("miAppId"), pushConfig.getString("miAppKey"));
+//            }
+//            if (pushConfig.getBoolean("enableFCM")) {
+//                builder.enableFCM(pushConfig.getString("fcmId"));
+//                options.setUseFCM(true);
+//            }
+//            if (pushConfig.getBoolean("enableOppoPush")) {
+//                builder.enableOppoPush(pushConfig.getString("oppoAppKey"), pushConfig.getString("oppoAppSecret"));
+//            }
+//            if (pushConfig.getBoolean("enableHWPush")) {
+//                builder.enableHWPush();
+//            }
+//            if (pushConfig.getBoolean("enableMeiZuPush")) {
+//                builder.enableMeiZuPush(pushConfig.getString("mzAppId"), pushConfig.getString("mzAppKey"));
+//            }
+//            if (pushConfig.getBoolean("enableVivoPush")) {
+//                builder.enableVivoPush();
+//            }
+//            options.setPushConfig(builder.build());
         }
         return options;
     }
@@ -486,6 +502,7 @@ class ExtSdkMessageHelper {
         data.put("needGroupAck", message.isNeedGroupAck());
         data.put("groupAckCount", message.groupAckCount());
         data.put("isChatThread", message.isChatThreadMessage());
+        data.put("isOnline", message.isOnlineState());
 
         return data;
     }

@@ -183,7 +183,15 @@ public class ExtSdkApiRN extends ReactContextBaseJavaModule implements ExtSdkApi
                 public void fail(@NonNull int code, @Nullable Object ext) {
                     ExtSdkThreadUtil.mainThreadExecute(() -> {
                         // todo: errorMessage: 是code的字符串形式
-                        promise.reject(String.valueOf(code), "");
+                        String reason = "";
+                        try {
+                            if (ext != null) {
+                                reason = ext.toString();
+                            }
+                        } catch (Exception e) {
+                            reason = e.getMessage();
+                        }
+                        promise.reject(String.valueOf(code), reason);
                     });
                 }
             });

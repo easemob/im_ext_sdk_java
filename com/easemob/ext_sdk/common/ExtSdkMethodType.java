@@ -234,6 +234,7 @@ public class ExtSdkMethodType {
     public static final String getNoDisturbGroups = "getNoDisturbGroups"; // deprecated 2022.05.04
     public static final String updateUserPushService = "updateUserPushService";
     public static final String getNoPushUsers = "getNoPushUsers";
+    public static final String updatePushConfig = "updatePushConfig";
 
     /// EMUserInfoManager
     public static final String updateOwnUserInfo = "updateOwnUserInfo";
