@@ -110,6 +110,9 @@ public class ExtSdkDispatch implements ExtSdkApi {
             case ExtSdkMethodType.renewToken:
                 ExtSdkClientWrapper.getInstance().renewToken(jsonParams, methodType, callback);
                 break;
+            case ExtSdkMethodType.updatePushConfig:
+                ExtSdkClientWrapper.getInstance().updatePushConfig(jsonParams, methodType, callback);
+                break;
 
             case ExtSdkMethodType.onConnected:
                 callback.fail(1, "no implement: " + methodType);
