@@ -30,12 +30,14 @@ import com.hyphenate.chat.EMPageResult;
 import com.hyphenate.chat.EMPresence;
 import com.hyphenate.chat.EMPushConfigs;
 import com.hyphenate.chat.EMPushManager;
+import com.hyphenate.chat.EMSilentModeParam;
+import com.hyphenate.chat.EMSilentModeResult;
+import com.hyphenate.chat.EMSilentModeTime;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.chat.EMUserInfo;
 import com.hyphenate.chat.EMVideoMessageBody;
 import com.hyphenate.chat.EMVoiceMessageBody;
 import com.hyphenate.exceptions.HyphenateException;
-import com.hyphenate.push.EMPushConfig;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,44 +74,46 @@ class ExtSdkOptionsHelper {
         }
 
         if (json.has("pushConfig")) {
-//            EMPushConfig.Builder builder = new EMPushConfig.Builder(context);
-//            JSONObject pushConfig = json.getJSONObject("pushConfig");
-//            String manufacturer = pushConfig.getString("manufacturer");
-//            if (manufacturer.equalsIgnoreCase("google")) {
-//                builder.enableFCM(pushConfig.getString("deviceId"));
-//            } else if (manufacturer.equalsIgnoreCase("huawei")) {
-//                builder.enableHWPush();
-//            } else if (manufacturer.equalsIgnoreCase("meizu")) {
-//                builder.enableFCM(pushConfig.getString("deviceId"));
-//            } else if (manufacturer.equalsIgnoreCase("xiaomi")) {
-//                builder.enableFCM(pushConfig.getString("deviceId"));
-//            } else if (manufacturer.equalsIgnoreCase("oppo")) {
-//                builder.enableOppoPush(pushConfig.getString("deviceId"));
-//            } else if (manufacturer.equalsIgnoreCase("vivo")) {
-//                builder.enableFCM(pushConfig.getString("deviceId"));
-//            } else {
-//                builder.enableFCM(pushConfig.getString("deviceId"));
-//            }
-//            if (pushConfig.getBoolean("enableMiPush")) {
-//                builder.enableMiPush(pushConfig.getString("miAppId"), pushConfig.getString("miAppKey"));
-//            }
-//            if (pushConfig.getBoolean("enableFCM")) {
-//                builder.enableFCM(pushConfig.getString("fcmId"));
-//                options.setUseFCM(true);
-//            }
-//            if (pushConfig.getBoolean("enableOppoPush")) {
-//                builder.enableOppoPush(pushConfig.getString("oppoAppKey"), pushConfig.getString("oppoAppSecret"));
-//            }
-//            if (pushConfig.getBoolean("enableHWPush")) {
-//                builder.enableHWPush();
-//            }
-//            if (pushConfig.getBoolean("enableMeiZuPush")) {
-//                builder.enableMeiZuPush(pushConfig.getString("mzAppId"), pushConfig.getString("mzAppKey"));
-//            }
-//            if (pushConfig.getBoolean("enableVivoPush")) {
-//                builder.enableVivoPush();
-//            }
-//            options.setPushConfig(builder.build());
+            //            EMPushConfig.Builder builder = new EMPushConfig.Builder(context);
+            //            JSONObject pushConfig = json.getJSONObject("pushConfig");
+            //            String manufacturer = pushConfig.getString("manufacturer");
+            //            if (manufacturer.equalsIgnoreCase("google")) {
+            //                builder.enableFCM(pushConfig.getString("deviceId"));
+            //            } else if (manufacturer.equalsIgnoreCase("huawei")) {
+            //                builder.enableHWPush();
+            //            } else if (manufacturer.equalsIgnoreCase("meizu")) {
+            //                builder.enableFCM(pushConfig.getString("deviceId"));
+            //            } else if (manufacturer.equalsIgnoreCase("xiaomi")) {
+            //                builder.enableFCM(pushConfig.getString("deviceId"));
+            //            } else if (manufacturer.equalsIgnoreCase("oppo")) {
+            //                builder.enableOppoPush(pushConfig.getString("deviceId"));
+            //            } else if (manufacturer.equalsIgnoreCase("vivo")) {
+            //                builder.enableFCM(pushConfig.getString("deviceId"));
+            //            } else {
+            //                builder.enableFCM(pushConfig.getString("deviceId"));
+            //            }
+            //            if (pushConfig.getBoolean("enableMiPush")) {
+            //                builder.enableMiPush(pushConfig.getString("miAppId"), pushConfig.getString("miAppKey"));
+            //            }
+            //            if (pushConfig.getBoolean("enableFCM")) {
+            //                builder.enableFCM(pushConfig.getString("fcmId"));
+            //                options.setUseFCM(true);
+            //            }
+            //            if (pushConfig.getBoolean("enableOppoPush")) {
+            //                builder.enableOppoPush(pushConfig.getString("oppoAppKey"),
+            //                pushConfig.getString("oppoAppSecret"));
+            //            }
+            //            if (pushConfig.getBoolean("enableHWPush")) {
+            //                builder.enableHWPush();
+            //            }
+            //            if (pushConfig.getBoolean("enableMeiZuPush")) {
+            //                builder.enableMeiZuPush(pushConfig.getString("mzAppId"),
+            //                pushConfig.getString("mzAppKey"));
+            //            }
+            //            if (pushConfig.getBoolean("enableVivoPush")) {
+            //                builder.enableVivoPush();
+            //            }
+            //            options.setPushConfig(builder.build());
         }
         return options;
     }
@@ -930,7 +934,7 @@ class ExtSdkConversationHelper {
         return EMConversation.EMConversationType.Chat;
     }
 
-    private static int typeToInt(EMConversation.EMConversationType type) {
+    protected static int typeToInt(EMConversation.EMConversationType type) {
         switch (type) {
         case Chat:
             return 0;
@@ -1267,6 +1271,107 @@ class ExtSdkChatThreadEventHelper {
         data.put("from", thread.getFrom());
         if (thread.getChatThread() != null) {
             data.put("thread", ExtSdkChatThreadHelper.toJson(thread.getChatThread()));
+        }
+
+        return data;
+    }
+}
+
+class ExtSdkSilentModeParamHelper {
+    static EMSilentModeParam fromJson(JSONObject obj) throws JSONException {
+        EMSilentModeParam.EMSilentModeParamType type = paramTypeFromInt(obj.getInt("paramType"));
+        EMSilentModeParam param = new EMSilentModeParam(type);
+        ;
+        if (obj.has("startTime") && obj.has("endTime")) {
+            EMSilentModeTime startTime = ExtSdkSilentModeTimeHelper.fromJson(obj.getJSONObject("startTime"));
+            EMSilentModeTime endTime = ExtSdkSilentModeTimeHelper.fromJson(obj.getJSONObject("endTime"));
+            param.setSilentModeInterval(startTime, endTime);
+        }
+
+        if (obj.has("remindType")) {
+            param.setRemindType(pushRemindFromInt(obj.getInt("remindType")));
+        }
+
+        if (obj.has("duration")) {
+            int duration = obj.getInt("duration");
+            param.setSilentModeDuration(duration);
+        }
+        return param;
+    }
+
+    static EMSilentModeParam.EMSilentModeParamType paramTypeFromInt(int iParamType) {
+        EMSilentModeParam.EMSilentModeParamType ret = EMSilentModeParam.EMSilentModeParamType.REMIND_TYPE;
+        if (iParamType == 0) {
+            ret = EMSilentModeParam.EMSilentModeParamType.REMIND_TYPE;
+        } else if (iParamType == 1) {
+            ret = EMSilentModeParam.EMSilentModeParamType.SILENT_MODE_DURATION;
+        } else if (iParamType == 2) {
+            ret = EMSilentModeParam.EMSilentModeParamType.SILENT_MODE_INTERVAL;
+        }
+        return ret;
+    }
+
+    static int pushRemindTypeToInt(EMPushManager.EMPushRemindType type) {
+        int ret = 0;
+        if (type == EMPushManager.EMPushRemindType.ALL) {
+            ret = 0;
+        } else if (type == EMPushManager.EMPushRemindType.MENTION_ONLY) {
+            ret = 1;
+        } else if (type == EMPushManager.EMPushRemindType.NONE) {
+            ret = 2;
+        }
+        return ret;
+    }
+
+    static EMPushManager.EMPushRemindType pushRemindFromInt(int iType) {
+        EMPushManager.EMPushRemindType type = EMPushManager.EMPushRemindType.ALL;
+        if (iType == 0) {
+            type = EMPushManager.EMPushRemindType.ALL;
+        } else if (iType == 1) {
+            type = EMPushManager.EMPushRemindType.MENTION_ONLY;
+        } else if (iType == 2) {
+            type = EMPushManager.EMPushRemindType.NONE;
+        }
+        return type;
+    }
+}
+
+class ExtSdkSilentModeTimeHelper {
+    static EMSilentModeTime fromJson(JSONObject obj) throws JSONException {
+        int hour = obj.getInt("hour");
+        int minute = obj.getInt("minute");
+        EMSilentModeTime modeTime = new EMSilentModeTime(hour, minute);
+        return modeTime;
+    }
+
+    static Map<String, Object> toJson(EMSilentModeTime modeTime) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("hour", modeTime.getHour());
+        data.put("minute", modeTime.getMinute());
+        return data;
+    }
+}
+
+class ExtSdkSilentModeResultHelper {
+    static Map<String, Object> toJson(EMSilentModeResult modeResult) {
+        Map<String, Object> data = new HashMap<>();
+        if (modeResult.getExpireTimestamp() != 0) {
+            data.put("expireTimestamp", modeResult.getExpireTimestamp());
+        }
+        if (modeResult.getConversationId() != null) {
+            data.put("conversationId", modeResult.getConversationId());
+        }
+        if (modeResult.getConversationType() != null) {
+            data.put("conversationType", ExtSdkConversationHelper.typeToInt(modeResult.getConversationType()));
+        }
+        if (modeResult.getSilentModeStartTime() != null) {
+            data.put("startTime", ExtSdkSilentModeTimeHelper.toJson(modeResult.getSilentModeStartTime()));
+        }
+        if (modeResult.getSilentModeEndTime() != null) {
+            data.put("endTime", ExtSdkSilentModeTimeHelper.toJson(modeResult.getSilentModeEndTime()));
+        }
+        if (modeResult.getRemindType() != null) {
+            data.put("remindType", ExtSdkSilentModeParamHelper.pushRemindTypeToInt(modeResult.getRemindType()));
         }
 
         return data;

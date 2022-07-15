@@ -766,6 +766,34 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 ExtSdkChatThreadManagerWrapper.getInstance().getMessageThread(jsonParams, methodType, callback);
                 break;
 
+            case ExtSdkMethodType.reportPushAction:
+                ExtSdkPushManagerWrapper.getInstance().reportPushAction(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.setConversationSilentMode:
+                ExtSdkPushManagerWrapper.getInstance().setConversationSilentMode(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.removeConversationSilentMode:
+                ExtSdkPushManagerWrapper.getInstance().removeConversationSilentMode(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.fetchConversationSilentMode:
+                ExtSdkPushManagerWrapper.getInstance().fetchConversationSilentMode(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.setSilentModeForAll:
+                ExtSdkPushManagerWrapper.getInstance().setSilentModeForAll(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.fetchSilentModeForAll:
+                ExtSdkPushManagerWrapper.getInstance().fetchSilentModeForAll(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.fetchSilentModeForConversations:
+                ExtSdkPushManagerWrapper.getInstance().fetchSilentModeForConversations(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.setPreferredNotificationLanguage:
+                ExtSdkPushManagerWrapper.getInstance().setPreferredNotificationLanguage(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.fetchPreferredNotificationLanguage:
+                ExtSdkPushManagerWrapper.getInstance().fetchPreferredNotificationLanguage(jsonParams, methodType, callback);
+                break;
+
             default:
                 callback.fail(1, "no implement: " + methodType);
                 break;

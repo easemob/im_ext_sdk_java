@@ -227,6 +227,16 @@ public class ExtSdkMethodType {
     public static final String setNoDisturbUsers = "setNoDisturbUsers";                     // deprecated 2022.05.04
     public static final String getNoDisturbUsersFromServer = "getNoDisturbUsersFromServer"; // deprecated 2022.05.04
 
+    public static final String reportPushAction = "reportPushAction";
+    public static final String setConversationSilentMode = "setConversationSilentMode";
+    public static final String removeConversationSilentMode = "removeConversationSilentMode";
+    public static final String fetchConversationSilentMode = "fetchConversationSilentMode";
+    public static final String setSilentModeForAll = "setSilentModeForAll";
+    public static final String fetchSilentModeForAll = "fetchSilentModeForAll";
+    public static final String fetchSilentModeForConversations = "fetchSilentModeForConversations";
+    public static final String setPreferredNotificationLanguage = "setPreferredNotificationLanguage";
+    public static final String fetchPreferredNotificationLanguage = "fetchPreferredNotificationLanguage";
+
     /// ImPushConfig
     public static final String imPushNoDisturb = "imPushNoDisturb"; // deprecated 2022.05.04
     public static final String updateImPushStyle = "updateImPushStyle";

@@ -2,12 +2,19 @@ package com.easemob.ext_sdk.dispatch;
 
 import com.easemob.ext_sdk.common.ExtSdkCallback;
 import com.hyphenate.EMCallBack;
+import com.hyphenate.EMValueCallBack;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMPushConfigs;
 import com.hyphenate.chat.EMPushManager;
+import com.hyphenate.chat.EMSilentModeParam;
+import com.hyphenate.chat.EMSilentModeResult;
 import com.hyphenate.exceptions.HyphenateException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -135,5 +142,157 @@ public class ExtSdkPushManagerWrapper extends ExtSdkWrapper {
         String token = params.getString("token");
         EMClient.getInstance().sendFCMTokenToServer(token);
         onSuccess(result, channelName, token);
+    }
+
+    public void reportPushAction(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
+        // TODO:
+    }
+
+    public void setConversationSilentMode(JSONObject params, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        String conversationId = params.getString("conversationId");
+        EMConversation.EMConversationType type =
+            ExtSdkConversationHelper.typeFromInt(params.getInt("conversationType"));
+        EMSilentModeParam param = ExtSdkSilentModeParamHelper.fromJson(params.getJSONObject("param"));
+        EMClient.getInstance().pushManager().setSilentModeForConversation(
+            conversationId, type, param, new EMValueCallBack<EMSilentModeResult>() {
+                @Override
+                public void onSuccess(EMSilentModeResult value) {
+                    ExtSdkWrapper.onSuccess(result, channelName, null);
+                }
+
+                @Override
+                public void onError(int error, String errorMsg) {
+                    ExtSdkWrapper.onError(result, error, errorMsg);
+                }
+            });
+    }
+
+    public void removeConversationSilentMode(JSONObject params, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        String conversationId = params.getString("conversationId");
+        EMConversation.EMConversationType type =
+            ExtSdkConversationHelper.typeFromInt(params.getInt("conversationType"));
+        EMClient.getInstance().pushManager().clearRemindTypeForConversation(conversationId, type, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onSuccess(result, channelName, null);
+            }
+
+            @Override
+            public void onError(int code, String error) {
+                ExtSdkWrapper.onError(result, code, error);
+            }
+        });
+    }
+
+    public void fetchConversationSilentMode(JSONObject params, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        String conversationId = params.getString("conversationId");
+        EMConversation.EMConversationType type =
+            ExtSdkConversationHelper.typeFromInt(params.getInt("conversationType"));
+        EMClient.getInstance().pushManager().getSilentModeForConversation(
+            conversationId, type, new EMValueCallBack<EMSilentModeResult>() {
+                @Override
+                public void onSuccess(EMSilentModeResult value) {
+                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkSilentModeResultHelper.toJson(value));
+                }
+
+                @Override
+                public void onError(int error, String errorMsg) {
+                    ExtSdkWrapper.onError(result, error, errorMsg);
+                }
+            });
+    }
+
+    public void setSilentModeForAll(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
+        EMSilentModeParam param = ExtSdkSilentModeParamHelper.fromJson(params.getJSONObject("param"));
+        EMClient.getInstance().pushManager().setSilentModeForAll(param, new EMValueCallBack<EMSilentModeResult>() {
+            @Override
+            public void onSuccess(EMSilentModeResult value) {
+                ExtSdkWrapper.onSuccess(result, channelName, null);
+            }
+
+            @Override
+            public void onError(int error, String errorMsg) {
+                ExtSdkWrapper.onError(result, error, errorMsg);
+            }
+        });
+    }
+
+    public void fetchSilentModeForAll(JSONObject params, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        EMClient.getInstance().pushManager().getSilentModeForAll(new EMValueCallBack<EMSilentModeResult>() {
+            @Override
+            public void onSuccess(EMSilentModeResult value) {
+                ExtSdkWrapper.onSuccess(result, channelName, ExtSdkSilentModeResultHelper.toJson(value));
+            }
+
+            @Override
+            public void onError(int error, String errorMsg) {
+                ExtSdkWrapper.onError(result, error, errorMsg);
+            }
+        });
+    }
+
+    public void fetchSilentModeForConversations(JSONObject params, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        ArrayList<EMConversation> list = new ArrayList<>();
+        JSONArray convs = params.getJSONArray("convs");
+        for (int i = 0; i < convs.length(); ++i) {
+            String convId = ((JSONObject)convs.get(i)).getString("convType");
+            EMConversation.EMConversationType convType =
+                ExtSdkConversationHelper.typeFromInt(((JSONObject)convs.get(i)).getInt("convType"));
+            EMConversation conversation = EMClient.getInstance().chatManager().getConversation(convId, convType, true);
+            list.add(conversation);
+        }
+
+        EMClient.getInstance().pushManager().getSilentModeForConversations(
+            list, new EMValueCallBack<Map<String, EMSilentModeResult>>() {
+                @Override
+                public void onSuccess(Map<String, EMSilentModeResult> value) {
+                    Map<String, Map> valueJson = new HashMap<>();
+                    for (Map.Entry<String, EMSilentModeResult> entry : value.entrySet()) {
+                        valueJson.put(entry.getKey(), ExtSdkSilentModeResultHelper.toJson(entry.getValue()));
+                    }
+                    ExtSdkWrapper.onSuccess(result, channelName, valueJson);
+                }
+
+                @Override
+                public void onError(int error, String errorMsg) {
+                    ExtSdkWrapper.onError(result, error, errorMsg);
+                }
+            });
+    }
+
+    public void setPreferredNotificationLanguage(JSONObject params, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        String code = params.getString("code");
+        EMClient.getInstance().pushManager().setPreferredNotificationLanguage(code, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onSuccess(result, channelName, null);
+            }
+
+            @Override
+            public void onError(int code, String error) {
+                ExtSdkWrapper.onError(result, code, error);
+            }
+        });
+    }
+
+    public void fetchPreferredNotificationLanguage(JSONObject params, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        EMClient.getInstance().pushManager().getPreferredNotificationLanguage(new EMValueCallBack<String>() {
+            @Override
+            public void onSuccess(String value) {
+                ExtSdkWrapper.onSuccess(result, channelName, value);
+            }
+
+            @Override
+            public void onError(int error, String errorMsg) {
+                ExtSdkWrapper.onError(result, error, errorMsg);
+            }
+        });
     }
 }
