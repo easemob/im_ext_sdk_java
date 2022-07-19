@@ -460,8 +460,8 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
             public void onWhiteListAdded(String chatRoomId, List<String> whitelist) {
                 Map<String, Object> data = new HashMap<>();
                 data.put("roomId", chatRoomId);
-                data.put("whitelist", whitelist);
-                data.put("type", "onWhiteListAdded");
+                data.put("allowList", whitelist);
+                data.put("type", "onAllowListAdded");
                 ExtSdkWrapper.onReceive(ExtSdkMethodType.chatRoomChange, data);
             }
 
@@ -469,8 +469,8 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
             public void onWhiteListRemoved(String chatRoomId, List<String> whitelist) {
                 Map<String, Object> data = new HashMap<>();
                 data.put("roomId", chatRoomId);
-                data.put("whitelist", whitelist);
-                data.put("type", "onWhiteListRemoved");
+                data.put("allowList", whitelist);
+                data.put("type", "onAllowListRemoved");
                 ExtSdkWrapper.onReceive(ExtSdkMethodType.chatRoomChange, data);
             }
 

@@ -287,7 +287,11 @@ class ExtSdkChatRoomHelper {
         data.put("adminList", chatRoom.getAdminList());
         data.put("memberList", chatRoom.getMemberList());
         data.put("blockList", chatRoom.getBlacklist());
-        data.put("muteList", chatRoom.getMuteList().values());
+        List<String> muteList = new ArrayList<String>();
+        for (Map.Entry<String, Long> item : chatRoom.getMuteList().entrySet()) {
+            muteList.add(item.getKey());
+        }
+        data.put("muteList", muteList);
         data.put("isAllMemberMuted", chatRoom.isAllMemberMuted());
         data.put("announcement", chatRoom.getAnnouncement());
         data.put("permissionType", intTypeFromPermissionType(chatRoom.getChatRoomPermissionType()));

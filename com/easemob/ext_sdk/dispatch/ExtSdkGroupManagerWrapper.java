@@ -1064,18 +1064,18 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
             @Override
             public void onWhiteListAdded(String groupId, List<String> whitelist) {
                 Map<String, Object> data = new HashMap<>();
-                data.put("type", "onWhiteListAdded");
+                data.put("type", "onAllowListAdded");
                 data.put("groupId", groupId);
-                data.put("whitelist", whitelist);
+                data.put("allowList", whitelist);
                 ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
 
             @Override
             public void onWhiteListRemoved(String groupId, List<String> whitelist) {
                 Map<String, Object> data = new HashMap<>();
-                data.put("type", "onWhiteListRemoved");
+                data.put("type", "onAllowListRemoved");
                 data.put("groupId", groupId);
-                data.put("whitelist", whitelist);
+                data.put("allowList", whitelist);
                 ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
 

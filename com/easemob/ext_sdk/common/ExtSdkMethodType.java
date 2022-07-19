@@ -153,10 +153,10 @@ public class ExtSdkMethodType {
     public static final String updateChatRoomAnnouncement = "updateChatRoomAnnouncement";
     public static final String fetchChatRoomAnnouncement = "fetchChatRoomAnnouncement";
 
-    public static final String addMembersToChatRoomWhiteList = "addMembersToChatRoomWhiteList";
-    public static final String removeMembersFromChatRoomWhiteList = "removeMembersFromChatRoomWhiteList";
-    public static final String fetchChatRoomWhiteListFromServer = "fetchChatRoomWhiteListFromServer";
-    public static final String isMemberInChatRoomWhiteListFromServer = "isMemberInChatRoomWhiteListFromServer";
+    public static final String addMembersToChatRoomWhiteList = "addMembersToChatRoomAllowList";
+    public static final String removeMembersFromChatRoomWhiteList = "removeMembersFromChatRoomAllowList";
+    public static final String fetchChatRoomWhiteListFromServer = "fetchChatRoomAllowListFromServer";
+    public static final String isMemberInChatRoomWhiteListFromServer = "isMemberInChatRoomAllowListFromServer";
 
     public static final String muteAllChatRoomMembers = "muteAllChatRoomMembers";
     public static final String unMuteAllChatRoomMembers = "unMuteAllChatRoomMembers";
@@ -175,8 +175,8 @@ public class ExtSdkMethodType {
     public static final String getGroupMemberListFromServer = "getGroupMemberListFromServer";
     public static final String getGroupBlockListFromServer = "getGroupBlockListFromServer";
     public static final String getGroupMuteListFromServer = "getGroupMuteListFromServer";
-    public static final String getGroupWhiteListFromServer = "getGroupWhiteListFromServer";
-    public static final String isMemberInWhiteListFromServer = "isMemberInWhiteListFromServer";
+    public static final String getGroupWhiteListFromServer = "getGroupAllowListFromServer";
+    public static final String isMemberInWhiteListFromServer = "isMemberInAllowListFromServer";
     public static final String getGroupFileListFromServer = "getGroupFileListFromServer";
     public static final String getGroupAnnouncementFromServer = "getGroupAnnouncementFromServer";
     public static final String addMembers = "addMembers";
@@ -197,8 +197,8 @@ public class ExtSdkMethodType {
     public static final String unMuteMembers = "unMuteMembers";
     public static final String muteAllMembers = "muteAllMembers";
     public static final String unMuteAllMembers = "unMuteAllMembers";
-    public static final String addWhiteList = "addWhiteList";
-    public static final String removeWhiteList = "removeWhiteList";
+    public static final String addWhiteList = "addAllowList";
+    public static final String removeWhiteList = "removeAllowList";
     public static final String uploadGroupSharedFile = "uploadGroupSharedFile";
     public static final String downloadGroupSharedFile = "downloadGroupSharedFile";
     public static final String removeGroupSharedFile = "removeGroupSharedFile";
