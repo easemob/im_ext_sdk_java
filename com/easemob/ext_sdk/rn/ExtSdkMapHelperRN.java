@@ -58,7 +58,7 @@ public class ExtSdkMapHelperRN {
                 result.putString(key, value.toString());
             } else if (value instanceof Map) {
                 WritableMap m = Arguments.createMap();
-                toWritableMap((Map<String, Object>) value, m);
+                toWritableMap((Map<String, Object>) value, m, ++depth);
                 result.putMap(key, (WritableNativeMap) m);
             } else if (value instanceof Object[]) {
                 WritableNativeArray a = Arguments.fromJavaArgs(new Object[0]);
@@ -111,7 +111,7 @@ public class ExtSdkMapHelperRN {
                 result.pushString(value.toString());
             } else if (value instanceof Map) {
                 WritableMap m = Arguments.createMap();
-                toWritableMap((Map<String, Object>) value, m);
+                toWritableMap((Map<String, Object>) value, m, ++depth);
                 result.pushMap((WritableNativeMap) m);
             } else if (value instanceof Object[]) {
                 WritableNativeArray a = Arguments.fromJavaArgs(new Object[0]);
