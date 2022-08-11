@@ -75,19 +75,31 @@ public class ExtSdkConversationWrapper extends ExtSdkWrapper {
         onSuccess(result, channelName, null);
     }
 
+    private EMConversation getConversationFromMessage(EMMessage message) {
+        boolean createConv = message.getType() != EMMessage.Type.CMD;
+        final EMConversation conversation = EMClient.getInstance().chatManager().getConversation(
+            message.conversationId(), EMConversation.msgType2ConversationType(message.getTo(), message.getChatType()),
+            createConv, message.isChatThreadMessage());
+        return conversation;
+    }
+
     public void insertMessage(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
-        EMConversation conversation = conversationWithParam(params);
+        //        EMConversation conversation = conversationWithParam(params);
         JSONObject msg = params.getJSONObject("msg");
         EMMessage message = ExtSdkMessageHelper.fromJson(msg);
-        conversation.insertMessage(message);
+        if (message != null) {
+            final EMConversation conversation = this.getConversationFromMessage(message);
+            conversation.insertMessage(message);
+        }
         onSuccess(result, channelName, null);
     }
 
     public void appendMessage(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
-        EMConversation conversation = conversationWithParam(params);
+        //        EMConversation conversation = conversationWithParam(params);
         JSONObject msg = params.getJSONObject("msg");
         EMMessage message = ExtSdkMessageHelper.fromJson(msg);
         if (message != null) {
+            final EMConversation conversation = this.getConversationFromMessage(message);
             conversation.appendMessage(message);
         }
         onSuccess(result, channelName, null);
