@@ -72,6 +72,7 @@ public class ExtSdkMethodType {
     public static final String getMessage = "getMessage";
     public static final String asyncFetchGroupAcks = "asyncFetchGroupAcks";
     public static final String deleteRemoteConversation = "deleteRemoteConversation";
+    public static final String deleteMessagesBeforeTimestamp = "deleteMessagesBeforeTimestamp";
 
     public static final String translateMessage = "translateMessage";
     public static final String fetchSupportedLanguages = "fetchSupportLanguages";
@@ -276,6 +277,7 @@ public class ExtSdkMethodType {
     public static final String leaveChatThread = "leaveChatThread";
     public static final String destroyChatThread = "destroyChatThread";
     public static final String getMessageThread = "getMessageThread";
+    public static final String getThreadConversation = "getThreadConversation";
 
     /// EMChatThreadChangeListener 
     public static final String onChatThreadCreated = "onChatThreadCreated";

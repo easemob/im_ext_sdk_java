@@ -257,6 +257,9 @@ public class ExtSdkDispatch implements ExtSdkApi {
             case ExtSdkMethodType.deleteRemoteConversation:
                 ExtSdkChatManagerWrapper.getInstance().deleteRemoteConversation(jsonParams, methodType, callback);
                 break;
+            case ExtSdkMethodType.deleteMessagesBeforeTimestamp:
+                ExtSdkChatManagerWrapper.getInstance().deleteMessagesBeforeTimestamp(jsonParams, methodType, callback);
+                break;
 
                 /// EMChatManager listener
             case ExtSdkMethodType.onMessagesReceived:
@@ -764,6 +767,9 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 break;
             case ExtSdkMethodType.getMessageThread:
                 ExtSdkChatThreadManagerWrapper.getInstance().getMessageThread(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.getThreadConversation:
+                ExtSdkChatThreadManagerWrapper.getInstance().getThreadConversation(jsonParams, methodType, callback);
                 break;
 
             case ExtSdkMethodType.reportPushAction:

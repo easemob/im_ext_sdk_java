@@ -917,6 +917,7 @@ class ExtSdkConversationHelper {
         Map<String, Object> data = new HashMap<>();
         data.put("convId", conversation.conversationId());
         data.put("convType", typeToInt(conversation.getType()));
+        data.put("isChatThread", conversation.isChatThread());
         try {
             data.put("ext", jsonStringToMap(conversation.getExtField()));
         } catch (Exception ignored) {

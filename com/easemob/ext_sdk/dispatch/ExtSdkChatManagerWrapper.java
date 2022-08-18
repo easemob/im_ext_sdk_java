@@ -452,6 +452,22 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
             });
     }
 
+    public void deleteMessagesBeforeTimestamp(JSONObject param, String channelName, ExtSdkCallback result)
+            throws JSONException {
+        long timestamp = param.getLong("timestamp");
+        EMClient.getInstance().chatManager().deleteMessagesBeforeTimestamp(timestamp, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onSuccess(result, channelName, null);
+            }
+
+            @Override
+            public void onError(int code, String error) {
+                ExtSdkWrapper.onError(result, error, error);
+            }
+        });
+    }
+
     private EMConversation.EMConversationType typeFromInt(int conversationType) {
         EMConversation.EMConversationType ret = EMConversation.EMConversationType.Chat;
         switch (conversationType) {

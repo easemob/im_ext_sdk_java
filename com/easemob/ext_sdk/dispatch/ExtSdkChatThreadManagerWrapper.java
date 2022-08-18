@@ -8,6 +8,7 @@ import com.hyphenate.EMValueCallBack;
 import com.hyphenate.chat.EMChatThread;
 import com.hyphenate.chat.EMChatThreadEvent;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMCursorResult;
 import com.hyphenate.chat.EMMessage;
 import java.util.ArrayList;
@@ -276,6 +277,16 @@ public class ExtSdkChatThreadManagerWrapper {
         } else {
             ExtSdkWrapper.onError(result, 1, "The message does not exist.");
         }
+    }
+    public void getThreadConversation(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        String conId = param.getString("convId");
+        boolean createIfNeed = true;
+        if (param.has("createIfNeed")) {
+            createIfNeed = param.getBoolean("createIfNeed");
+        }
+
+        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(conId, EMConversation.EMConversationType.GroupChat, createIfNeed, true);
+        ExtSdkWrapper.onSuccess(result, channelName, ExtSdkConversationHelper.toJson(conversation));
     }
 
     private EMChatThreadChangeListener threadChangeListener = null;
