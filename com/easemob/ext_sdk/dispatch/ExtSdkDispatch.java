@@ -800,6 +800,118 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 ExtSdkPushManagerWrapper.getInstance().fetchPreferredNotificationLanguage(jsonParams, methodType, callback);
                 break;
 
+            case ExtSdkMethodType.MJcreateCircleServer:
+                ExtSdkCircleManagerWrapper.getInstance().createCircleServer(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJdestroyCircleServer:
+                ExtSdkCircleManagerWrapper.getInstance().destroyCircleServer(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJupdateCircleServer:
+                ExtSdkCircleManagerWrapper.getInstance().updateCircleServer(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJjoinCircleServer:
+                ExtSdkCircleManagerWrapper.getInstance().joinCircleServer(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJleaveCircleServer:
+                ExtSdkCircleManagerWrapper.getInstance().leaveCircleServer(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJremoveUserFromCircleServer:
+                ExtSdkCircleManagerWrapper.getInstance().removeUserFromCircleServer(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJinviteUserToCircleServer:
+                ExtSdkCircleManagerWrapper.getInstance().inviteUserToCircleServer(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJacceptCircleServerInvitation:
+                ExtSdkCircleManagerWrapper.getInstance().acceptCircleServerInvitation(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJdeclineCircleServerInvitation:
+                ExtSdkCircleManagerWrapper.getInstance().declineCircleServerInvitation(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJaddTagsToCircleServer:
+                ExtSdkCircleManagerWrapper.getInstance().addTagsToCircleServer(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJremoveTagsFromCircleServer:
+                ExtSdkCircleManagerWrapper.getInstance().removeTagsFromCircleServer(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJfetchCircleServerTags:
+                ExtSdkCircleManagerWrapper.getInstance().fetchCircleServerTags(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJaddModeratorToCircleServer:
+                ExtSdkCircleManagerWrapper.getInstance().addModeratorToCircleServer(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJremoveModeratorFromCircleServer:
+                ExtSdkCircleManagerWrapper.getInstance().removeModeratorFromCircleServer(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJfetchSelfCircleServerRole:
+                ExtSdkCircleManagerWrapper.getInstance().fetchSelfCircleServerRole(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJfetchJoinedCircleServers:
+                ExtSdkCircleManagerWrapper.getInstance().fetchJoinedCircleServers(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJfetchCircleServerDetail:
+                ExtSdkCircleManagerWrapper.getInstance().fetchCircleServerDetail(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJfetchCircleServersWithKeyword:
+                ExtSdkCircleManagerWrapper.getInstance().fetchCircleServersWithKeyword(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJfetchCircleServerMembers:
+                ExtSdkCircleManagerWrapper.getInstance().fetchCircleServerMembers(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJcheckSelfInCircleServer:
+                ExtSdkCircleManagerWrapper.getInstance().checkSelfInCircleServer(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJcreateCircleChannel:
+                ExtSdkCircleManagerWrapper.getInstance().createCircleChannel(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJdestroyCircleChannel:
+                ExtSdkCircleManagerWrapper.getInstance().destroyCircleChannel(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJupdateCircleChannel:
+                ExtSdkCircleManagerWrapper.getInstance().updateCircleChannel(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJjoinCircleChannel:
+                ExtSdkCircleManagerWrapper.getInstance().joinCircleChannel(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJleaveCircleChannel:
+                ExtSdkCircleManagerWrapper.getInstance().leaveCircleChannel(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJremoveUserFromCircleChannel:
+                ExtSdkCircleManagerWrapper.getInstance().removeUserFromCircleChannel(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJinviteUserToCircleChannel:
+                ExtSdkCircleManagerWrapper.getInstance().inviteUserToCircleChannel(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJacceptCircleChannelInvitation:
+                ExtSdkCircleManagerWrapper.getInstance().acceptCircleChannelInvitation(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJdeclineCircleChannelInvitation:
+                ExtSdkCircleManagerWrapper.getInstance().declineCircleChannelInvitation(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJmuteUserInCircleChannel:
+                ExtSdkCircleManagerWrapper.getInstance().muteUserInCircleChannel(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJunmuteUserInCircleChannel:
+                ExtSdkCircleManagerWrapper.getInstance().unmuteUserInCircleChannel(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJfetchCircleChannelDetail:
+                ExtSdkCircleManagerWrapper.getInstance().fetchCircleChannelDetail(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJfetchPublicCircleChannelInServer:
+                ExtSdkCircleManagerWrapper.getInstance().fetchPublicCircleChannelInServer(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJfetchCircleChannelMembers:
+                ExtSdkCircleManagerWrapper.getInstance().fetchCircleChannelMembers(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJfetchVisiblePrivateCircleChannelInServer:
+                ExtSdkCircleManagerWrapper.getInstance().fetchVisiblePrivateCircleChannelInServer(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJcheckSelfIsInCircleChannel:
+                ExtSdkCircleManagerWrapper.getInstance().checkSelfIsInCircleChannel(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJfetchCircleChannelMuteUsers:
+                ExtSdkCircleManagerWrapper.getInstance().fetchCircleChannelMuteUsers(jsonParams, methodType, callback);
+                break;
+
             default:
                 callback.fail(1, "no implement: " + methodType);
                 break;

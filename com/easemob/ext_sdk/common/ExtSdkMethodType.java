@@ -279,11 +279,72 @@ public class ExtSdkMethodType {
     public static final String getMessageThread = "getMessageThread";
     public static final String getThreadConversation = "getThreadConversation";
 
-    /// EMChatThreadChangeListener 
+    /// EMChatThreadChangeListener
     public static final String onChatThreadCreated = "onChatThreadCreated";
     public static final String onChatThreadUpdated = "onChatThreadUpdated";
     public static final String onChatThreadDestroyed = "onChatThreadDestroyed";
     public static final String onChatThreadUserRemoved = "onChatThreadUserRemoved";
 
     // TODO: EMChatThreadManagerListener
+
+    /// CircleManager methods
+    public static final String MJcreateCircleServer = "createCircleServer";
+    public static final String MJdestroyCircleServer = "destroyCircleServer";
+    public static final String MJupdateCircleServer = "updateCircleServer";
+    public static final String MJjoinCircleServer = "joinCircleServer";
+    public static final String MJleaveCircleServer = "leaveCircleServer";
+    public static final String MJremoveUserFromCircleServer = "removeUserFromCircleServer";
+    public static final String MJinviteUserToCircleServer = "inviteUserToCircleServer";
+    public static final String MJacceptCircleServerInvitation = "acceptCircleServerInvitation";
+    public static final String MJdeclineCircleServerInvitation = "declineCircleServerInvitation";
+    public static final String MJaddTagsToCircleServer = "addTagsToCircleServer";
+    public static final String MJremoveTagsFromCircleServer = "removeTagsFromCircleServer";
+    public static final String MJfetchCircleServerTags = "fetchCircleServerTags";
+    public static final String MJaddModeratorToCircleServer = "addModeratorToCircleServer";
+    public static final String MJremoveModeratorFromCircleServer = "removeModeratorFromCircleServer";
+    public static final String MJfetchSelfCircleServerRole = "fetchSelfCircleServerRole";
+    public static final String MJfetchJoinedCircleServers = "fetchJoinedCircleServers";
+    public static final String MJfetchCircleServerDetail = "fetchCircleServerDetail";
+    public static final String MJfetchCircleServersWithKeyword = "fetchCircleServersWithKeyword";
+    public static final String MJfetchCircleServerMembers = "fetchCircleServerMembers";
+    public static final String MJcheckSelfInCircleServer = "checkSelfInCircleServer";
+    public static final String MJcreateCircleChannel = "createCircleChannel";
+    public static final String MJdestroyCircleChannel = "destroyCircleChannel";
+    public static final String MJupdateCircleChannel = "updateCircleChannel";
+    public static final String MJjoinCircleChannel = "joinCircleChannel";
+    public static final String MJleaveCircleChannel = "leaveCircleChannel";
+    public static final String MJremoveUserFromCircleChannel = "removeUserFromCircleChannel";
+    public static final String MJinviteUserToCircleChannel = "inviteUserToCircleChannel";
+    public static final String MJacceptCircleChannelInvitation = "acceptCircleChannelInvitation";
+    public static final String MJdeclineCircleChannelInvitation = "declineCircleChannelInvitation";
+    public static final String MJmuteUserInCircleChannel = "muteUserInCircleChannel";
+    public static final String MJunmuteUserInCircleChannel = "unmuteUserInCircleChannel";
+    public static final String MJfetchCircleChannelDetail = "fetchCircleChannelDetail";
+    public static final String MJfetchPublicCircleChannelInServer = "fetchPublicCircleChannelInServer";
+    public static final String MJfetchCircleChannelMembers = "fetchCircleChannelMembers";
+    public static final String MJfetchVisiblePrivateCircleChannelInServer = "fetchVisiblePrivateCircleChannelInServer";
+    public static final String MJcheckSelfIsInCircleChannel = "checkSelfIsInCircleChannel";
+    public static final String MJfetchCircleChannelMuteUsers = "fetchCircleChannelMuteUsers";
+
+    /// CircleManager listener
+    public static final String MJonCircleServerDestroyed = "onCircleServerDestroyed";
+    public static final String MJonCircleServerUpdated = "onCircleServerUpdated";
+    public static final String MJonMemberJoinedCircleServer = "onMemberJoinedCircleServer";
+    public static final String MJonMemberLeftCircleServer = "onMemberLeftCircleServer";
+    public static final String MJonMemberRemovedFromCircleServer = "onMemberRemovedFromCircleServer";
+    public static final String MJonReceiveInvitationFromCircleServer = "onReceiveInvitationFromCircleServer";
+    public static final String MJonInvitationBeAcceptedFromCircleServer = "onInvitationBeAcceptedFromCircleServer";
+    public static final String MJonInvitationBeDeclinedFromCircleServer = "onInvitationBeDeclinedFromCircleServer";
+    public static final String MJonRoleAssignedFromCircleServer = "onRoleAssignedFromCircleServer";
+
+    public static final String MJonCircleChannelCreated = "onCircleChannelCreated";
+    public static final String MJonCircleChannelDestroyed = "onCircleChannelDestroyed";
+    public static final String MJonCircleChannelUpdated = "onCircleChannelUpdated";
+    public static final String MJonMemberJoinedCircleChannel = "onMemberJoinedCircleChannel";
+    public static final String MJonReceiveInvitationFromCircleChannel = "onReceiveInvitationFromCircleChannel";
+    public static final String MJonInvitationBeAcceptedFromCircleChannel = "onInvitationBeAcceptedFromCircleChannel";
+    public static final String MJonInvitationBeDeclinedFromCircleChannel = "onInvitationBeDeclinedFromCircleChannel";
+    public static final String MJonMemberRemovedFromCircleChannel = "onMemberRemovedFromCircleChannel";
+    public static final String MJonMemberLeftCircleChannel = "onMemberLeftCircleChannel";
+    public static final String MJonMemberMuteChangedInCircleChannel = "onMemberMuteChangedInCircleChannel";
 }

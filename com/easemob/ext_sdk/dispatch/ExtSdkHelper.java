@@ -4,6 +4,14 @@ import android.content.Context;
 import com.hyphenate.chat.EMChatRoom;
 import com.hyphenate.chat.EMChatThread;
 import com.hyphenate.chat.EMChatThreadEvent;
+import com.hyphenate.chat.EMCircleChannel;
+import com.hyphenate.chat.EMCircleChannelInviteInfo;
+import com.hyphenate.chat.EMCircleChannelRank;
+import com.hyphenate.chat.EMCircleChannelStyle;
+import com.hyphenate.chat.EMCircleServer;
+import com.hyphenate.chat.EMCircleServerEvent;
+import com.hyphenate.chat.EMCircleTag;
+import com.hyphenate.chat.EMCircleUser;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCmdMessageBody;
 import com.hyphenate.chat.EMConversation;
@@ -1043,6 +1051,18 @@ class ExtSdkCursorResultHelper {
                 if (obj instanceof EMMessageReaction) {
                     jsonList.add(ExtSdkMessageReactionHelper.toJson((EMMessageReaction)obj));
                 }
+
+                if (obj instanceof EMCircleServer) {
+                    jsonList.add(ExtSdkCircleServerHelper.toJson((EMCircleServer)obj));
+                }
+
+                if (obj instanceof EMCircleUser) {
+                    jsonList.add(ExtSdkCircleUserHelper.toJson((EMCircleUser)obj));
+                }
+
+                if (obj instanceof EMCircleChannel) {
+                    jsonList.add(ExtSdkCircleChannelHelper.toJson((EMCircleChannel)obj));
+                }
             }
         }
 
@@ -1379,6 +1399,115 @@ class ExtSdkSilentModeResultHelper {
             data.put("remindType", ExtSdkSilentModeParamHelper.pushRemindTypeToInt(modeResult.getRemindType()));
         }
 
+        return data;
+    }
+}
+
+class ExtSdkCircleTagHelper {
+    static Map<String, Object> toJson(EMCircleTag value) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("tagId", value.getId());
+        data.put("tagName", value.getName());
+        return data;
+    }
+}
+
+class ExtSdkCircleServerHelper {
+    static Map<String, Object> toJson(EMCircleServer value) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("serverId", value.getServerId());
+        data.put("serverName", value.getName());
+        data.put("serverIcon", value.getIcon());
+        data.put("serverDescription", value.getDesc());
+        data.put("serverExtension", value.getExt());
+        data.put("serverOwner", value.getOwner());
+        data.put("defaultChannelId", value.getDefaultChannelID());
+        List<Object> tags = new ArrayList<>();
+        for (EMCircleTag item : value.getTags()) {
+            tags.add(ExtSdkCircleTagHelper.toJson(item));
+        }
+        data.put("serverTags", tags);
+        return data;
+    }
+}
+
+class ExtSdkCircleUserHelper {
+    static Map<String, Object> toJson(EMCircleUser value) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("userId", value.getUserId());
+        data.put("userRole", value.getRole().getRoleId());
+        return data;
+    }
+}
+
+class ExtSdkCircleChannelHelper {
+    static Map<String, Object> toJson(EMCircleChannel value) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("serverId", value.getServerlId());
+        data.put("channelId", value.getChannelId());
+        data.put("channelName", value.getName());
+        data.put("channelDescription", value.getDesc());
+        data.put("channelExtension", value.getExt());
+        data.put("isDefaultChannel", value.isDefault());
+        data.put("channelType", ExtSdkCircleChannelHelper.typeToInt(value.getType()));
+        data.put("channelRank", ExtSdkCircleChannelHelper.rankToInt(value.getRank()));
+        return data;
+    }
+    static EMCircleChannelStyle typeFromInt(int type) {
+        EMCircleChannelStyle ret = EMCircleChannelStyle.EMChannelStylePublic;
+        switch (type) {
+        case 0:
+            ret = EMCircleChannelStyle.EMChannelStylePublic;
+            break;
+        case 1:
+            ret = EMCircleChannelStyle.EMChannelStylePrivate;
+            break;
+        }
+        return ret;
+    }
+    static int typeToInt(EMCircleChannelStyle type) { return type.getCode(); }
+    static EMCircleChannelRank rankFromInt(int rank) {
+        EMCircleChannelRank ret = EMCircleChannelRank.RANK_2000;
+        switch (rank) {
+        case 0:
+            ret = EMCircleChannelRank.RANK_2000;
+            break;
+        case 1:
+            ret = EMCircleChannelRank.RANK_20000;
+            break;
+        case 2:
+            ret = EMCircleChannelRank.RANK_100000;
+            break;
+        }
+        return ret;
+    }
+    static int rankToInt(EMCircleChannelRank rank) { return rank.getCode(); }
+}
+
+class ExtSdkCircleChannelInviteInfoHelper {
+    static Map<String, Object> toJson(EMCircleChannelInviteInfo value) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("serverId", value.getServerId());
+        data.put("serverName", value.getServerName());
+        data.put("serverIcon", value.getServerIcon());
+        data.put("channelId", value.getChannelId());
+        data.put("channelName", value.getChannelName());
+        data.put("channelDescription", value.getChannelDesc());
+        return data;
+    }
+}
+
+class ExtSdkCircleServerEventHelper {
+    static Map<String, Object> toJson(EMCircleServerEvent value) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("serverId", value.getId());
+        data.put("serverName", value.getName());
+        data.put("serverDescription", value.getDesc());
+        data.put("serverCustom", value.getExt());
+        data.put("serverIconUrl", value.getIcon());
+        data.put("eventSenderId", value.getFrom());
+        data.put("eventReceiveIds", value.getTos());
+        data.put("timestamp", value.getTs());
         return data;
     }
 }
