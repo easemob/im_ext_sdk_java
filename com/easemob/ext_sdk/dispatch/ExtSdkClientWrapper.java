@@ -298,6 +298,24 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
                 data.put("ext", usernames);
                 onReceive(ExtSdkMethodType.onMultiDeviceEvent, data);
             }
+
+            @Override
+            public void onCircleServerEvent(int event, String serverId, List<String> usernames) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("event", Integer.valueOf(event));
+                data.put("target", serverId);
+                data.put("ext", usernames);
+                onReceive(ExtSdkMethodType.onMultiDeviceEvent, data);
+            }
+
+            @Override
+            public void onCircleChannelEvent(int event, String channelId, List<String> usernames) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("event", Integer.valueOf(event));
+                data.put("target", channelId);
+                data.put("ext", usernames);
+                onReceive(ExtSdkMethodType.onMultiDeviceEvent, data);
+            }
         };
         EMClient.getInstance().addMultiDeviceListener(this.multiDeviceListener);
 

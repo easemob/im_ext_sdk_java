@@ -296,8 +296,10 @@ class ExtSdkChatRoomHelper {
         data.put("memberList", chatRoom.getMemberList());
         data.put("blockList", chatRoom.getBlacklist());
         List<String> muteList = new ArrayList<String>();
-        for (Map.Entry<String, Long> item : chatRoom.getMuteList().entrySet()) {
-            muteList.add(item.getKey());
+        if (chatRoom.getMuteList() != null && chatRoom.getMuteList().size() > 0) {
+            for (Map.Entry<String, Long> item : chatRoom.getMuteList().entrySet()) {
+                muteList.add(item.getKey());
+            }
         }
         data.put("muteList", muteList);
         data.put("isAllMemberMuted", chatRoom.isAllMemberMuted());
@@ -1423,8 +1425,10 @@ class ExtSdkCircleServerHelper {
         data.put("serverOwner", value.getOwner());
         data.put("defaultChannelId", value.getDefaultChannelID());
         List<Object> tags = new ArrayList<>();
-        for (EMCircleTag item : value.getTags()) {
-            tags.add(ExtSdkCircleTagHelper.toJson(item));
+        if (value.getTags() != null && value.getTags().size() > 0) {
+            for (EMCircleTag item : value.getTags()) {
+                tags.add(ExtSdkCircleTagHelper.toJson(item));
+            }
         }
         data.put("serverTags", tags);
         return data;
