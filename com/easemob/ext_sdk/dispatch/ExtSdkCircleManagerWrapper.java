@@ -743,15 +743,15 @@ public class ExtSdkCircleManagerWrapper extends ExtSdkWrapper {
         String channelId = param.getString("channelId");
         String inviter = param.getString("inviter");
         EMClient.getInstance().chatCircleManager().acceptChannelInvitation(
-            serverId, channelId, inviter, new EMCallBack() {
+            serverId, channelId, inviter, new EMValueCallBack<EMCircleChannel>() {
                 @Override
-                public void onSuccess() {
-                    ExtSdkWrapper.onSuccess(result, channelName, null);
+                public void onSuccess(EMCircleChannel value) {
+                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkCircleChannelHelper.toJson(value));
                 }
 
                 @Override
-                public void onError(int code, String error) {
-                    ExtSdkWrapper.onError(result, code, error);
+                public void onError(int error, String errorMsg) {
+                    ExtSdkWrapper.onError(result, error, errorMsg);
                 }
             });
     }
