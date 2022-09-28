@@ -162,6 +162,11 @@ public class ExtSdkMethodType {
     public static final String muteAllChatRoomMembers = "muteAllChatRoomMembers";
     public static final String unMuteAllChatRoomMembers = "unMuteAllChatRoomMembers";
 
+    public static final String MJfetchChatRoomAttributes = "fetchChatRoomAttributes";
+    public static final String MJfetchChatRoomAllAttributes = "fetchChatRoomAllAttributes";
+    public static final String MJsetChatRoomAttributes = "setChatRoomAttributes";
+    public static final String MJremoveChatRoomAttributes = "removeChatRoomAttributes";
+
     // EMChatRoomManagerListener
     public static final String chatRoomChange = "onChatRoomChanged";
 
@@ -279,7 +284,7 @@ public class ExtSdkMethodType {
     public static final String getMessageThread = "getMessageThread";
     public static final String getThreadConversation = "getThreadConversation";
 
-    /// EMChatThreadChangeListener 
+    /// EMChatThreadChangeListener
     public static final String onChatThreadCreated = "onChatThreadCreated";
     public static final String onChatThreadUpdated = "onChatThreadUpdated";
     public static final String onChatThreadDestroyed = "onChatThreadDestroyed";

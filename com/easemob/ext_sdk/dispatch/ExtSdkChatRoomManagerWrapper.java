@@ -3,6 +3,7 @@ package com.easemob.ext_sdk.dispatch;
 import com.easemob.ext_sdk.common.ExtSdkCallback;
 import com.easemob.ext_sdk.common.ExtSdkMethodType;
 import com.hyphenate.EMChatRoomChangeListener;
+import com.hyphenate.EMResultCallBack;
 import com.hyphenate.EMValueCallBack;
 import com.hyphenate.chat.EMChatRoom;
 import com.hyphenate.chat.EMClient;
@@ -451,6 +452,119 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
         });
     }
 
+    public void fetchChatRoomAttributes(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        String roomId = param.getString("roomId");
+        JSONArray keys = param.getJSONArray("keys");
+        List<String> keyList = new ArrayList<>();
+        for (int i = 0; i < keys.length(); i++) {
+            keyList.add((String)keys.get(i));
+        }
+        EMClient.getInstance().chatroomManager().asyncFetchChatroomAttributesFromServer(
+            roomId, keyList, new EMValueCallBack<Map<String, String>>() {
+                @Override
+                public void onSuccess(Map<String, String> value) {
+                    ExtSdkWrapper.onSuccess(result, channelName, value);
+                }
+
+                @Override
+                public void onError(int error, String errorMsg) {
+                    ExtSdkWrapper.onError(result, error, errorMsg);
+                }
+            });
+    }
+
+    public void fetchChatRoomAllAttributes(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        String roomId = param.getString("roomId");
+        EMClient.getInstance().chatroomManager().asyncFetchChatRoomAllAttributesFromSever(
+            roomId, new EMValueCallBack<Map<String, String>>() {
+                @Override
+                public void onSuccess(Map<String, String> value) {
+                    ExtSdkWrapper.onSuccess(result, channelName, value);
+                }
+
+                @Override
+                public void onError(int error, String errorMsg) {
+                    ExtSdkWrapper.onError(result, error, errorMsg);
+                }
+            });
+    }
+
+    public void setChatRoomAttributes(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        String roomId = param.getString("roomId");
+        boolean autoDelete = param.getBoolean("autoDelete");
+        boolean forced = param.getBoolean("forced");
+        Map<String, String> attributes = new HashMap<>();
+        if (param.has("attributes")) {
+            JSONArray jsonObject = param.getJSONArray("attributes");
+            for (int i=0; i<jsonObject.length(); ++i) {
+                Iterator iterator = jsonObject.getJSONObject(i).keys();
+                while (iterator.hasNext()) {
+                    String key = iterator.next().toString();
+                    attributes.put(key, jsonObject.getJSONObject(i).getString(key));
+                }
+            }
+        }
+
+        EMResultCallBack callback = new EMResultCallBack<Map<String, Integer>>() {
+            @Override
+            public void onSuccess(int code, Map<String, Integer> value) {
+                ExtSdkWrapper.onSuccess(result, channelName, value);
+            }
+
+            @Override
+            public void onError(int error, String errorMsg) {
+                ExtSdkWrapper.onError(result, error, errorMsg);
+            }
+        };
+
+        if (forced) {
+            EMClient.getInstance().chatroomManager().asyncSetChatroomAttributesForced(roomId, attributes, autoDelete,
+                                                                                      callback);
+        } else {
+            EMClient.getInstance().chatroomManager().asyncSetChatroomAttributes(roomId, attributes, autoDelete,
+                                                                                callback);
+        }
+    }
+
+    public void removeChatRoomAttributes(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        String roomId = param.getString("roomId");
+        List<String> keys = new ArrayList<String>();
+        if (param.has("keys")) {
+            JSONArray array = param.getJSONArray("keys");
+            for (int i = 0; i < array.length(); i++) {
+                keys.add(array.getString(i));
+            }
+        }
+
+        boolean forced = false;
+        if (param.has("forced")) {
+            forced = param.getBoolean("forced");
+        }
+
+        EMResultCallBack callback = new EMResultCallBack<Map<String, Integer>>() {
+            @Override
+            public void onSuccess(int code, Map<String, Integer> value) {
+                ExtSdkWrapper.onSuccess(result, channelName, value);
+            }
+
+            @Override
+            public void onError(int error, String errorMsg) {
+                ExtSdkWrapper.onError(result, error, errorMsg);
+            }
+        };
+
+        if (forced) {
+            EMClient.getInstance().chatroomManager().asyncRemoveChatRoomAttributesFromSeverForced(roomId, keys,
+                                                                                                  callback);
+        } else {
+            EMClient.getInstance().chatroomManager().asyncRemoveChatRoomAttributesFromSever(roomId, keys, callback);
+        }
+    }
+
     private void registerEaseListener() {
         if (this.roomChangeListener != null) {
             EMClient.getInstance().chatroomManager().removeChatRoomListener(this.roomChangeListener);
@@ -574,6 +688,34 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
                 data.put("roomId", chatRoomId);
                 data.put("announcement", announcement);
                 data.put("type", "onAnnouncementChanged");
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.chatRoomChange, data);
+            }
+
+            @Override
+            public void onSpecificationChanged(EMChatRoom chatRoom) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("room", ExtSdkChatRoomHelper.toJson(chatRoom));
+                data.put("type", "onSpecificationChanged");
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.chatRoomChange, data);
+            }
+
+            @Override
+            public void onAttributesUpdate(String chatRoomId, Map<String, String> attributeMap, String from) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("roomId", chatRoomId);
+                data.put("attributes", attributeMap);
+                data.put("from", from);
+                data.put("type", "onAttributesUpdated");
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.chatRoomChange, data);
+            }
+
+            @Override
+            public void onAttributesRemoved(String chatRoomId, List<String> keyList, String from) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("roomId", chatRoomId);
+                data.put("removedKeys", keyList);
+                data.put("from", from);
+                data.put("type", "onAttributesRemoved");
                 ExtSdkWrapper.onReceive(ExtSdkMethodType.chatRoomChange, data);
             }
         };

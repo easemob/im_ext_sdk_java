@@ -169,10 +169,15 @@ class ExtSdkGroupHelper {
         data.put("messageBlocked", group.isMsgBlocked());
         data.put("isAllMemberMuted", group.isAllMemberMuted());
         data.put("permissionType", intTypeFromGroupPermissionType(group.getGroupPermissionType()));
-        data.put("maxUserCount", group.getMaxUserCount());
-        data.put("isMemberOnly", group.isMemberOnly());
-        data.put("isMemberAllowToInvite", group.isMemberAllowToInvite());
-        data.put("ext", group.getExtension());
+
+        Map<String, Object> option = new HashMap<>();
+        option.put("maxCount", group.getMaxUserCount());
+        option.put("inviteNeedConfirm", group.isMemberAllowToInvite());
+        option.put("ext", group.getExtension());
+        option.put("isDisabled", group.isDisabled());
+        option.put("isMemberOnly", group.isMemberOnly());
+        data.put("options", option);
+
         return data;
     }
 
@@ -1096,7 +1101,8 @@ class ExtSdkPushConfigsHelper {
         data.put("noDisturb", pushConfigs.silentModeEnabled());
         data.put("noDisturbEndHour", pushConfigs.getSilentModeEnd());
         data.put("noDisturbStartHour", pushConfigs.getSilentModeStart());
-        data.put("pushStyle", pushConfigs.getDisplayStyle() != EMPushManager.DisplayStyle.SimpleBanner);
+        data.put("displayStyle", pushConfigs.getDisplayStyle().ordinal());
+        data.put("displayName", pushConfigs.getDisplayNickname());
         return data;
     }
 }

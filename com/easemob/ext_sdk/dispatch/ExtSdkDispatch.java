@@ -800,6 +800,19 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 ExtSdkPushManagerWrapper.getInstance().fetchPreferredNotificationLanguage(jsonParams, methodType, callback);
                 break;
 
+            case ExtSdkMethodType.MJfetchChatRoomAttributes:
+                ExtSdkChatRoomManagerWrapper.getInstance().fetchChatRoomAttributes(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJfetchChatRoomAllAttributes:
+                ExtSdkChatRoomManagerWrapper.getInstance().fetchChatRoomAllAttributes(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJsetChatRoomAttributes:
+                ExtSdkChatRoomManagerWrapper.getInstance().setChatRoomAttributes(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.MJremoveChatRoomAttributes:
+                ExtSdkChatRoomManagerWrapper.getInstance().removeChatRoomAttributes(jsonParams, methodType, callback);
+                break;
+
             default:
                 callback.fail(1, "no implement: " + methodType);
                 break;
