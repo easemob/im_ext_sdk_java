@@ -3,6 +3,7 @@ package com.easemob.ext_sdk.dispatch;
 import com.easemob.ext_sdk.common.ExtSdkCallback;
 import com.easemob.ext_sdk.common.ExtSdkMethodType;
 import com.hyphenate.EMChatRoomChangeListener;
+import com.hyphenate.EMError;
 import com.hyphenate.EMResultCallBack;
 import com.hyphenate.EMValueCallBack;
 import com.hyphenate.chat.EMChatRoom;
@@ -477,7 +478,7 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
     public void fetchChatRoomAllAttributes(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
         String roomId = param.getString("roomId");
-        EMClient.getInstance().chatroomManager().asyncFetchChatRoomAllAttributesFromSever(
+        EMClient.getInstance().chatroomManager().asyncFetchChatRoomAllAttributesFromServer(
             roomId, new EMValueCallBack<Map<String, String>>() {
                 @Override
                 public void onSuccess(Map<String, String> value) {
@@ -510,13 +511,12 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
 
         EMResultCallBack callback = new EMResultCallBack<Map<String, Integer>>() {
             @Override
-            public void onSuccess(int code, Map<String, Integer> value) {
-                ExtSdkWrapper.onSuccess(result, channelName, value);
-            }
-
-            @Override
-            public void onError(int error, String errorMsg) {
-                ExtSdkWrapper.onError(result, error, errorMsg);
+            public void onResult(int code, Map<String, Integer> value) {
+                if (value.size() > 0 || code == EMError.EM_NO_ERROR) {
+                    ExtSdkWrapper.onSuccess(result, channelName, value);
+                } else {
+                    ExtSdkWrapper.onError(result, code, "");
+                }
             }
         };
 
@@ -547,21 +547,20 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
 
         EMResultCallBack callback = new EMResultCallBack<Map<String, Integer>>() {
             @Override
-            public void onSuccess(int code, Map<String, Integer> value) {
-                ExtSdkWrapper.onSuccess(result, channelName, value);
-            }
-
-            @Override
-            public void onError(int error, String errorMsg) {
-                ExtSdkWrapper.onError(result, error, errorMsg);
+            public void onResult(int code, Map<String, Integer> value) {
+                if (value.size() > 0 || code == EMError.EM_NO_ERROR) {
+                    ExtSdkWrapper.onSuccess(result, channelName, value);
+                } else {
+                    ExtSdkWrapper.onError(result, code, "");
+                }
             }
         };
 
         if (forced) {
-            EMClient.getInstance().chatroomManager().asyncRemoveChatRoomAttributesFromSeverForced(roomId, keys,
+            EMClient.getInstance().chatroomManager().asyncRemoveChatRoomAttributesFromServerForced(roomId, keys,
                                                                                                   callback);
         } else {
-            EMClient.getInstance().chatroomManager().asyncRemoveChatRoomAttributesFromSever(roomId, keys, callback);
+            EMClient.getInstance().chatroomManager().asyncRemoveChatRoomAttributesFromServer(roomId, keys, callback);
         }
     }
 

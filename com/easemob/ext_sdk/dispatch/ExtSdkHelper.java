@@ -72,6 +72,7 @@ class ExtSdkOptionsHelper {
             options.setRestServer(json.getString("restServer"));
             options.setDnsUrl(json.getString("dnsUrl"));
         }
+        options.setAreaCode(json.getInt("areaCode"));
 
         if (json.has("pushConfig")) {
             //            EMPushConfig.Builder builder = new EMPushConfig.Builder(context);
@@ -141,6 +142,7 @@ class ExtSdkOptionsHelper {
         data.put("imServer", options.getImServer());
         data.put("restServer", options.getRestServer());
         data.put("dnsUrl", options.getDnsUrl());
+        data.put("areaCode", options.getAreaCode());
 
         return data;
     }
