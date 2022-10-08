@@ -1278,6 +1278,14 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
                 data.put("group", ExtSdkGroupHelper.toJson(group));
                 ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
             }
+
+            @Override
+            public void onStateChanged(EMGroup group, boolean isDisabled) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("type", "onStateChanged");
+                data.put("group", ExtSdkGroupHelper.toJson(group));
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
+            }
         };
         EMClient.getInstance().groupManager().addGroupChangeListener(this.groupChangeListener);
     }
