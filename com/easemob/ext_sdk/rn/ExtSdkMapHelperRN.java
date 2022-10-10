@@ -26,6 +26,7 @@ public class ExtSdkMapHelperRN {
         if (MAX_COUNT < depth) {
             throw new RuntimeException("Too many recursions. " + depth);
         }
+        ++depth;
         Iterator<Map.Entry<String, Object>> iterator = data.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String, Object> entry = iterator.next();
@@ -58,15 +59,15 @@ public class ExtSdkMapHelperRN {
                 result.putString(key, value.toString());
             } else if (value instanceof Map) {
                 WritableMap m = Arguments.createMap();
-                toWritableMap((Map<String, Object>) value, m, ++depth);
+                toWritableMap((Map<String, Object>) value, m, depth);
                 result.putMap(key, (WritableNativeMap) m);
             } else if (value instanceof Object[]) {
                 WritableNativeArray a = Arguments.fromJavaArgs(new Object[0]);
-                toWritableArray((Object[]) value, a, ++depth);
+                toWritableArray((Object[]) value, a, depth);
                 result.putArray(key, (WritableNativeArray) a);
             } else if (value instanceof List) {
                 WritableNativeArray a = Arguments.fromJavaArgs(new Object[0]);
-                toWritableArray((Object[]) ((List<?>) value).toArray(), a, ++depth);
+                toWritableArray((Object[]) ((List<?>) value).toArray(), a, depth);
                 result.putArray(key, (WritableNativeArray) a);
             } else {
                 throw new RuntimeException("Cannot convert argument of type " + value + " " + valueClass);
@@ -82,6 +83,7 @@ public class ExtSdkMapHelperRN {
         if (MAX_COUNT < depth) {
             throw new RuntimeException("Too many recursions. " + depth);
         }
+        ++depth;
         for (int i = 0; i < data.length; i++) {
             Object value = data[i];
             if (value == null) {
@@ -111,15 +113,15 @@ public class ExtSdkMapHelperRN {
                 result.pushString(value.toString());
             } else if (value instanceof Map) {
                 WritableMap m = Arguments.createMap();
-                toWritableMap((Map<String, Object>) value, m, ++depth);
+                toWritableMap((Map<String, Object>) value, m, depth);
                 result.pushMap((WritableNativeMap) m);
             } else if (value instanceof Object[]) {
                 WritableNativeArray a = Arguments.fromJavaArgs(new Object[0]);
-                toWritableArray((Object[]) value, a, ++depth);
+                toWritableArray((Object[]) value, a, depth);
                 result.pushArray((WritableNativeArray) a);
             } else if (value instanceof List) {
                 WritableNativeArray a = Arguments.fromJavaArgs(new Object[0]);
-                toWritableArray((Object[]) ((List<?>) value).toArray(), a, ++depth);
+                toWritableArray((Object[]) ((List<?>) value).toArray(), a, depth);
                 result.pushArray((WritableNativeArray) a);
             } else {
                 throw new RuntimeException("Cannot convert argument of type " + value + " " + valueClass);
