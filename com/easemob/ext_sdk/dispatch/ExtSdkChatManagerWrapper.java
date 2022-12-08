@@ -729,7 +729,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         }
         this.conversationListener = new EMConversationListener() {
             @Override
-            public void onCoversationUpdate() {
+            public void onConversationUpdate() {
                 Map<String, Object> data = new HashMap<>();
                 ExtSdkWrapper.onReceive(ExtSdkMethodType.onConversationUpdate, data);
             }

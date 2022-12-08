@@ -632,7 +632,7 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
             }
         }
 
-        EMClient.getInstance().groupManager().aysncMuteGroupMembers(
+        EMClient.getInstance().groupManager().asyncMuteGroupMembers(
             groupId, members, duration, new EMValueCallBack<EMGroup>() {
                 @Override
                 public void onSuccess(EMGroup value) {
