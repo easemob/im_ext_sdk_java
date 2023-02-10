@@ -453,7 +453,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
     }
 
     public void deleteMessagesBeforeTimestamp(JSONObject param, String channelName, ExtSdkCallback result)
-            throws JSONException {
+        throws JSONException {
         long timestamp = param.getLong("timestamp");
         EMClient.getInstance().chatManager().deleteMessagesBeforeTimestamp(timestamp, new EMCallBack() {
             @Override
@@ -633,6 +633,105 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         String tag = param.getString("tag");
         String reason = param.getString("reason");
         EMClient.getInstance().chatManager().asyncReportMessage(msgId, tag, reason, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onSuccess(result, channelName, null);
+            }
+
+            @Override
+            public void onError(int code, String error) {
+                ExtSdkWrapper.onError(result, code, error);
+            }
+        });
+    }
+
+    public void fetchConversationsFromServerWithPage(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        int pageNum = param.getInt("pageNum");
+        int pageSize = param.getInt("pageSize");
+        EMClient.getInstance().chatManager().asyncFetchConversationsFromServer(
+            pageNum, pageSize, new EMValueCallBack<Map<String, EMConversation>>() {
+                @Override
+                public void onSuccess(Map<String, EMConversation> value) {
+                    ArrayList<EMConversation> list = new ArrayList<>(value.values());
+                    boolean retry = false;
+                    List<Map> conversations = new ArrayList<>();
+                    do {
+                        try {
+                            retry = false;
+                            Collections.sort(list, new Comparator<EMConversation>() {
+                                @Override
+                                public int compare(EMConversation o1, EMConversation o2) {
+                                    if (o1 == null && o2 == null) {
+                                        return 0;
+                                    }
+                                    if (o1.getLastMessage() == null) {
+                                        return 1;
+                                    }
+
+                                    if (o2.getLastMessage() == null) {
+                                        return -1;
+                                    }
+
+                                    if (o1.getLastMessage().getMsgTime() == o2.getLastMessage().getMsgTime()) {
+                                        return 0;
+                                    }
+
+                                    return o2.getLastMessage().getMsgTime() - o1.getLastMessage().getMsgTime() > 0 ? 1
+                                                                                                                   : -1;
+                                }
+                            });
+                            for (EMConversation conversation : list) {
+                                conversations.add(ExtSdkConversationHelper.toJson(conversation));
+                            }
+
+                        } catch (IllegalArgumentException e) {
+                            retry = true;
+                        }
+                    } while (retry);
+                    ExtSdkWrapper.onSuccess(result, channelName, conversations);
+                }
+
+                @Override
+                public void onError(int error, String errorMsg) {
+                    ExtSdkWrapper.onError(result, error, errorMsg);
+                }
+            });
+    }
+
+    public void removeMessagesFromServerWithMsgIds(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        String conversationId = param.getString("convId");
+        EMConversation.EMConversationType type = ExtSdkConversationHelper.typeFromInt(param.getInt("convType"));
+        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(conversationId, type, true);
+
+        JSONArray jsonArray = param.getJSONArray("msgIds");
+
+        ArrayList<String> msgIds = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            msgIds.add((String)jsonArray.get(i));
+        }
+
+        conversation.removeMessagesFromServer(msgIds, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onSuccess(result, channelName, null);
+            }
+
+            @Override
+            public void onError(int code, String error) {
+                ExtSdkWrapper.onError(result, code, error);
+            }
+        });
+    }
+
+    public void removeMessagesFromServerWithTs(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        String conversationId = param.getString("convId");
+        EMConversation.EMConversationType type = ExtSdkConversationHelper.typeFromInt(param.getInt("convType"));
+        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(conversationId, type, true);
+        long timestamp = param.getLong("timestamp");
+        conversation.removeMessagesFromServer(timestamp, new EMCallBack() {
             @Override
             public void onSuccess() {
                 ExtSdkWrapper.onSuccess(result, channelName, null);

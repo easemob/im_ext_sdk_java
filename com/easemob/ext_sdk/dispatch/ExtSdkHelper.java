@@ -464,6 +464,9 @@ class ExtSdkMessageHelper {
                 }
             }
         }
+        if (json.has("priority")) {
+            message.setPriority(priorityFromInt(json.getInt("priority")));
+        }
         return message;
     }
 
@@ -518,6 +521,7 @@ class ExtSdkMessageHelper {
         data.put("groupAckCount", message.groupAckCount());
         data.put("isChatThread", message.isChatThreadMessage());
         data.put("isOnline", message.isOnlineState());
+        //        data.put("priority", ExtSdkMessageHelper.priorityToInt(;));
 
         return data;
     }
@@ -544,6 +548,30 @@ class ExtSdkMessageHelper {
             return 2;
         }
         return 0;
+    }
+
+    private static EMMessage.EMChatRoomMessagePriority priorityFromInt(int priority) {
+        switch (priority) {
+        case 0:
+            return EMMessage.EMChatRoomMessagePriority.PriorityHigh;
+        case 1:
+            return EMMessage.EMChatRoomMessagePriority.PriorityNormal;
+        case 2:
+            return EMMessage.EMChatRoomMessagePriority.PriorityLow;
+        }
+        return EMMessage.EMChatRoomMessagePriority.PriorityNormal;
+    }
+
+    private static int priorityToInt(EMMessage.EMChatRoomMessagePriority priority) {
+        switch (priority) {
+        case PriorityHigh:
+            return 0;
+        case PriorityNormal:
+            return 1;
+        case PriorityLow:
+            return 2;
+        }
+        return 1;
     }
 
     private static EMMessage.Status statusFromInt(int status) {

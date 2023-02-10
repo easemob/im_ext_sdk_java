@@ -715,6 +715,16 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 ExtSdkChatManagerWrapper.getInstance().reportMessage(jsonParams, methodType, callback);
                 break;
 
+            case ExtSdkMethodType.fetchConversationsFromServerWithPage:
+                ExtSdkChatManagerWrapper.getInstance().fetchConversationsFromServerWithPage(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.removeMessagesFromServerWithMsgIds:
+                ExtSdkChatManagerWrapper.getInstance().removeMessagesFromServerWithMsgIds(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.removeMessagesFromServerWithTs:
+                ExtSdkChatManagerWrapper.getInstance().removeMessagesFromServerWithTs(jsonParams, methodType, callback);
+                break;
+
             case ExtSdkMethodType.onReadAckForGroupMessageUpdated:
                 callback.fail(1, "no implement: " + methodType);
                 break;

@@ -83,6 +83,10 @@ public class ExtSdkMethodType {
     public static final String fetchReactionDetail = "fetchReactionDetail";
     public static final String reportMessage = "reportMessage";
 
+    public static final String fetchConversationsFromServerWithPage = "fetchConversationsFromServerWithPage";
+    public static final String removeMessagesFromServerWithMsgIds = "removeMessagesFromServerWithMsgIds";
+    public static final String removeMessagesFromServerWithTs = "removeMessagesFromServerWithTs";
+
     /// EMChatManager listener
     public static final String onMessagesReceived = "onMessagesReceived";
     public static final String onCmdMessagesReceived = "onCmdMessagesReceived";
