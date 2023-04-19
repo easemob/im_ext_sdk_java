@@ -730,7 +730,14 @@ class ExtSdkMessageBodyHelper {
         String localPath = json.getString("localPath");
         File file = new File(localPath);
 
-        EMNormalFileMessageBody body = new EMNormalFileMessageBody(file);
+        EMNormalFileMessageBody body;
+        if (localPath.startsWith("content://")) {
+            body = new EMNormalFileMessageBody(Uri.parse(localPath));
+        } else {
+            File file = new File(localPath);
+            body = new EMNormalFileMessageBody(file);
+        }
+
         if (json.has("displayName")) {
             body.setFileName(json.getString("displayName"));
         }
