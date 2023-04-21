@@ -1,6 +1,7 @@
 package com.easemob.ext_sdk.dispatch;
 
 import android.content.Context;
+import android.net.Uri;
 import com.hyphenate.chat.EMChatRoom;
 import com.hyphenate.chat.EMChatThread;
 import com.hyphenate.chat.EMChatThreadEvent;
@@ -728,15 +729,8 @@ class ExtSdkMessageBodyHelper {
 
     static EMFileMessageBody fileBodyFromJson(JSONObject json) throws JSONException {
         String localPath = json.getString("localPath");
-        File file = new File(localPath);
 
-        EMNormalFileMessageBody body;
-        if (localPath.startsWith("content://")) {
-            body = new EMNormalFileMessageBody(Uri.parse(localPath));
-        } else {
-            File file = new File(localPath);
-            body = new EMNormalFileMessageBody(file);
-        }
+        EMNormalFileMessageBody body = new EMNormalFileMessageBody(Uri.parse(localPath));
 
         if (json.has("displayName")) {
             body.setFileName(json.getString("displayName"));
@@ -769,9 +763,8 @@ class ExtSdkMessageBodyHelper {
 
     static EMImageMessageBody imageBodyFromJson(JSONObject json) throws JSONException {
         String localPath = json.getString("localPath");
-        File file = new File(localPath);
 
-        EMImageMessageBody body = new EMImageMessageBody(file);
+        EMImageMessageBody body = new EMImageMessageBody(Uri.parse(localPath));
         if (json.has("displayName")) {
             body.setFileName(json.getString("displayName"));
         }
@@ -830,7 +823,7 @@ class ExtSdkMessageBodyHelper {
     static EMVideoMessageBody videoBodyFromJson(JSONObject json) throws JSONException {
         String localPath = json.getString("localPath");
         int duration = json.getInt("duration");
-        EMVideoMessageBody body = new EMVideoMessageBody(localPath, null, duration, 0);
+        EMVideoMessageBody body = new EMVideoMessageBody(Uri.parse(localPath), null, duration, 0);
 
         if (json.has("thumbnailRemotePath")) {
             body.setThumbnailUrl(json.getString("thumbnailRemotePath"));
@@ -888,9 +881,8 @@ class ExtSdkMessageBodyHelper {
 
     static EMVoiceMessageBody voiceBodyFromJson(JSONObject json) throws JSONException {
         String localPath = json.getString("localPath");
-        File file = new File(localPath);
         int duration = json.getInt("duration");
-        EMVoiceMessageBody body = new EMVoiceMessageBody(file, duration);
+        EMVoiceMessageBody body = new EMVoiceMessageBody(Uri.parse(localPath), duration);
         body.setDownloadStatus(downloadStatusFromInt(json.getInt("fileStatus")));
         if (json.has("displayName")) {
             body.setFileName(json.getString("displayName"));
