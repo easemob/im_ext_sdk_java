@@ -1010,6 +1010,12 @@ class ExtSdkConversationHelper {
                     Object value = jsonObject.get(key);
                     if (value instanceof JSONArray || value instanceof JSONObject) {
                         result.put(key, jsonStringToMap(value.toString().trim()));
+                    } else if (value instanceof Double) {
+                        result.put(key, ((Double) value).doubleValue());
+                    } else if (value instanceof Integer) {
+                        result.put(key, ((Integer) value).intValue());
+                    } else if (value instanceof Boolean) {
+                        result.put(key, ((Boolean) value).booleanValue());
                     } else {
                         result.put(key, value.toString().trim());
                     }
