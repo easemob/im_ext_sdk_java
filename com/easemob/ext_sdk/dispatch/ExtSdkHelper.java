@@ -456,6 +456,8 @@ class ExtSdkMessageHelper {
                     message.setAttribute(key, (Boolean)result);
                 } else if (result.getClass().getSimpleName().equals("Long")) {
                     message.setAttribute(key, (Long)result);
+                } else if (result.getClass().getSimpleName().equals("Double")) {
+                    message.setAttribute(key, (Double) result);
                 } else if (result.getClass().getSimpleName().equals("JSONObject")) {
                     message.setAttribute(key, (JSONObject)result);
                 } else if (result.getClass().getSimpleName().equals("JSONArray")) {
@@ -1014,6 +1016,8 @@ class ExtSdkConversationHelper {
                         result.put(key, ((Double) value).doubleValue());
                     } else if (value instanceof Integer) {
                         result.put(key, ((Integer) value).intValue());
+                    } else if (value instanceof Long) {
+                        result.put(key, ((Long) value).longValue());
                     } else if (value instanceof Boolean) {
                         result.put(key, ((Boolean) value).booleanValue());
                     } else {
