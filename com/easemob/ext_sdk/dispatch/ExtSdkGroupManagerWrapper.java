@@ -2,7 +2,6 @@ package com.easemob.ext_sdk.dispatch;
 
 import com.easemob.ext_sdk.common.ExtSdkCallback;
 import com.easemob.ext_sdk.common.ExtSdkMethodType;
-import com.easemob.ext_sdk.common.ExtSdkThreadUtil;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMGroupChangeListener;
 import com.hyphenate.EMValueCallBack;
@@ -13,7 +12,6 @@ import com.hyphenate.chat.EMGroupInfo;
 import com.hyphenate.chat.EMGroupOptions;
 import com.hyphenate.chat.EMMucSharedFile;
 import com.hyphenate.exceptions.HyphenateException;
-import com.hyphenate.util.EMLog;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,9 +61,17 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
         if (param.has("pageNum")) {
             pageNum = param.getInt("pageNum");
         }
+        boolean needRole = false;
+        if (param.has("needRole")) {
+            needRole = param.getBoolean("needRole");
+        }
+        boolean needMemberCount = false;
+        if (param.has("needMemberCount")) {
+            needMemberCount = param.getBoolean("needMemberCount");
+        }
 
         EMClient.getInstance().groupManager().asyncGetJoinedGroupsFromServer(
-            pageNum, pageSize, new EMValueCallBack<List<EMGroup>>() {
+            pageNum, pageSize, needMemberCount, needRole, new EMValueCallBack<List<EMGroup>>() {
                 @Override
                 public void onSuccess(List<EMGroup> value) {
                     List<Map> groupList = new ArrayList<>();
@@ -762,40 +768,42 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
         }
 
         String finalFilePath = filePath;
-        EMClient.getInstance().groupManager().asyncUploadGroupSharedFile(groupId, filePath, new EMCallBack() {
-            @Override
-            public void onSuccess() {
-                Map<String, Object> map = new HashMap<>();
-                map.put("groupId", groupId);
-                map.put("filePath", finalFilePath);
-                map.put("callbackType", ExtSdkMethodType.onMessageSuccess);
-                ExtSdkWrapper.onReceive(channelName, map);
-            }
+        EMClient.getInstance().groupManager().asyncUploadGroupSharedFile(
+            groupId, filePath, new EMValueCallBack<EMMucSharedFile>() {
+                @Override
+                public void onSuccess(EMMucSharedFile value) {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("groupId", groupId);
+                    map.put("filePath", finalFilePath);
+                    map.put("callbackType", ExtSdkMethodType.onMessageSuccess);
+                    ExtSdkWrapper.onReceive(channelName, map);
+                }
 
-            @Override
-            public void onError(int code, String error) {
-                Map<String, Object> data = new HashMap<>();
-                data.put("code", code);
-                data.put("description", error);
+                @Override
+                public void onError(int error, String errorMsg) {
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("code", error);
+                    data.put("description", errorMsg);
 
-                Map<String, Object> map = new HashMap<>();
-                map.put("groupId", groupId);
-                map.put("filePath", finalFilePath);
-                map.put("error", data);
-                map.put("callbackType", ExtSdkMethodType.onMessageError);
-                ExtSdkWrapper.onReceive(channelName, map);
-            }
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("groupId", groupId);
+                    map.put("filePath", finalFilePath);
+                    map.put("error", data);
+                    map.put("callbackType", ExtSdkMethodType.onMessageError);
+                    ExtSdkWrapper.onReceive(channelName, map);
+                }
 
-            @Override
-            public void onProgress(int progress, String status) {
-                Map<String, Object> map = new HashMap<>();
-                map.put("progress", progress);
-                map.put("groupId", groupId);
-                map.put("filePath", finalFilePath);
-                map.put("callbackType", ExtSdkMethodType.onMessageProgressUpdate);
-                ExtSdkWrapper.onReceive(channelName, map);
-            }
-        });
+                @Override
+                public void onProgress(int progress, String status) {
+                    EMValueCallBack.super.onProgress(progress, status);
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("progress", progress);
+                    map.put("groupId", groupId);
+                    map.put("filePath", finalFilePath);
+                    map.put("callbackType", ExtSdkMethodType.onMessageProgressUpdate);
+                    ExtSdkWrapper.onReceive(channelName, map);
+                }
+            });
 
         ExtSdkWrapper.onSuccess(result, channelName, null);
     }
