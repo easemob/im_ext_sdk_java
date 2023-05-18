@@ -825,14 +825,19 @@ class ExtSdkMessageBodyHelper {
 
     static EMVideoMessageBody videoBodyFromJson(JSONObject json) throws JSONException {
         String localPath = json.getString("localPath");
-        int duration = json.getInt("duration");
-        EMVideoMessageBody body = new EMVideoMessageBody(Uri.parse(localPath), null, duration, 0);
+        int duration = 0;
+        if (json.has("duration")) {
+            duration = json.getInt("duration");
+        }
+        String thumbnailLocalPath = "";
+        if (json.has("thumbnailLocalPath")) {
+            thumbnailLocalPath = json.getString("thumbnailLocalPath");
+        }
+        EMVideoMessageBody body =
+            new EMVideoMessageBody(Uri.parse(localPath), Uri.parse(thumbnailLocalPath), duration, 0);
 
         if (json.has("thumbnailRemotePath")) {
             body.setThumbnailUrl(json.getString("thumbnailRemotePath"));
-        }
-        if (json.has("thumbnailLocalPath")) {
-            body.setLocalThumb(json.getString("thumbnailLocalPath"));
         }
         if (json.has("thumbnailSecret")) {
             body.setThumbnailSecret(json.getString("thumbnailSecret"));
