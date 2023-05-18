@@ -247,6 +247,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
                 Map<String, Object> map = new HashMap<>();
                 map.put("message", ExtSdkMessageHelper.toJson(finalMsg));
                 map.put("localTime", finalMsg.localTime());
+                map.put("msgId", finalMsg.getMsgId());
                 map.put("callbackType", ExtSdkMethodType.onMessageSuccess);
                 ExtSdkWrapper.onReceive(channelName, map);
             }
@@ -257,6 +258,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
                 Map<String, Object> map = new HashMap<>();
                 map.put("progress", progress);
                 map.put("localTime", finalMsg.localTime());
+                map.put("msgId", finalMsg.getMsgId());
                 map.put("callbackType", ExtSdkMethodType.onMessageProgressUpdate);
                 ExtSdkWrapper.onReceive(channelName, map);
             }
@@ -270,6 +272,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
                 Map<String, Object> map = new HashMap<>();
                 map.put("message", ExtSdkMessageHelper.toJson(finalMsg));
                 map.put("localTime", finalMsg.localTime());
+                map.put("msgId", finalMsg.getMsgId());
                 map.put("error", data);
                 map.put("callbackType", ExtSdkMethodType.onMessageError);
                 ExtSdkWrapper.onReceive(channelName, map);
@@ -294,6 +297,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
                 Map<String, Object> map = new HashMap<>();
                 map.put("message", ExtSdkMessageHelper.toJson(finalMsg));
                 map.put("localTime", finalMsg.localTime());
+                map.put("msgId", finalMsg.getMsgId());
                 map.put("callbackType", ExtSdkMethodType.onMessageSuccess);
                 ExtSdkWrapper.onReceive(channelName, map);
             }
@@ -304,6 +308,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
                 Map<String, Object> map = new HashMap<>();
                 map.put("progress", progress);
                 map.put("localTime", finalMsg.localTime());
+                map.put("msgId", finalMsg.getMsgId());
                 map.put("callbackType", ExtSdkMethodType.onMessageProgressUpdate);
                 ExtSdkWrapper.onReceive(channelName, map);
             }
@@ -317,6 +322,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
                 Map<String, Object> map = new HashMap<>();
                 map.put("message", ExtSdkMessageHelper.toJson(finalMsg));
                 map.put("localTime", finalMsg.localTime());
+                map.put("msgId", finalMsg.getMsgId());
                 map.put("error", data);
                 map.put("callbackType", ExtSdkMethodType.onMessageError);
                 ExtSdkWrapper.onReceive(channelName, map);

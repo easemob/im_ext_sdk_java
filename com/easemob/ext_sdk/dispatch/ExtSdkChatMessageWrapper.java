@@ -27,8 +27,10 @@ public class ExtSdkChatMessageWrapper {
         ArrayList<Map<String, Object>> list = new ArrayList<>();
         if (msg != null) {
             List<EMMessageReaction> reactions = msg.getMessageReaction();
-            for (int i = 0; i < reactions.size(); i++) {
-                list.add(ExtSdkMessageReactionHelper.toJson(reactions.get(i)));
+            if (reactions != null) {
+                for (int i = 0; i < reactions.size(); i++) {
+                    list.add(ExtSdkMessageReactionHelper.toJson(reactions.get(i)));
+                }
             }
         }
         ExtSdkWrapper.onSuccess(result, channelName, list);
