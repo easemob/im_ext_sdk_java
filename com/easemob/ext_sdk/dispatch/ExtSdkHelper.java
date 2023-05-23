@@ -11,6 +11,7 @@ import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMCursorResult;
 import com.hyphenate.chat.EMCustomMessageBody;
 import com.hyphenate.chat.EMDeviceInfo;
+import com.hyphenate.chat.EMFetchMessageOption;
 import com.hyphenate.chat.EMFileMessageBody;
 import com.hyphenate.chat.EMGroup;
 import com.hyphenate.chat.EMGroupInfo;
@@ -24,6 +25,7 @@ import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMMessage.Type;
 import com.hyphenate.chat.EMMessageReaction;
 import com.hyphenate.chat.EMMessageReactionChange;
+import com.hyphenate.chat.EMMessageReactionOperation;
 import com.hyphenate.chat.EMMucSharedFile;
 import com.hyphenate.chat.EMNormalFileMessageBody;
 import com.hyphenate.chat.EMOptions;
@@ -443,6 +445,9 @@ class ExtSdkMessageHelper {
         if (json.has("isChatThread")) {
             message.setIsChatThreadMessage(json.getBoolean("isChatThread"));
         }
+        if (json.has("deliverOnlineOnly")) {
+            message.deliverOnlineOnly(json.getBoolean("deliverOnlineOnly"));
+        }
 
         if (json.has("attributes")) {
             JSONObject data = json.getJSONObject("attributes");
@@ -525,6 +530,7 @@ class ExtSdkMessageHelper {
         data.put("groupAckCount", message.groupAckCount());
         data.put("isChatThread", message.isChatThreadMessage());
         data.put("isOnline", message.isOnlineState());
+        data.put("deliverOnlineOnly", message.isDeliverOnlineOnly());
         //        data.put("priority", ExtSdkMessageHelper.priorityToInt(;));
 
         return data;
@@ -689,11 +695,11 @@ class ExtSdkMessageBodyHelper {
 
     static EMCmdMessageBody cmdBodyFromJson(JSONObject json) throws JSONException {
         String action = json.getString("action");
-        boolean deliverOnlineOnly = json.getBoolean("deliverOnlineOnly");
-
         EMCmdMessageBody body = new EMCmdMessageBody(action);
-        body.deliverOnlineOnly(deliverOnlineOnly);
-
+        if (json.has("deliverOnlineOnly")) {
+            boolean deliverOnlineOnly = json.getBoolean("deliverOnlineOnly");
+            body.deliverOnlineOnly(deliverOnlineOnly);
+        }
         return body;
     }
 
@@ -1251,6 +1257,19 @@ class ExtSdkLanguageHelper {
     }
 }
 
+class ExtSdkReactionOperationHelper {
+    static Map<String, Object> toJson(EMMessageReactionOperation operation) {
+        if (operation == null) {
+            return null;
+        }
+        Map<String, Object> data = new HashMap<>();
+        data.put("userId", operation.getUserId());
+        data.put("reaction", operation.getReaction());
+        data.put("operate", operation.getOperation());
+        return data;
+    }
+}
+
 class ExtSdkMessageReactionHelper {
     static Map<String, Object> toJson(EMMessageReaction reaction) {
         if (reaction == null) {
@@ -1275,6 +1294,11 @@ class ExtSdkMessageReactionChangeHelper {
             list.add(ExtSdkMessageReactionHelper.toJson(change.getMessageReactionList().get(i)));
         }
         data.put("reactions", list);
+        ArrayList<Map<String, Object>> opList = new ArrayList<>();
+        for (int i = 0; i < change.getOperations().size(); i++) {
+            opList.add(ExtSdkReactionOperationHelper.toJson(change.getOperations().get(i)));
+        }
+        data.put("operations", opList);
 
         return data;
     }
@@ -1431,5 +1455,60 @@ class ExtSdkSilentModeResultHelper {
         }
 
         return data;
+    }
+}
+
+class ExtSdkFetchMessageOptionHelper {
+    static EMFetchMessageOption fromJson(JSONObject json) throws JSONException {
+        EMFetchMessageOption options = new EMFetchMessageOption();
+        if (json.getInt("direction") == 0) {
+            options.setDirection(EMConversation.EMSearchDirection.UP);
+        } else {
+            options.setDirection(EMConversation.EMSearchDirection.DOWN);
+        }
+        options.setIsSave(json.getBoolean("needSave"));
+        options.setStartTime(json.getLong("startTs"));
+        options.setEndTime(json.getLong("endTs"));
+        if (json.has("from")) {
+            options.setFrom(json.getString("from"));
+        }
+        if (json.has("msgTypes")) {
+            List<EMMessage.Type> list = new ArrayList<>();
+            JSONArray array = json.getJSONArray("msgTypes");
+            for (int i = 0; i < array.length(); i++) {
+                String type = array.getString(i);
+                switch (type) {
+                case "txt": {
+                    list.add(Type.TXT);
+                } break;
+                case "img": {
+                    list.add(Type.IMAGE);
+                } break;
+                case "loc": {
+                    list.add(Type.LOCATION);
+                } break;
+                case "video": {
+                    list.add(Type.VIDEO);
+                } break;
+                case "voice": {
+                    list.add(Type.VOICE);
+                } break;
+                case "file": {
+                    list.add(Type.FILE);
+                } break;
+                case "cmd": {
+                    list.add(Type.CMD);
+                } break;
+                case "custom": {
+                    list.add(Type.CUSTOM);
+                } break;
+                }
+            }
+            if (list.size() > 0) {
+                options.setMsgTypes(list);
+            }
+        }
+
+        return options;
     }
 }

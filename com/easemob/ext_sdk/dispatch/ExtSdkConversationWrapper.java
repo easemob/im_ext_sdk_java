@@ -1,5 +1,7 @@
 package com.easemob.ext_sdk.dispatch;
 
+import static com.hyphenate.EMError.GENERAL_ERROR;
+
 import android.text.TextUtils;
 import com.easemob.ext_sdk.common.ExtSdkCallback;
 import com.hyphenate.chat.EMClient;
@@ -73,6 +75,19 @@ public class ExtSdkConversationWrapper extends ExtSdkWrapper {
         EMConversation conversation = conversationWithParam(params);
         conversation.clearAllMessages();
         onSuccess(result, channelName, null);
+    }
+
+    public void deleteMessagesWithTimestamp(JSONObject params, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        long startTs = params.getLong("startTs");
+        long endTs = params.getLong("endTs");
+        EMConversation conversation = conversationWithParam(params);
+        boolean ret = conversation.removeMessages(startTs, endTs);
+        if (ret == true) {
+            onSuccess(result, channelName, null);
+        } else {
+            onError(result, GENERAL_ERROR, "remove local message is failed.");
+        }
     }
 
     private EMConversation getConversationFromMessage(EMMessage message) {

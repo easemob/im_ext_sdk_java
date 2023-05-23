@@ -68,6 +68,7 @@ public class ExtSdkMethodType {
     public static final String getConversationsFromServer = "getConversationsFromServer";
     public static final String deleteConversation = "deleteConversation";
     public static final String fetchHistoryMessages = "fetchHistoryMessages";
+    public static final String fetchHistoryMessagesByOptions = "fetchHistoryMessagesByOptions";
     public static final String searchChatMsgFromDB = "searchChatMsgFromDB";
     public static final String getMessage = "getMessage";
     public static final String asyncFetchGroupAcks = "asyncFetchGroupAcks";
@@ -119,6 +120,7 @@ public class ExtSdkMethodType {
     public static final String getLatestMessage = "getLatestMessage";
     public static final String getLatestMessageFromOthers = "getLatestMessageFromOthers";
     public static final String clearAllMessages = "clearAllMessages";
+    public static final String deleteMessagesWithTs = "deleteMessagesWithTs";
     public static final String insertMessage = "insertMessage";
     public static final String appendMessage = "appendMessage";
     public static final String updateConversationMessage = "updateConversationMessage";
@@ -220,6 +222,9 @@ public class ExtSdkMethodType {
     public static final String declineJoinApplication = "declineJoinApplication";
     public static final String acceptInvitationFromGroup = "acceptInvitationFromGroup";
     public static final String declineInvitationFromGroup = "declineInvitationFromGroup";
+    public static final String setMemberAttributesFromGroup = "setMemberAttributesFromGroup";
+    public static final String fetchMemberAttributesFromGroup = "fetchMemberAttributesFromGroup";
+    public static final String fetchMembersAttributesFromGroup = "fetchMembersAttributesFromGroup";
     public static final String ignoreGroupPush = "ignoreGroupPush"; // deprecated 2022.05.25
 
     /// EMGroupManagerListener

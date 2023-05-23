@@ -10,6 +10,7 @@ import com.hyphenate.EMValueCallBack;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMCursorResult;
+import com.hyphenate.chat.EMFetchMessageOption;
 import com.hyphenate.chat.EMGroupReadAck;
 import com.hyphenate.chat.EMLanguage;
 import com.hyphenate.chat.EMMessage;
@@ -400,6 +401,33 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         } catch (HyphenateException e) {
             onError(result, e, null);
         }
+    }
+
+    public void fetchHistoryMessagesByOptions(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        String convId = param.getString("convId");
+        EMConversation.EMConversationType type = ExtSdkConversationHelper.typeFromInt(param.getInt("convType"));
+        String cursor = "";
+        int pageSize = 20;
+        EMFetchMessageOption option = new EMFetchMessageOption();
+        cursor = param.getString("cursor");
+        pageSize = param.getInt("pageSize");
+        if (param.has("options")) {
+            option = ExtSdkFetchMessageOptionHelper.fromJson(param.getJSONObject("options"));
+        }
+
+        EMClient.getInstance().chatManager().asyncFetchHistoryMessages(
+            convId, type, pageSize, cursor, option, new EMValueCallBack<EMCursorResult<EMMessage>>() {
+                @Override
+                public void onSuccess(EMCursorResult<EMMessage> value) {
+                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkCursorResultHelper.toJson(value));
+                }
+
+                @Override
+                public void onError(int error, String errorMsg) {
+                    ExtSdkWrapper.onError(result, error, errorMsg);
+                }
+            });
     }
 
     public void searchChatMsgFromDB(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
