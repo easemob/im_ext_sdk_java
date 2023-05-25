@@ -393,10 +393,12 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         EMConversation.EMConversationType type = ExtSdkConversationHelper.typeFromInt(param.getInt("convType"));
         int pageSize = param.getInt("pageSize");
         String startMsgId = param.getString("startMsgId");
+        int direction = param.getInt("direction");
 
         try {
-            EMCursorResult<EMMessage> cursorResult =
-                EMClient.getInstance().chatManager().fetchHistoryMessages(conId, type, pageSize, startMsgId);
+            EMCursorResult<EMMessage> cursorResult = EMClient.getInstance().chatManager().fetchHistoryMessages(
+                conId, type, pageSize, startMsgId,
+                direction == 0 ? EMConversation.EMSearchDirection.UP : EMConversation.EMSearchDirection.DOWN);
             onSuccess(result, channelName, ExtSdkCursorResultHelper.toJson(cursorResult));
         } catch (HyphenateException e) {
             onError(result, e, null);
