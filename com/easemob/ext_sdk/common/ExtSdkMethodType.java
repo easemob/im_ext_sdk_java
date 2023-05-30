@@ -34,6 +34,7 @@ public class ExtSdkMethodType {
     public static final String onUserDidLoginTooManyDevice = "onUserDidLoginTooManyDevice";
     public static final String onUserKickedByOtherDevice = "onUserKickedByOtherDevice";
     public static final String onUserAuthenticationFailed = "onUserAuthenticationFailed";
+    public static final String onAppActiveNumberReachLimit = "onAppActiveNumberReachLimit";
 
     /// EMContactManager methods
     public static final String addContact = "addContact";

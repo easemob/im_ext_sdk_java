@@ -1,7 +1,6 @@
 package com.easemob.ext_sdk.dispatch;
 
 import android.util.Log;
-
 import com.easemob.ext_sdk.common.ExtSdkCallback;
 import com.easemob.ext_sdk.common.ExtSdkContext;
 import com.easemob.ext_sdk.common.ExtSdkMethodType;
@@ -328,6 +327,8 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
                     onReceive(ExtSdkMethodType.onUserKickedByOtherDevice, null);
                 } else if (errorCode == 202) {
                     onReceive(ExtSdkMethodType.onUserAuthenticationFailed, null);
+                } else if (errorCode == 8) {
+                    onReceive(ExtSdkMethodType.onAppActiveNumberReachLimit, null);
                 } else {
                     onReceive(ExtSdkMethodType.onDisconnected, null);
                 }
