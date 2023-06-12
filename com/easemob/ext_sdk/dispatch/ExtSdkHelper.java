@@ -696,16 +696,16 @@ class ExtSdkMessageBodyHelper {
     static EMCmdMessageBody cmdBodyFromJson(JSONObject json) throws JSONException {
         String action = json.getString("action");
         EMCmdMessageBody body = new EMCmdMessageBody(action);
-        if (json.has("deliverOnlineOnly")) {
-            boolean deliverOnlineOnly = json.getBoolean("deliverOnlineOnly");
-            body.deliverOnlineOnly(deliverOnlineOnly);
-        }
+        // if (json.has("deliverOnlineOnly")) {
+        //     boolean deliverOnlineOnly = json.getBoolean("deliverOnlineOnly");
+        //     body.deliverOnlineOnly(deliverOnlineOnly);
+        // }
         return body;
     }
 
     static Map<String, Object> cmdBodyToJson(EMCmdMessageBody body) {
         Map<String, Object> data = new HashMap<>();
-        data.put("deliverOnlineOnly", body.isDeliverOnlineOnly());
+        // data.put("deliverOnlineOnly", body.isDeliverOnlineOnly());
         data.put("action", body.action());
         data.put("type", "cmd");
         return data;
