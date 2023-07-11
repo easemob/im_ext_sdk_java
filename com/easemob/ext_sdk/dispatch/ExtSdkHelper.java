@@ -1265,7 +1265,7 @@ class ExtSdkReactionOperationHelper {
         Map<String, Object> data = new HashMap<>();
         data.put("userId", operation.getUserId());
         data.put("reaction", operation.getReaction());
-        data.put("operate", operation.getOperation());
+        data.put("operate", operation.getOperation().ordinal());
         return data;
     }
 }
