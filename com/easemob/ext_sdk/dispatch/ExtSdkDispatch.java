@@ -621,12 +621,10 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 ExtSdkGroupManagerWrapper.getInstance().setMemberAttribute(jsonParams, methodType, callback);
                 break;
             case ExtSdkMethodType.fetchMemberAttributesFromGroup:
-                ExtSdkGroupManagerWrapper.getInstance().fetchMemberAttributes(jsonParams, methodType,
-                                                                                       callback);
+                ExtSdkGroupManagerWrapper.getInstance().fetchMemberAttributes(jsonParams, methodType, callback);
                 break;
             case ExtSdkMethodType.fetchMembersAttributesFromGroup:
-                ExtSdkGroupManagerWrapper.getInstance().fetchMembersAttributes(jsonParams, methodType,
-                                                                                        callback);
+                ExtSdkGroupManagerWrapper.getInstance().fetchMembersAttributes(jsonParams, methodType, callback);
                 break;
             case ExtSdkMethodType.ignoreGroupPush:
                 callback.fail(1, "no implement: " + methodType);
@@ -861,6 +859,29 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 break;
             case ExtSdkMethodType.MJremoveChatRoomAttributes:
                 ExtSdkChatRoomManagerWrapper.getInstance().removeChatRoomAttributes(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.getConversationsFromServerWithCursor:
+                ExtSdkChatManagerWrapper.getInstance().getConversationsFromServerWithCursor(jsonParams, methodType,
+                                                                                            callback);
+                break;
+            case ExtSdkMethodType.getPinnedConversationsFromServerWithCursor:
+                ExtSdkChatManagerWrapper.getInstance().getPinnedConversationsFromServerWithCursor(jsonParams,
+                                                                                                  methodType, callback);
+                break;
+            case ExtSdkMethodType.pinConversation:
+                ExtSdkChatManagerWrapper.getInstance().pinConversation(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.modifyMessage:
+                ExtSdkChatManagerWrapper.getInstance().modifyMessage(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.downloadAndParseCombineMessage:
+                ExtSdkChatManagerWrapper.getInstance().downloadAndParseCombineMessage(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.setPushTemplate:
+                ExtSdkPushManagerWrapper.getInstance().setPushTemplate(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.getPushTemplate:
+                ExtSdkPushManagerWrapper.getInstance().getPushTemplate(jsonParams, methodType, callback);
                 break;
 
             default:

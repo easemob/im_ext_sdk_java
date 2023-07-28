@@ -295,4 +295,34 @@ public class ExtSdkPushManagerWrapper extends ExtSdkWrapper {
             }
         });
     }
+
+    public void setPushTemplate(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
+        String templateName = params.getString("templateName");
+        EMClient.getInstance().pushManager().setPushTemplate(templateName, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onSuccess(result, channelName, null);
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                ExtSdkWrapper.onError(result, i, s);
+            }
+        });
+    }
+    public void getPushTemplate(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
+        EMClient.getInstance().pushManager().getPushTemplate(new EMValueCallBack<String>() {
+            @Override
+            public void onSuccess(String s) {
+                Map<String, String> ret = new HashMap<>();
+                ret.put("templateName", s);
+                ExtSdkWrapper.onSuccess(result, channelName, ret);
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                ExtSdkWrapper.onError(result, i, s);
+            }
+        });
+    }
 }

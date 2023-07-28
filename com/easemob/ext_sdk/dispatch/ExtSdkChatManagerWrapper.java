@@ -14,6 +14,7 @@ import com.hyphenate.chat.EMFetchMessageOption;
 import com.hyphenate.chat.EMGroupReadAck;
 import com.hyphenate.chat.EMLanguage;
 import com.hyphenate.chat.EMMessage;
+import com.hyphenate.chat.EMMessageBody;
 import com.hyphenate.chat.EMMessageReaction;
 import com.hyphenate.chat.EMMessageReactionChange;
 import com.hyphenate.exceptions.HyphenateException;
@@ -780,6 +781,97 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         });
     }
 
+    public void getConversationsFromServerWithCursor(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        String cursor = param.optString("cursor");
+        int pageSize = param.optInt("pageSize");
+        EMClient.getInstance().chatManager().asyncFetchConversationsFromServer(
+            pageSize, cursor, new EMValueCallBack<EMCursorResult<EMConversation>>() {
+                @Override
+                public void onSuccess(EMCursorResult<EMConversation> emConversationEMCursorResult) {
+                    ExtSdkWrapper.onSuccess(result, channelName,
+                                            ExtSdkCursorResultHelper.toJson(emConversationEMCursorResult));
+                }
+
+                @Override
+                public void onError(int i, String s) {
+                    ExtSdkWrapper.onError(result, i, s);
+                }
+            });
+    }
+
+    public void getPinnedConversationsFromServerWithCursor(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        String cursor = param.optString("cursor");
+        int pageSize = param.optInt("pageSize");
+        EMClient.getInstance().chatManager().asyncFetchPinnedConversationsFromServer(
+            pageSize, cursor, new EMValueCallBack<EMCursorResult<EMConversation>>() {
+                @Override
+                public void onSuccess(EMCursorResult<EMConversation> emConversationEMCursorResult) {
+                    ExtSdkWrapper.onSuccess(result, channelName,
+                                            ExtSdkCursorResultHelper.toJson(emConversationEMCursorResult));
+                }
+
+                @Override
+                public void onError(int i, String s) {
+                    ExtSdkWrapper.onError(result, i, s);
+                }
+            });
+    }
+
+    public void pinConversation(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        String convId = param.optString("convId");
+        Boolean isPinned = param.optBoolean("isPinned", false);
+        EMClient.getInstance().chatManager().asyncPinConversation(convId, isPinned, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onError(result, channelName, null);
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                ExtSdkWrapper.onError(result, i, s);
+            }
+        });
+    }
+
+    public void modifyMessage(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
+        String msgId = param.optString("msgId");
+        EMMessageBody body = ExtSdkMessageBodyHelper.textBodyFromJson(param.optJSONObject("body"));
+        EMClient.getInstance().chatManager().asyncModifyMessage(msgId, body, new EMValueCallBack<EMMessage>() {
+            @Override
+            public void onSuccess(EMMessage emMessage) {
+                ExtSdkWrapper.onSuccess(result, channelName, ExtSdkMessageHelper.toJson(emMessage));
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                ExtSdkWrapper.onError(result, i, s);
+            }
+        });
+    }
+
+    public void downloadAndParseCombineMessage(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        EMMessage msg = ExtSdkMessageHelper.fromJson(param.optJSONObject("message"));
+        EMClient.getInstance().chatManager().downloadAndParseCombineMessage(
+            msg, new EMValueCallBack<List<EMMessage>>() {
+                @Override
+                public void onSuccess(List<EMMessage> emMessages) {
+                    List<Map> messages = new ArrayList<>();
+                    for (EMMessage msg : emMessages) {
+                        messages.add(ExtSdkMessageHelper.toJson(msg));
+                    }
+                    ExtSdkWrapper.onSuccess(result, channelName, messages);
+                }
+
+                @Override
+                public void onError(int i, String s) {
+                    ExtSdkWrapper.onError(result, i, s);
+                }
+            });
+    }
+
     private void registerEaseListener() {
         if (this.messageListener != null) {
             EMClient.getInstance().chatManager().removeMessageListener(this.messageListener);
@@ -855,6 +947,16 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
                     list.add(ExtSdkMessageReactionChangeHelper.toJson(change));
                 }
                 ExtSdkWrapper.onReceive(ExtSdkMethodType.onMessageReactionDidChange, list);
+            }
+
+            @Override
+            public void onMessageContentChanged(EMMessage messageModified, String operatorId, long operationTime) {
+                Map msgMap = ExtSdkMessageHelper.toJson(messageModified);
+                Map ret = new HashMap<>();
+                ret.put("message", msgMap);
+                ret.put("lastModifyOperatorId", operatorId);
+                ret.put("lastModifyTime", operationTime);
+                ExtSdkWrapper.onReceive(ExtSdkMethodType.onMessageContentChanged, ret);
             }
         };
         EMClient.getInstance().chatManager().addMessageListener(this.messageListener);

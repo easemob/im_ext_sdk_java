@@ -500,7 +500,7 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
         Map<String, String> attributes = new HashMap<>();
         if (param.has("attributes")) {
             JSONArray jsonObject = param.getJSONArray("attributes");
-            for (int i=0; i<jsonObject.length(); ++i) {
+            for (int i = 0; i < jsonObject.length(); ++i) {
                 Iterator iterator = jsonObject.getJSONObject(i).keys();
                 while (iterator.hasNext()) {
                     String key = iterator.next().toString();
@@ -558,7 +558,7 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
 
         if (forced) {
             EMClient.getInstance().chatroomManager().asyncRemoveChatRoomAttributesFromServerForced(roomId, keys,
-                                                                                                  callback);
+                                                                                                   callback);
         } else {
             EMClient.getInstance().chatroomManager().asyncRemoveChatRoomAttributesFromServer(roomId, keys, callback);
         }
@@ -630,6 +630,7 @@ public class ExtSdkChatRoomManagerWrapper extends ExtSdkWrapper {
                 data.put("roomId", roomId);
                 data.put("roomName", roomName);
                 data.put("participant", participant);
+                data.put("reason", reason);
                 data.put("type", "onRemovedFromChatRoom");
                 ExtSdkWrapper.onReceive(ExtSdkMethodType.chatRoomChange, data);
             }

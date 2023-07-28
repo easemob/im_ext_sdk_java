@@ -200,6 +200,9 @@ public class ExtSdkConversationWrapper extends ExtSdkWrapper {
         case "voice":
             type = EMMessage.Type.VOICE;
             break;
+        case "combine":
+            type = EMMessage.Type.COMBINE;
+            break;
         }
 
         EMMessage.Type finalType = type;

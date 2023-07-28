@@ -1,5 +1,12 @@
 package com.easemob.ext_sdk.dispatch;
 
+import static com.easemob.ext_sdk.common.ExtSdkMethodType.onMultiDeviceEventContact;
+import static com.easemob.ext_sdk.common.ExtSdkMethodType.onMultiDeviceEventConversation;
+import static com.easemob.ext_sdk.common.ExtSdkMethodType.onMultiDeviceEventGroup;
+import static com.easemob.ext_sdk.common.ExtSdkMethodType.onMultiDeviceEventRemoveMessage;
+import static com.easemob.ext_sdk.common.ExtSdkMethodType.onMultiDeviceEventThread;
+import static com.easemob.ext_sdk.dispatch.ExtSdkConversationHelper.typeToInt;
+
 import android.util.Log;
 import com.easemob.ext_sdk.common.ExtSdkCallback;
 import com.easemob.ext_sdk.common.ExtSdkContext;
@@ -9,6 +16,7 @@ import com.hyphenate.EMCallBack;
 import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMMultiDeviceListener;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMDeviceInfo;
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.exceptions.HyphenateException;
@@ -147,9 +155,15 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
         String username = param.getString("username");
         String password = param.getString("password");
         String resource = param.getString("resource");
+        boolean isPassword = param.getBoolean("isPassword");
 
         try {
-            EMClient.getInstance().kickDevice(username, password, resource);
+            if (isPassword) {
+                EMClient.getInstance().kickDevice(username, password, resource);
+            } else {
+                EMClient.getInstance().kickDeviceWithToken(username, password, resource);
+            }
+
             onSuccess(result, channelName, true);
         } catch (HyphenateException e) {
             onError(result, e, null);
@@ -159,9 +173,15 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
     public void kickAllDevices(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String username = param.getString("username");
         String password = param.getString("password");
+        boolean isPassword = param.getBoolean("isPassword");
 
         try {
-            EMClient.getInstance().kickAllDevices(username, password);
+            if (isPassword) {
+                EMClient.getInstance().kickAllDevices(username, password);
+            } else {
+                EMClient.getInstance().kickAllDevicesWithToken(username, password);
+            }
+
             onSuccess(result, channelName, true);
         } catch (HyphenateException e) {
             onError(result, e, null);
@@ -176,12 +196,23 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
         throws JSONException {
         String username = param.getString("username");
         String password = param.getString("password");
+        boolean isPassword = param.getBoolean("isPassword");
+
         try {
-            List<EMDeviceInfo> devices = EMClient.getInstance().getLoggedInDevicesFromServer(username, password);
             List<Map> jsonList = new ArrayList<>();
-            for (EMDeviceInfo info : devices) {
-                jsonList.add(ExtSdkDeviceInfoHelper.toJson(info));
+            if (isPassword) {
+                List<EMDeviceInfo> devices = EMClient.getInstance().getLoggedInDevicesFromServer(username, password);
+                for (EMDeviceInfo info : devices) {
+                    jsonList.add(ExtSdkDeviceInfoHelper.toJson(info));
+                }
+            } else {
+                List<EMDeviceInfo> devices =
+                    EMClient.getInstance().getLoggedInDevicesFromServerWithToken(username, password);
+                for (EMDeviceInfo info : devices) {
+                    jsonList.add(ExtSdkDeviceInfoHelper.toJson(info));
+                }
             }
+
             onSuccess(result, channelName, jsonList);
         } catch (HyphenateException e) {
             onError(result, e, null);
@@ -276,6 +307,7 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
                 data.put("event", Integer.valueOf(event));
                 data.put("target", target);
                 data.put("ext", ext);
+                data.put("type", onMultiDeviceEventContact);
                 onReceive(ExtSdkMethodType.onMultiDeviceEvent, data);
             }
 
@@ -285,6 +317,7 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
                 data.put("event", Integer.valueOf(event));
                 data.put("target", target);
                 data.put("ext", userNames);
+                data.put("type", onMultiDeviceEventGroup);
                 onReceive(ExtSdkMethodType.onMultiDeviceEvent, data);
             }
 
@@ -294,6 +327,26 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
                 data.put("event", Integer.valueOf(event));
                 data.put("target", target);
                 data.put("ext", usernames);
+                data.put("type", onMultiDeviceEventThread);
+                onReceive(ExtSdkMethodType.onMultiDeviceEvent, data);
+            }
+
+            @Override
+            public void onMessageRemoved(String conversationId, String deviceId) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("convId", conversationId);
+                data.put("deviceId", deviceId);
+                data.put("type", onMultiDeviceEventRemoveMessage);
+                onReceive(ExtSdkMethodType.onMultiDeviceEvent, data);
+            }
+
+            @Override
+            public void onConversationEvent(int event, String conversationId, EMConversation.EMConversationType type) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("event", Integer.valueOf(event));
+                data.put("convId", conversationId);
+                data.put("convType", typeToInt(type));
+                data.put("type", onMultiDeviceEventConversation);
                 onReceive(ExtSdkMethodType.onMultiDeviceEvent, data);
             }
         };
@@ -314,7 +367,8 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
             @Override
             public void onDisconnected(int errorCode) {
                 if (errorCode == 206) {
-                    onReceive(ExtSdkMethodType.onUserDidLoginFromOtherDevice, null);
+                    // move to onLogout
+                    //                    onReceive(ExtSdkMethodType.onUserDidLoginFromOtherDevice, null);
                 } else if (errorCode == 207) {
                     onReceive(ExtSdkMethodType.onUserDidRemoveFromServer, null);
                 } else if (errorCode == 305) {
@@ -342,6 +396,15 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
             @Override
             public void onTokenWillExpire() {
                 onReceive(ExtSdkMethodType.onTokenWillExpire, null);
+            }
+
+            @Override
+            public void onLogout(int errorCode, String info) {
+                if (errorCode == 206) {
+                    Map<String, String> attributes = new HashMap<>();
+                    attributes.put("deviceName", info);
+                    onReceive(ExtSdkMethodType.onUserDidLoginFromOtherDevice, attributes);
+                }
             }
         };
 

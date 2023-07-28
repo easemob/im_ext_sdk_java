@@ -23,6 +23,11 @@ public class ExtSdkMethodType {
     public static final String onConnected = "onConnected";
     public static final String onDisconnected = "onDisconnected";
     public static final String onMultiDeviceEvent = "onMultiDeviceEvent";
+    public static final String onMultiDeviceEventContact = "onMultiDeviceEventContact";
+    public static final String onMultiDeviceEventGroup = "onMultiDeviceEventGroup";
+    public static final String onMultiDeviceEventThread = "onMultiDeviceEventThread";
+    public static final String onMultiDeviceEventRemoveMessage = "onMultiDeviceEventRemoveMessage";
+    public static final String onMultiDeviceEventConversation = "onMultiDeviceEventConversation";
     public static final String onSendDataToFlutter = "onSendDataToFlutter";
     public static final String onTokenWillExpire = "onTokenWillExpire";
     public static final String onTokenDidExpire = "onTokenDidExpire";
@@ -89,6 +94,12 @@ public class ExtSdkMethodType {
     public static final String removeMessagesFromServerWithMsgIds = "removeMessagesFromServerWithMsgIds";
     public static final String removeMessagesFromServerWithTs = "removeMessagesFromServerWithTs";
 
+    public static final String getConversationsFromServerWithCursor = "getConversationsFromServerWithCursor";
+    public static final String getPinnedConversationsFromServerWithCursor = "getPinnedConversationsFromServerWithCursor";
+    public static final String pinConversation = "pinConversation";
+    public static final String modifyMessage = "modifyMessage";
+    public static final String downloadAndParseCombineMessage = "downloadAndParseCombineMessage";
+
     /// EMChatManager listener
     public static final String onMessagesReceived = "onMessagesReceived";
     public static final String onCmdMessagesReceived = "onCmdMessagesReceived";
@@ -102,6 +113,7 @@ public class ExtSdkMethodType {
 
     public static final String onReadAckForGroupMessageUpdated = "onReadAckForGroupMessageUpdated";
     public static final String onMessageReactionDidChange = "messageReactionDidChange";
+    public static final String onMessageContentChanged = "onMessageContentChanged";
 
     /// EMMessage listener
     public static final String onMessageProgressUpdate = "onMessageProgressUpdate";
@@ -252,6 +264,8 @@ public class ExtSdkMethodType {
     public static final String fetchSilentModeForConversations = "fetchSilentModeForConversations";
     public static final String setPreferredNotificationLanguage = "setPreferredNotificationLanguage";
     public static final String fetchPreferredNotificationLanguage = "fetchPreferredNotificationLanguage";
+    public static final String setPushTemplate = "setPushTemplate";
+    public static final String getPushTemplate = "getPushTemplate";
 
     /// ImPushConfig
     public static final String imPushNoDisturb = "imPushNoDisturb"; // deprecated 2022.05.04
