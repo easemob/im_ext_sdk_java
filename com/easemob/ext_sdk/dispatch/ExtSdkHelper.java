@@ -645,9 +645,11 @@ class ExtSdkGroupAckHelper {
 class ExtSdkMessageBodyHelper {
 
     static void baseBodyToJson(EMMessageBody body, Map<String, Object> data) {
-        data.put("lastModifyOperatorId", body.operatorId());
-        data.put("lastModifyTime", body.operationTime());
-        data.put("modifyCount", body.operationCount());
+        if (body.operatorId() != null && body.operatorId().length() > 0) {
+            data.put("lastModifyOperatorId", body.operatorId());
+            data.put("lastModifyTime", body.operationTime());
+            data.put("modifyCount", body.operationCount());
+        }
     }
 
     static EMTextMessageBody textBodyFromJson(JSONObject json) throws JSONException {
