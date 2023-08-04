@@ -1184,6 +1184,10 @@ class ExtSdkCursorResultHelper {
                 if (obj instanceof EMMessageReaction) {
                     jsonList.add(ExtSdkMessageReactionHelper.toJson((EMMessageReaction)obj));
                 }
+
+                if (obj instanceof EMConversation) {
+                    jsonList.add(ExtSdkConversationHelper.toJson((EMConversation) obj));
+                }
             }
         }
 
