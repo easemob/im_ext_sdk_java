@@ -825,7 +825,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         EMClient.getInstance().chatManager().asyncPinConversation(convId, isPinned, new EMCallBack() {
             @Override
             public void onSuccess() {
-                ExtSdkWrapper.onError(result, channelName, null);
+                ExtSdkWrapper.onSuccess(result, channelName, null);
             }
 
             @Override
