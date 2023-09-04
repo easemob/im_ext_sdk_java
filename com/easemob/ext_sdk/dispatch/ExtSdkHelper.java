@@ -427,7 +427,8 @@ class ExtSdkMessageHelper {
         if (statusFromInt(json.getInt("status")) == EMMessage.Status.SUCCESS) {
             message.setUnread(!json.getBoolean("hasRead"));
         }
-        message.setDeliverAcked(json.getBoolean("hasDeliverAck"));
+        // sdk auto invoke
+        //        message.setDelivered(json.getBoolean("hasDeliverAck"));
         message.setIsNeedGroupAck(json.getBoolean("needGroupAck"));
         if (json.has("groupAckCount")) {
             message.setGroupAckCount(json.getInt("groupAckCount"));
@@ -1186,7 +1187,7 @@ class ExtSdkCursorResultHelper {
                 }
 
                 if (obj instanceof EMConversation) {
-                    jsonList.add(ExtSdkConversationHelper.toJson((EMConversation) obj));
+                    jsonList.add(ExtSdkConversationHelper.toJson((EMConversation)obj));
                 }
             }
         }
