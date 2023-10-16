@@ -318,6 +318,9 @@ public class ExtSdkDispatch implements ExtSdkApi {
             case ExtSdkMethodType.getUnreadMsgCount:
                 ExtSdkConversationWrapper.getInstance().getUnreadMsgCount(jsonParams, methodType, callback);
                 break;
+            case ExtSdkMethodType.getMsgCount:
+                ExtSdkConversationWrapper.getInstance().getMsgCount(jsonParams, methodType, callback);
+                break;
             case ExtSdkMethodType.markAllMessagesAsRead:
                 ExtSdkConversationWrapper.getInstance().markAllMessagesAsRead(jsonParams, methodType, callback);
                 break;

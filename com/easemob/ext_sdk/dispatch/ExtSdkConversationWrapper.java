@@ -26,6 +26,11 @@ public class ExtSdkConversationWrapper extends ExtSdkWrapper {
         onSuccess(result, channelName, conversation.getUnreadMsgCount());
     }
 
+    public void getMsgCount(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
+        EMConversation conversation = conversationWithParam(params);
+        onSuccess(result, channelName, conversation.getAllMsgCount());
+    }
+
     public void markAllMessagesAsRead(JSONObject params, String channelName, ExtSdkCallback result)
         throws JSONException {
         EMConversation conversation = conversationWithParam(params);

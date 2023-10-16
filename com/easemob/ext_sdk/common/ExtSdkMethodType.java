@@ -125,6 +125,7 @@ public class ExtSdkMethodType {
 
     /// EMConversation
     public static final String getUnreadMsgCount = "getUnreadMsgCount";
+    public static final String getMsgCount = "getMsgCount";
     public static final String markAllMessagesAsRead = "markAllMessagesAsRead";
     public static final String markMessageAsRead = "markMessageAsRead";
     public static final String syncConversationExt = "syncConversationExt";
