@@ -95,7 +95,8 @@ public class ExtSdkMethodType {
     public static final String removeMessagesFromServerWithTs = "removeMessagesFromServerWithTs";
 
     public static final String getConversationsFromServerWithCursor = "getConversationsFromServerWithCursor";
-    public static final String getPinnedConversationsFromServerWithCursor = "getPinnedConversationsFromServerWithCursor";
+    public static final String getPinnedConversationsFromServerWithCursor =
+        "getPinnedConversationsFromServerWithCursor";
     public static final String pinConversation = "pinConversation";
     public static final String modifyMessage = "modifyMessage";
     public static final String downloadAndParseCombineMessage = "downloadAndParseCombineMessage";
@@ -314,6 +315,11 @@ public class ExtSdkMethodType {
     public static final String onChatThreadUpdated = "onChatThreadUpdated";
     public static final String onChatThreadDestroyed = "onChatThreadDestroyed";
     public static final String onChatThreadUserRemoved = "onChatThreadUserRemoved";
+    public static final String getAllContacts = "getAllContacts";
+    public static final String setContactRemark = "setContactRemark";
+    public static final String getContact = "getContact";
+    public static final String fetchAllContacts = "fetchAllContacts";
+    public static final String fetchContacts = "fetchContacts";
 
     // TODO: EMChatThreadManagerListener
 }

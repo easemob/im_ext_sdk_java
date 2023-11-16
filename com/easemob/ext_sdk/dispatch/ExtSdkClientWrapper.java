@@ -29,7 +29,9 @@ import org.json.JSONObject;
 
 public class ExtSdkClientWrapper extends ExtSdkWrapper {
 
-    public static class SingleHolder { static ExtSdkClientWrapper instance = new ExtSdkClientWrapper(); }
+    public static class SingleHolder {
+        static ExtSdkClientWrapper instance = new ExtSdkClientWrapper();
+    }
 
     public static ExtSdkClientWrapper getInstance() { return ExtSdkClientWrapper.SingleHolder.instance; }
 
@@ -275,8 +277,17 @@ public class ExtSdkClientWrapper extends ExtSdkWrapper {
 
     public void renewToken(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String agoraToken = param.getString("agora_token");
-        EMClient.getInstance().renewToken(agoraToken);
-        onSuccess(result, channelName, null);
+        EMClient.getInstance().renewToken(agoraToken, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onSuccess(result, channelName, null);
+            }
+
+            @Override
+            public void onError(int code, String error) {
+                ExtSdkWrapper.onError(result, code, error);
+            }
+        });
     }
 
     public void updatePushConfig(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {

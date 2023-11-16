@@ -23,7 +23,9 @@ import org.json.JSONObject;
 
 public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
 
-    public static class SingleHolder { static ExtSdkGroupManagerWrapper instance = new ExtSdkGroupManagerWrapper(); }
+    public static class SingleHolder {
+        static ExtSdkGroupManagerWrapper instance = new ExtSdkGroupManagerWrapper();
+    }
 
     public static ExtSdkGroupManagerWrapper getInstance() { return ExtSdkGroupManagerWrapper.SingleHolder.instance; }
 
@@ -1137,6 +1139,21 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
             });
     }
 
+    public void fetchJoinedGroupCount(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        EMClient.getInstance().groupManager().asyncGetJoinedGroupsCountFromServer(new EMValueCallBack<Integer>() {
+            @Override
+            public void onSuccess(Integer value) {
+                ExtSdkWrapper.onSuccess(result, channelName, value);
+            }
+
+            @Override
+            public void onError(int error, String errorMsg) {
+                ExtSdkWrapper.onError(result, error, errorMsg);
+            }
+        });
+    }
+
     private void registerEaseListener() {
         if (this.groupChangeListener != null) {
             EMClient.getInstance().groupManager().removeGroupChangeListener(this.groupChangeListener);
@@ -1203,10 +1220,23 @@ public class ExtSdkGroupManagerWrapper extends ExtSdkWrapper {
 
             @Override
             public void onRequestToJoinDeclined(String groupId, String groupName, String decliner, String reason) {
+                // Map<String, Object> data = new HashMap<>();
+                // data.put("type", "onRequestToJoinDeclined");
+                // data.put("groupId", groupId);
+                // data.put("groupName", groupName);
+                // data.put("decliner", decliner);
+                // data.put("reason", reason);
+                // ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);
+            }
+
+            @Override
+            public void onRequestToJoinDeclined(String groupId, String groupName, String decliner, String reason,
+                                                String applicant) {
                 Map<String, Object> data = new HashMap<>();
                 data.put("type", "onRequestToJoinDeclined");
                 data.put("groupId", groupId);
                 data.put("groupName", groupName);
+                data.put("applicant", applicant);
                 data.put("decliner", decliner);
                 data.put("reason", reason);
                 ExtSdkWrapper.onReceive(ExtSdkMethodType.onGroupChanged, data);

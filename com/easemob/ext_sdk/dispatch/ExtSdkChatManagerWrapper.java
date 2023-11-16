@@ -30,7 +30,9 @@ import org.json.JSONObject;
 
 public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
 
-    public static class SingleHolder { static ExtSdkChatManagerWrapper instance = new ExtSdkChatManagerWrapper(); }
+    public static class SingleHolder {
+        static ExtSdkChatManagerWrapper instance = new ExtSdkChatManagerWrapper();
+    }
 
     public static ExtSdkChatManagerWrapper getInstance() { return ExtSdkChatManagerWrapper.SingleHolder.instance; }
 
@@ -337,21 +339,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
 
     public void loadAllConversations(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
 
-        List<EMConversation> list =
-            new ArrayList<>(EMClient.getInstance().chatManager().getAllConversations().values());
-        Collections.sort(list, new Comparator<EMConversation>() {
-            @Override
-            public int compare(EMConversation o1, EMConversation o2) {
-                if (o1.getLastMessage() == null) {
-                    return 1;
-                }
-
-                if (o2.getLastMessage() == null) {
-                    return -1;
-                }
-                return o2.getLastMessage().getMsgTime() - o1.getLastMessage().getMsgTime() > 0 ? 1 : -1;
-            }
-        });
+        List<EMConversation> list = EMClient.getInstance().chatManager().getAllConversationsBySort();
         List<Map> conversations = new ArrayList<>();
         for (EMConversation conversation : list) {
             conversations.add(ExtSdkConversationHelper.toJson(conversation));

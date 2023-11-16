@@ -2,9 +2,14 @@ package com.easemob.ext_sdk.dispatch;
 
 import com.easemob.ext_sdk.common.ExtSdkCallback;
 import com.easemob.ext_sdk.common.ExtSdkMethodType;
+import com.hyphenate.EMCallBack;
 import com.hyphenate.EMContactListener;
+import com.hyphenate.EMValueCallBack;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMContact;
+import com.hyphenate.chat.EMCursorResult;
 import com.hyphenate.exceptions.HyphenateException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,6 +135,92 @@ public class ExtSdkContactManagerWrapper extends ExtSdkWrapper {
         } catch (HyphenateException e) {
             onError(result, e, null);
         }
+    }
+
+    public void getAllContacts(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
+        EMClient.getInstance().contactManager().asyncFetchAllContactsFromLocal(new EMValueCallBack<List<EMContact>>() {
+            @Override
+            public void onSuccess(List<EMContact> value) {
+                List<Map> contactList = new ArrayList<>();
+                for (EMContact contact : value) {
+                    contactList.add(ExtSdkContactHelper.toJson(contact));
+                }
+                ExtSdkWrapper.onSuccess(result, channelName, contactList);
+            }
+
+            @Override
+            public void onError(int error, String errorMsg) {
+                ExtSdkWrapper.onError(result, error, errorMsg);
+            }
+        });
+    }
+
+    public void setContactRemark(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
+        String userId = params.getString("userId");
+        String remark = params.getString("remark");
+        EMClient.getInstance().contactManager().asyncSetContactRemark(userId, remark, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                ExtSdkWrapper.onSuccess(result, channelName, null);
+            }
+
+            @Override
+            public void onError(int code, String error) {
+                ExtSdkWrapper.onError(result, code, error);
+            }
+        });
+    }
+
+    public void getContact(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
+        String userId = params.getString("userId");
+        try {
+            EMContact contact = EMClient.getInstance().contactManager().fetchContactFromLocal(userId);
+            if (contact != null) {
+                ExtSdkWrapper.onSuccess(result, channelName, ExtSdkContactHelper.toJson(contact));
+            } else {
+                ExtSdkWrapper.onSuccess(result, channelName, null);
+            }
+        } catch (HyphenateException e) {
+            ExtSdkWrapper.onError(result, e, null);
+        }
+    }
+
+    public void fetchAllContacts(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
+        EMClient.getInstance().contactManager().asyncFetchAllContactsFromServer(new EMValueCallBack<List<EMContact>>() {
+            @Override
+            public void onSuccess(List<EMContact> value) {
+                List<Map> contactList = new ArrayList<>();
+                for (EMContact contact : value) {
+                    contactList.add(ExtSdkContactHelper.toJson(contact));
+                }
+                ExtSdkWrapper.onSuccess(result, channelName, contactList);
+            }
+
+            @Override
+            public void onError(int error, String errorMsg) {
+                ExtSdkWrapper.onError(result, error, errorMsg);
+            }
+        });
+    }
+
+    public void fetchContacts(JSONObject params, String channelName, ExtSdkCallback result) throws JSONException {
+        int pageSize = params.getInt("pageSize");
+        String cursor = null;
+        if (params.has("cursor")) {
+            cursor = params.getString("cursor");
+        }
+        EMClient.getInstance().contactManager().asyncFetchAllContactsFromServer(
+            pageSize, cursor, new EMValueCallBack<EMCursorResult<EMContact>>() {
+                @Override
+                public void onSuccess(EMCursorResult<EMContact> value) {
+                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkCursorResultHelper.toJson(value));
+                }
+
+                @Override
+                public void onError(int error, String errorMsg) {
+                    ExtSdkWrapper.onError(result, error, errorMsg);
+                }
+            });
     }
 
     private void registerEaseListener() {

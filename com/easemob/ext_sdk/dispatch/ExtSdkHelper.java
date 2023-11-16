@@ -8,6 +8,7 @@ import com.hyphenate.chat.EMChatThreadEvent;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCmdMessageBody;
 import com.hyphenate.chat.EMCombineMessageBody;
+import com.hyphenate.chat.EMContact;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMCursorResult;
 import com.hyphenate.chat.EMCustomMessageBody;
@@ -543,6 +544,7 @@ class ExtSdkMessageHelper {
         data.put("isChatThread", message.isChatThreadMessage());
         data.put("isOnline", message.isOnlineState());
         data.put("deliverOnlineOnly", message.isDeliverOnlineOnly());
+        data.put("isBroadcast", message.isBroadcast());
         //        data.put("priority", ExtSdkMessageHelper.priorityToInt(;));
         if (message.receiverList().size() > 0) {
             data.put("receiverList", message.receiverList());
@@ -1189,6 +1191,10 @@ class ExtSdkCursorResultHelper {
                 if (obj instanceof EMConversation) {
                     jsonList.add(ExtSdkConversationHelper.toJson((EMConversation)obj));
                 }
+
+                if (obj instanceof EMContact) {
+                    jsonList.add(ExtSdkContactHelper.toJson((EMContact)obj));
+                }
             }
         }
 
@@ -1603,5 +1609,27 @@ class ExtSdkFetchMessageOptionHelper {
         }
 
         return options;
+    }
+}
+
+class ExtSdkContactHelper {
+    static EMContact fromJson(JSONObject json) throws JSONException {
+        String userId = json.optString("userId");
+        String remark = json.optString("remark");
+        EMContact contact = new EMContact(userId);
+        if (remark.length() != 0) {
+            contact.setRemark(remark);
+        }
+        return contact;
+    }
+
+    static Map<String, Object> toJson(EMContact contact) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("userId", contact.getUsername());
+        String remark = contact.getRemark();
+        if (remark != null) {
+            data.put("remark", remark);
+        }
+        return data;
     }
 }
