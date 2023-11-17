@@ -320,6 +320,7 @@ public class ExtSdkMethodType {
     public static final String getContact = "getContact";
     public static final String fetchAllContacts = "fetchAllContacts";
     public static final String fetchContacts = "fetchContacts";
+    public static final String fetchJoinedGroupCount = "fetchJoinedGroupCount";
 
     // TODO: EMChatThreadManagerListener
 }

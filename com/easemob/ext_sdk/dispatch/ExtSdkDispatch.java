@@ -14,7 +14,9 @@ import org.json.JSONObject;
 
 public class ExtSdkDispatch implements ExtSdkApi {
 
-    private static class SingleHolder { static ExtSdkDispatch instance = new ExtSdkDispatch(); }
+    private static class SingleHolder {
+        static ExtSdkDispatch instance = new ExtSdkDispatch();
+    }
 
     public static ExtSdkDispatch getInstance() { return ExtSdkDispatch.SingleHolder.instance; }
 
@@ -885,6 +887,25 @@ public class ExtSdkDispatch implements ExtSdkApi {
                 break;
             case ExtSdkMethodType.getPushTemplate:
                 ExtSdkPushManagerWrapper.getInstance().getPushTemplate(jsonParams, methodType, callback);
+                break;
+
+            case ExtSdkMethodType.fetchJoinedGroupCount:
+                ExtSdkGroupManagerWrapper.getInstance().fetchJoinedGroupCount(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.getAllContacts:
+                ExtSdkContactManagerWrapper.getInstance().getAllContacts(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.setContactRemark:
+                ExtSdkContactManagerWrapper.getInstance().setContactRemark(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.getContact:
+                ExtSdkContactManagerWrapper.getInstance().getContact(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.fetchAllContacts:
+                ExtSdkContactManagerWrapper.getInstance().fetchAllContacts(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.fetchContacts:
+                ExtSdkContactManagerWrapper.getInstance().fetchContacts(jsonParams, methodType, callback);
                 break;
 
             default:
