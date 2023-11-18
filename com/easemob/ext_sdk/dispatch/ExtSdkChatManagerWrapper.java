@@ -40,11 +40,13 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
 
     public void sendMessage(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         final EMMessage msg = ExtSdkMessageHelper.fromJson(param);
+        String msgId = param.getString("msgId");
         msg.setMessageStatusCallback(new EMCallBack() {
             @Override
             public void onSuccess() {
+                EMMessage message = EMClient.getInstance().chatManager().getMessage(msgId);
                 Map<String, Object> map = new HashMap<>();
-                map.put("message", ExtSdkMessageHelper.toJson(msg));
+                map.put("message", ExtSdkMessageHelper.toJson(message));
                 map.put("localTime", msg.localTime());
                 map.put("callbackType", ExtSdkMethodType.onMessageSuccess);
                 ExtSdkWrapper.onReceive(channelName, map);
