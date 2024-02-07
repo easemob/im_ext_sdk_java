@@ -658,8 +658,8 @@ class ExtSdkMessageBodyHelper {
     static EMTextMessageBody textBodyFromJson(JSONObject json) throws JSONException {
         String content = json.getString("content");
         List<String> list = new ArrayList<>();
-        if (json.has("targetLanguages")) {
-            JSONArray ja = json.getJSONArray("targetLanguages");
+        if (json.has("targetLanguageCodes")) {
+            JSONArray ja = json.getJSONArray("targetLanguageCodes");
             for (int i = 0; i < ja.length(); i++) {
                 list.add(ja.getString(i));
             }
@@ -676,7 +676,7 @@ class ExtSdkMessageBodyHelper {
         data.put("content", body.getMessage());
         data.put("type", "txt");
         if (body.getTargetLanguages() != null) {
-            data.put("targetLanguages", body.getTargetLanguages());
+            data.put("targetLanguageCodes", body.getTargetLanguages());
         }
         if (body.getTranslations() != null) {
             HashMap<String, String> map = new HashMap<>();

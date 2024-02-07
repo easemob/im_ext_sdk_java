@@ -8,15 +8,25 @@ import com.hyphenate.EMConversationListener;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.EMValueCallBack;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMCmdMessageBody;
+import com.hyphenate.chat.EMCombineMessageBody;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMCursorResult;
+import com.hyphenate.chat.EMCustomMessageBody;
 import com.hyphenate.chat.EMFetchMessageOption;
+import com.hyphenate.chat.EMFileMessageBody;
 import com.hyphenate.chat.EMGroupReadAck;
+import com.hyphenate.chat.EMImageMessageBody;
 import com.hyphenate.chat.EMLanguage;
+import com.hyphenate.chat.EMLocationMessageBody;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMMessageBody;
 import com.hyphenate.chat.EMMessageReaction;
 import com.hyphenate.chat.EMMessageReactionChange;
+import com.hyphenate.chat.EMNormalFileMessageBody;
+import com.hyphenate.chat.EMTextMessageBody;
+import com.hyphenate.chat.EMVideoMessageBody;
+import com.hyphenate.chat.EMVoiceMessageBody;
 import com.hyphenate.exceptions.HyphenateException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -216,10 +226,13 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
 
     public void updateChatMessage(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         EMMessage msg = ExtSdkMessageHelper.fromJson(param.getJSONObject("message"));
+        EMMessage dbMsg =
+            EMClient.getInstance().chatManager().getMessage(param.getJSONObject("message").getString("msgId"));
+        this.mergeMessage(msg, dbMsg);
 
-        boolean ret = EMClient.getInstance().chatManager().updateMessage(msg);
+        boolean ret = EMClient.getInstance().chatManager().updateMessage(dbMsg);
         if (ret) {
-            onSuccess(result, channelName, ExtSdkMessageHelper.toJson(msg));
+            onSuccess(result, channelName, ExtSdkMessageHelper.toJson(dbMsg));
         } else {
             onError(result, 1, "Failed to update the message.");
         }
@@ -518,7 +531,9 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
                 list.add(array.getString(i));
             }
         }
-        EMClient.getInstance().chatManager().translateMessage(msg, list, new EMValueCallBack<EMMessage>() {
+
+        EMMessage dbMsg = EMClient.getInstance().chatManager().getMessage(msg.getMsgId());
+        EMClient.getInstance().chatManager().translateMessage(dbMsg, list, new EMValueCallBack<EMMessage>() {
             @Override
             public void onSuccess(EMMessage value) {
                 Map<String, Object> data = new HashMap<>();
@@ -826,17 +841,18 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
     public void modifyMessage(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String msgId = param.optString("msgId");
         EMMessageBody body = ExtSdkMessageBodyHelper.textBodyFromJson(param.optJSONObject("body"));
-        EMClient.getInstance().chatManager().asyncModifyMessage(msgId, body, new EMValueCallBack<EMMessage>() {
-            @Override
-            public void onSuccess(EMMessage emMessage) {
-                ExtSdkWrapper.onSuccess(result, channelName, ExtSdkMessageHelper.toJson(emMessage));
-            }
+        EMClient.getInstance().chatManager().asyncModifyMessage(
+            msgId, body, new EMValueCallBack<EMMessage>() {
+                @Override
+                public void onSuccess(EMMessage emMessage) {
+                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkMessageHelper.toJson(emMessage));
+                }
 
-            @Override
-            public void onError(int i, String s) {
-                ExtSdkWrapper.onError(result, i, s);
-            }
-        });
+                @Override
+                public void onError(int i, String s) {
+                    ExtSdkWrapper.onError(result, i, s);
+                }
+            });
     }
 
     public void downloadAndParseCombineMessage(JSONObject param, String channelName, ExtSdkCallback result)

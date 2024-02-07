@@ -15,7 +15,9 @@ import org.json.JSONObject;
 
 public class ExtSdkConversationWrapper extends ExtSdkWrapper {
 
-    public static class SingleHolder { static ExtSdkConversationWrapper instance = new ExtSdkConversationWrapper(); }
+    public static class SingleHolder {
+        static ExtSdkConversationWrapper instance = new ExtSdkConversationWrapper();
+    }
 
     public static ExtSdkConversationWrapper getInstance() { return ExtSdkConversationWrapper.SingleHolder.instance; }
 
@@ -130,7 +132,9 @@ public class ExtSdkConversationWrapper extends ExtSdkWrapper {
         EMConversation conversation = conversationWithParam(params);
         JSONObject msg = params.getJSONObject("msg");
         EMMessage message = ExtSdkMessageHelper.fromJson(msg);
-        conversation.updateMessage(message);
+        EMMessage dbMsg = EMClient.getInstance().chatManager().getMessage(message.getMsgId());
+        this.mergeMessage(message, dbMsg);
+        conversation.updateMessage(dbMsg);
         onSuccess(result, channelName, null);
     }
 
