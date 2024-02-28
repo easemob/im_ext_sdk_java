@@ -21,7 +21,9 @@ import org.json.JSONObject;
 
 public class ExtSdkPushManagerWrapper extends ExtSdkWrapper {
 
-    public static class SingleHolder { static ExtSdkPushManagerWrapper instance = new ExtSdkPushManagerWrapper(); }
+    public static class SingleHolder {
+        static ExtSdkPushManagerWrapper instance = new ExtSdkPushManagerWrapper();
+    }
 
     public static ExtSdkPushManagerWrapper getInstance() { return ExtSdkPushManagerWrapper.SingleHolder.instance; }
 
@@ -240,10 +242,7 @@ public class ExtSdkPushManagerWrapper extends ExtSdkWrapper {
         ArrayList<EMConversation> list = new ArrayList<>();
         JSONArray convs = params.getJSONArray("convs");
         for (int i = 0; i < convs.length(); ++i) {
-            String convId = ((JSONObject)convs.get(i)).getString("convType");
-            EMConversation.EMConversationType convType =
-                ExtSdkConversationHelper.typeFromInt(((JSONObject)convs.get(i)).getInt("convType"));
-            EMConversation conversation = EMClient.getInstance().chatManager().getConversation(convId, convType, true);
+            EMConversation conversation = this.getConversation((JSONObject)convs.get(i));
             list.add(conversation);
         }
 

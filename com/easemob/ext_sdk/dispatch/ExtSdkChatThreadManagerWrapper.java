@@ -19,7 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ExtSdkChatThreadManagerWrapper {
+public class ExtSdkChatThreadManagerWrapper extends ExtSdkWrapper {
     public static class SingleHolder {
         static ExtSdkChatThreadManagerWrapper instance = new ExtSdkChatThreadManagerWrapper();
     }
@@ -278,14 +278,13 @@ public class ExtSdkChatThreadManagerWrapper {
             ExtSdkWrapper.onError(result, 1, "The message does not exist.");
         }
     }
-    public void getThreadConversation(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        String conId = param.getString("convId");
-        boolean createIfNeed = true;
-        if (param.has("createIfNeed")) {
-            createIfNeed = param.getBoolean("createIfNeed");
+    public void getThreadConversation(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        if (!param.has("isChatThread")) {
+            param.put("isChatThread", true);
         }
 
-        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(conId, EMConversation.EMConversationType.GroupChat, createIfNeed, true);
+        EMConversation conversation = this.getConversation(param);
         ExtSdkWrapper.onSuccess(result, channelName, ExtSdkConversationHelper.toJson(conversation));
     }
 

@@ -4,8 +4,10 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.easemob.ext_sdk.common.ExtSdkCallback;
+import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCmdMessageBody;
 import com.hyphenate.chat.EMCombineMessageBody;
+import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMCustomMessageBody;
 import com.hyphenate.chat.EMFileMessageBody;
 import com.hyphenate.chat.EMImageMessageBody;
@@ -173,6 +175,21 @@ public class ExtSdkWrapper {
         }
 
         this.mergeMessageBody(msg.getBody(), dbMsg);
+    }
+
+    protected EMConversation getConversation(JSONObject params) throws JSONException {
+        String convId = params.getString("convId");
+        EMConversation.EMConversationType convType = ExtSdkConversationHelper.typeFromInt(params.getInt("convType"));
+        boolean isChatThread = params.optBoolean("isChatThread", false);
+        boolean createIfNotExists = params.optBoolean("createIfNeed", true);
+        return EMClient.getInstance().chatManager().getConversation(convId, convType, createIfNotExists, isChatThread);
+    }
+
+    protected EMConversation getConversationFromMessage(EMMessage message) {
+        boolean createConv = message.getType() != EMMessage.Type.CMD;
+        return EMClient.getInstance().chatManager().getConversation(
+            message.conversationId(), EMConversation.msgType2ConversationType(message.getTo(), message.getChatType()),
+            createConv, message.isChatThreadMessage());
     }
 
     private static final String TAG = "EMWrapper";

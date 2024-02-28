@@ -200,14 +200,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
     }
 
     public void getConversation(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
-        String conId = param.getString("convId");
-        EMConversation.EMConversationType type = ExtSdkConversationHelper.typeFromInt(param.getInt("convType"));
-        boolean createIfNeed = true;
-        if (param.has("createIfNeed")) {
-            createIfNeed = param.getBoolean("createIfNeed");
-        }
-
-        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(conId, type, createIfNeed);
+        EMConversation conversation = this.getConversation(param);
         onSuccess(result, channelName, ExtSdkConversationHelper.toJson(conversation));
     }
 
@@ -741,9 +734,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
 
     public void removeMessagesFromServerWithMsgIds(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
-        String conversationId = param.getString("convId");
-        EMConversation.EMConversationType type = ExtSdkConversationHelper.typeFromInt(param.getInt("convType"));
-        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(conversationId, type, true);
+        EMConversation conversation = this.getConversation(param);
 
         JSONArray jsonArray = param.getJSONArray("msgIds");
 
@@ -767,9 +758,7 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
 
     public void removeMessagesFromServerWithTs(JSONObject param, String channelName, ExtSdkCallback result)
         throws JSONException {
-        String conversationId = param.getString("convId");
-        EMConversation.EMConversationType type = ExtSdkConversationHelper.typeFromInt(param.getInt("convType"));
-        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(conversationId, type, true);
+        EMConversation conversation = this.getConversation(param);
         long timestamp = param.getLong("timestamp");
         conversation.removeMessagesFromServer(timestamp, new EMCallBack() {
             @Override
@@ -841,18 +830,17 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
     public void modifyMessage(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         String msgId = param.optString("msgId");
         EMMessageBody body = ExtSdkMessageBodyHelper.textBodyFromJson(param.optJSONObject("body"));
-        EMClient.getInstance().chatManager().asyncModifyMessage(
-            msgId, body, new EMValueCallBack<EMMessage>() {
-                @Override
-                public void onSuccess(EMMessage emMessage) {
-                    ExtSdkWrapper.onSuccess(result, channelName, ExtSdkMessageHelper.toJson(emMessage));
-                }
+        EMClient.getInstance().chatManager().asyncModifyMessage(msgId, body, new EMValueCallBack<EMMessage>() {
+            @Override
+            public void onSuccess(EMMessage emMessage) {
+                ExtSdkWrapper.onSuccess(result, channelName, ExtSdkMessageHelper.toJson(emMessage));
+            }
 
-                @Override
-                public void onError(int i, String s) {
-                    ExtSdkWrapper.onError(result, i, s);
-                }
-            });
+            @Override
+            public void onError(int i, String s) {
+                ExtSdkWrapper.onError(result, i, s);
+            }
+        });
     }
 
     public void downloadAndParseCombineMessage(JSONObject param, String channelName, ExtSdkCallback result)
