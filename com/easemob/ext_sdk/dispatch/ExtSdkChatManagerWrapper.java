@@ -243,6 +243,98 @@ public class ExtSdkChatManagerWrapper extends ExtSdkWrapper {
         onSuccess(result, channelName, null);
     }
 
+    public void downloadAttachmentInCombine(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        final EMMessage finalMsg = ExtSdkMessageHelper.fromJson(param.getJSONObject("message"));
+        finalMsg.setMessageStatusCallback(new EMCallBack() {
+            @Override
+            public void onSuccess() {
+
+                Map<String, Object> map = new HashMap<>();
+                map.put("message", ExtSdkMessageHelper.toJson(finalMsg));
+                map.put("localTime", finalMsg.localTime());
+                map.put("msgId", finalMsg.getMsgId());
+                map.put("callbackType", ExtSdkMethodType.onMessageSuccess);
+                ExtSdkWrapper.onReceive(channelName, map);
+            }
+
+            @Override
+            public void onProgress(int progress, String status) {
+
+                Map<String, Object> map = new HashMap<>();
+                map.put("progress", progress);
+                map.put("localTime", finalMsg.localTime());
+                map.put("msgId", finalMsg.getMsgId());
+                map.put("callbackType", ExtSdkMethodType.onMessageProgressUpdate);
+                ExtSdkWrapper.onReceive(channelName, map);
+            }
+
+            @Override
+            public void onError(int code, String desc) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("code", code);
+                data.put("description", desc);
+
+                Map<String, Object> map = new HashMap<>();
+                map.put("message", ExtSdkMessageHelper.toJson(finalMsg));
+                map.put("localTime", finalMsg.localTime());
+                map.put("msgId", finalMsg.getMsgId());
+                map.put("error", data);
+                map.put("callbackType", ExtSdkMethodType.onMessageError);
+                ExtSdkWrapper.onReceive(channelName, map);
+            }
+        });
+
+        EMClient.getInstance().chatManager().downloadAttachment(finalMsg);
+        onSuccess(result, channelName, ExtSdkMessageHelper.toJson(finalMsg));
+    }
+
+    public void downloadThumbnailInCombine(JSONObject param, String channelName, ExtSdkCallback result)
+        throws JSONException {
+        final EMMessage finalMsg = ExtSdkMessageHelper.fromJson(param.getJSONObject("message"));
+        finalMsg.setMessageStatusCallback(new EMCallBack() {
+            @Override
+            public void onSuccess() {
+
+                Map<String, Object> map = new HashMap<>();
+                map.put("message", ExtSdkMessageHelper.toJson(finalMsg));
+                map.put("localTime", finalMsg.localTime());
+                map.put("msgId", finalMsg.getMsgId());
+                map.put("callbackType", ExtSdkMethodType.onMessageSuccess);
+                ExtSdkWrapper.onReceive(channelName, map);
+            }
+
+            @Override
+            public void onProgress(int progress, String status) {
+
+                Map<String, Object> map = new HashMap<>();
+                map.put("progress", progress);
+                map.put("localTime", finalMsg.localTime());
+                map.put("msgId", finalMsg.getMsgId());
+                map.put("callbackType", ExtSdkMethodType.onMessageProgressUpdate);
+                ExtSdkWrapper.onReceive(channelName, map);
+            }
+
+            @Override
+            public void onError(int code, String desc) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("code", code);
+                data.put("description", desc);
+
+                Map<String, Object> map = new HashMap<>();
+                map.put("message", ExtSdkMessageHelper.toJson(finalMsg));
+                map.put("localTime", finalMsg.localTime());
+                map.put("msgId", finalMsg.getMsgId());
+                map.put("error", data);
+                map.put("callbackType", ExtSdkMethodType.onMessageError);
+                ExtSdkWrapper.onReceive(channelName, map);
+            }
+        });
+
+        EMClient.getInstance().chatManager().downloadThumbnail(finalMsg);
+        onSuccess(result, channelName, ExtSdkMessageHelper.toJson(finalMsg));
+    }
+
     public void downloadAttachment(JSONObject param, String channelName, ExtSdkCallback result) throws JSONException {
         EMMessage tempMsg = ExtSdkMessageHelper.fromJson(param.getJSONObject("message"));
         EMMessage msg = EMClient.getInstance().chatManager().getMessage(tempMsg.getMsgId());

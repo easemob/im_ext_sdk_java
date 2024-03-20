@@ -229,6 +229,12 @@ public class ExtSdkDispatch implements ExtSdkApi {
             case ExtSdkMethodType.updateChatMessage:
                 ExtSdkChatManagerWrapper.getInstance().updateChatMessage(jsonParams, methodType, callback);
                 break;
+            case ExtSdkMethodType.downloadAttachmentInCombine:
+                ExtSdkChatManagerWrapper.getInstance().downloadAttachmentInCombine(jsonParams, methodType, callback);
+                break;
+            case ExtSdkMethodType.downloadThumbnailInCombine:
+                ExtSdkChatManagerWrapper.getInstance().downloadThumbnailInCombine(jsonParams, methodType, callback);
+                break;
             case ExtSdkMethodType.downloadAttachment:
                 ExtSdkChatManagerWrapper.getInstance().downloadAttachment(jsonParams, methodType, callback);
                 break;
